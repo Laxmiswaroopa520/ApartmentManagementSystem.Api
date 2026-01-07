@@ -1,0 +1,6 @@
+@ApartmentManagementSystem.API_HostAddress = http://localhost:5239
+
+GET {{ApartmentManagementSystem.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
