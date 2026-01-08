@@ -1,40 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ApartmentManagementSystem.API.DTOs.Auth;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Application.Interfaces.Auth;
 
+using BCrypt.Net;
 namespace ApartmentManagementSystem.Application.Services
 {
     public class AuthService : IAuthService
     {
-        private readonly IUserRepository _userRepo;
-        private readonly IJwtTokenGenerator _jwtGenerator;
+        private readonly IUserRepository _userRepository;
+        private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
         public AuthService(
-            IUserRepository userRepo,
-            IJwtTokenGenerator jwtGenerator)
+            IUserRepository userRepository,
+            IJwtTokenGenerator jwtTokenGenerator)
         {
-            _userRepo = userRepo;
-            _jwtGenerator = jwtGenerator;
+            _userRepository = userRepository;
+            _jwtTokenGenerator = jwtTokenGenerator;
         }
 
-        public async Task<LoginResponse> LoginAsync(string email, string password)
+        public async Task<string> LoginAsync(string email, string password)
         {
-            var user = await _userRepo.GetByEmailAsync(email);
+            var user = await _userRepository.GetByEmailAsync(email);
+
             if (user == null)
                 throw new Exception("Invalid credentials");
 
             if (!user.IsActive || !user.IsRegistrationCompleted)
-                throw new Exception("Registration incomplete");
+                throw new Exception("User not allowed to login");
 
-            var valid = BCrypt.Net.BCrypt.Verify(password, user.PasswordHash);
-            if (!valid)
+            if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
                 throw new Exception("Invalid credentials");
 
-            var token = _jwtGenerator.Generate(user);
-
-            return new LoginResponse { Token = token };
+            return _jwtTokenGenerator.GenerateToken(user);
         }
     }
 }

@@ -11,5 +11,7 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
     {
         Task AddAsync(UserOtp otp);
         Task<UserOtp?> GetValidOtpAsync(string email, string otp);
+        Task UpdateAsync(UserOtp otp);
+
     }
 }

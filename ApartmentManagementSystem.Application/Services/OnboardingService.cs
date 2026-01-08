@@ -1,12 +1,22 @@
-﻿
+﻿using ApartmentManagementSystem.Application.DTOs.Onboarding;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Domain.Entities;
+using ApartmentManagementSystem.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace ApartmentManagementSystem.Application.Services
 {
     public class OnboardingService : IOnboardingService
     {
-        private readonly IUserRepository _userRepo;
-        private readonly IUserInviteRepository _inviteRepo;
-        private readonly IUserOtpRepository _otpRepo;
-        private readonly IOtpService _otpService;
+        private readonly IUserRepository UserRepo;
+        private readonly IUserInviteRepository InviteRepo;
+        private readonly IUserOtpRepository OtpRepo;
+        private readonly IOtpService OtpService;
 
         public OnboardingService(
             IUserRepository userRepo,
@@ -14,15 +24,15 @@ namespace ApartmentManagementSystem.Application.Services
             IUserOtpRepository otpRepo,
             IOtpService otpService)
         {
-            _userRepo = userRepo;
-            _inviteRepo = inviteRepo;
-            _otpRepo = otpRepo;
-            _otpService = otpService;
+            UserRepo = userRepo;
+            InviteRepo = inviteRepo;
+            OtpRepo = otpRepo;
+            OtpService = otpService;
         }
 
         public async Task CreateInviteAsync(CreateInviteRequest request)
         {
-            var existingUser = await _userRepo.GetByEmailAsync(request.Email);
+            var existingUser = await UserRepo.GetByEmailAsync(request.Email);
             if (existingUser != null)
                 throw new Exception("User already exists");
 
@@ -36,9 +46,9 @@ namespace ApartmentManagementSystem.Application.Services
                 IsUsed = false
             };
 
-            await _inviteRepo.AddAsync(invite);
+            await InviteRepo.AddAsync(invite);
 
-            var otpCode = _otpService.GenerateOtp();
+            var otpCode = OtpService.GenerateOtp();
 
             var otp = new UserOtp
             {
@@ -49,24 +59,24 @@ namespace ApartmentManagementSystem.Application.Services
                 IsVerified = false
             };
 
-            await _otpRepo.AddAsync(otp);
+            await OtpRepo.AddAsync(otp);
 
-            await _otpService.SendOtpAsync(request.Mobile, otpCode);
+            await OtpService.SendOtpAsync(request.Mobile, otpCode);
         }
 
         public async Task VerifyOtpAsync(VerifyOtpRequest request)
         {
-            var otp = await _otpRepo.GetValidOtpAsync(request.Email, request.Otp);
+            var otp = await OtpRepo.GetValidOtpAsync(request.Email, request.Otp);
             if (otp == null)
                 throw new Exception("Invalid or expired OTP");
 
             otp.IsVerified = true;
-            await _otpRepo.UpdateAsync(otp);
+            await OtpRepo.UpdateAsync(otp);
         }
 
         public async Task CompleteRegistrationAsync(CompleteRegistrationRequest request)
         {
-            var invite = await _inviteRepo.GetValidInviteAsync(request.Email);
+            var invite = await InviteRepo.GetValidInviteAsync(request.Email);
             if (invite == null)
                 throw new Exception("Invite not found or expired");
 
@@ -83,10 +93,10 @@ namespace ApartmentManagementSystem.Application.Services
                 IsRegistrationCompleted = true
             };
 
-            await _userRepo.AddAsync(user);
+            await UserRepo.AddAsync(user);
 
             invite.IsUsed = true;
-            await _inviteRepo.UpdateAsync(invite);
+            await InviteRepo.UpdateAsync(invite);
         }
     }
 }

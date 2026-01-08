@@ -6,5 +6,6 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
     {
         Task AddAsync(UserInvite invite);
         Task<UserInvite?> GetValidInviteAsync(string email);
+        Task UpdateAsync(UserInvite invite);
     }
 }

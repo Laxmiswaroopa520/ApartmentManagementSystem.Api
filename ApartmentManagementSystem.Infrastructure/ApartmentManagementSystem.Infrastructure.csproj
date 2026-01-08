@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ApartmentManagementSystem.Application\ApartmentManagementSystem.Application.csproj" />
     <ProjectReference Include="..\ApartmentManagementSystem.Domain\ApartmentManagementSystem.Domain.csproj" />
   </ItemGroup>
 
