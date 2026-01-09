@@ -9,13 +9,10 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
     using ApartmentManagementSystem.Domain.Entities;
     using global::ApartmentManagementSystem.Domain.Entities;
 
-   // namespace ApartmentManagementSystem.Application.Interfaces.Repositories;
+  //  namespace ApartmentManagementSystem.Application.Interfaces.Repositories;
 
-    public interface IUserRepository
+    public interface IRoleRepository
     {
-        Task<User?> GetByUsernameAsync(string username);
-        Task<User?> GetByPhoneAsync(string phone);
-        Task AddAsync(User user);
-        Task SaveChangesAsync();
+        Task<Role> GetByIdAsync(Guid id);
     }
 }

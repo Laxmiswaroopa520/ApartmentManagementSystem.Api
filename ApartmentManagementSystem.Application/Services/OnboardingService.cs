@@ -1,102 +1,102 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
-using ApartmentManagementSystem.Domain.Domain.Entities;
 using ApartmentManagementSystem.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BCrypt.Net;
 
-namespace ApartmentManagementSystem.Application.Services
+namespace ApartmentManagementSystem.Application.Services;
+
+public class OnboardingService : IOnboardingService
 {
-    public class OnboardingService : IOnboardingService
+    private readonly IUserRepository _users;
+    private readonly IUserInviteRepository _invites;
+    private readonly IUserOtpRepository _otps;
+    private readonly IRoleRepository _roles;
+    private readonly IOtpService _otpService;
+
+    public OnboardingService(
+        IUserRepository users,
+        IUserInviteRepository invites,
+        IUserOtpRepository otps,
+        IRoleRepository roles,
+        IOtpService otpService)
     {
-        private readonly IUserRepository UserRepo;
-        private readonly IUserInviteRepository InviteRepo;
-        private readonly IUserOtpRepository OtpRepo;
-        private readonly IOtpService OtpService;
+        _users = users;
+        _invites = invites;
+        _otps = otps;
+        _roles = roles;
+        _otpService = otpService;
+    }
 
-        public OnboardingService(
-            IUserRepository userRepo,
-            IUserInviteRepository inviteRepo,
-            IUserOtpRepository otpRepo,
-            IOtpService otpService)
+    public async Task<CreateInviteResponseDto> CreateInviteAsync(
+        CreateUserInviteDto dto,
+        Guid createdBy)
+    {
+        var role = await _roles.GetByIdAsync(dto.RoleId);
+
+        var user = new User
         {
-            UserRepo = userRepo;
-            InviteRepo = inviteRepo;
-            OtpRepo = otpRepo;
-            OtpService = otpService;
-        }
+            Id = Guid.NewGuid(),
+            FullName = dto.FullName,
+            PrimaryPhone = dto.PrimaryPhone,
+            RoleId = role.Id,
+            IsActive = false
+        };
 
-        public async Task CreateInviteAsync(CreateInviteRequest request)
+        await _users.AddAsync(user);
+
+        var invite = new UserInvite
         {
-            var existingUser = await UserRepo.GetByEmailAsync(request.Email);
-            if (existingUser != null)
-                throw new Exception("User already exists");
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            ExpiresAt = DateTime.UtcNow.AddDays(2)
+        };
 
-            var invite = new UserInvite
-            {
-                Id = Guid.NewGuid(),
-                Email = request.Email,
-                Mobile = request.Mobile,
-                RoleId = request.RoleId,
-                ExpiresAt = DateTime.UtcNow.AddDays(2),
-                IsUsed = false
-            };
+        await _invites.AddAsync(invite);
 
-            await InviteRepo.AddAsync(invite);
+        await _users.SaveChangesAsync();
 
-            var otpCode = OtpService.GenerateOtp();
-
-            var otp = new UserOtp
-            {
-                Id = Guid.NewGuid(),
-                Email = request.Email,
-                Otp = otpCode,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(10),
-                IsVerified = false
-            };
-
-            await OtpRepo.AddAsync(otp);
-
-            await OtpService.SendOtpAsync(request.Mobile, otpCode);
-        }
-
-        public async Task VerifyOtpAsync(VerifyOtpRequest request)
+        return new CreateInviteResponseDto
         {
-            var otp = await OtpRepo.GetValidOtpAsync(request.Email, request.Otp);
-            if (otp == null)
-                throw new Exception("Invalid or expired OTP");
+            UserId = user.Id,
+            PrimaryPhone = user.PrimaryPhone,
+            ExpiresAt = invite.ExpiresAt
+        };
+    }
 
-            otp.IsVerified = true;
-            await OtpRepo.UpdateAsync(otp);
-        }
+    public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto dto)
+    {
+        var user = await _users.GetByPhoneAsync(dto.PrimaryPhone)
+            ?? throw new Exception("User not found");
 
-        public async Task CompleteRegistrationAsync(CompleteRegistrationRequest request)
+        var otp = await _otps.GetValidOtpAsync(user.Id, dto.OtpCode)
+            ?? throw new Exception("Invalid OTP");
+
+        await _otps.MarkAsUsedAsync(otp.Id);
+
+        return new VerifyOtpResponseDto
         {
-            var invite = await InviteRepo.GetValidInviteAsync(request.Email);
-            if (invite == null)
-                throw new Exception("Invite not found or expired");
+            UserId = user.Id,
+            IsVerified = true
+        };
+    }
 
-            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+    public async Task<CompleteRegistrationResponseDto> CompleteRegistrationAsync(
+        CompleteRegistrationDto dto)
+    {
+        var user = await _users.GetByPhoneAsync(dto.PrimaryPhone)
+            ?? throw new Exception("User not found");
 
-            var user = new User
-            {
-                Id = Guid.NewGuid(),
-                Email = invite.Email,
-                Mobile = invite.Mobile,
-                PasswordHash = passwordHash,
-                RoleId = invite.RoleId,
-                IsActive = true,
-                IsRegistrationCompleted = true
-            };
+        user.Username = dto.Username;
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+        user.IsActive = true;
 
-            await UserRepo.AddAsync(user);
+        await _users.SaveChangesAsync();
 
-            invite.IsUsed = true;
-            await InviteRepo.UpdateAsync(invite);
-        }
+        return new CompleteRegistrationResponseDto
+        {
+            UserId = user.Id,
+            Username = user.Username
+        };
     }
 }

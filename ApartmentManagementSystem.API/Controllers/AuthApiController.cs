@@ -1,50 +1,39 @@
-﻿using ApartmentManagementSystem.API.DTOs.Auth;
-using ApartmentManagementSystem.Application.Interfaces.Services;
-using ApartmentManagementSystem.Application.Services;
+﻿using ApartmentManagementSystem.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
-namespace ApartmentManagementSystem.API.Controllers
+
+using ApartmentManagementSystem.Application.DTOs.Auth;
+using ApartmentManagementSystem.Application.DTOs.Common;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ApartmentManagementSystem.API.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuthApiController : ControllerBase
 {
-    [ApiController]
-    [Route("api/auth")]
-    public class AuthApiController : ControllerBase
+    private readonly IAuthService _authService;
+
+    public AuthApiController(IAuthService authService)
     {
-        private readonly IAuthService AuthService;
+        _authService = authService;
+    }
 
-        public AuthApiController(IAuthService authService)
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+    {
+        try
         {
-            AuthService = authService;
+            var result = await _authService.LoginAsync(request);
+            return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(result, "Login successful"));
         }
-
-        /*  [HttpPost("login")]
-          public async Task<IActionResult> Login(LoginRequestDto dto)
-          {
-              var result = await AuthService.LoginAsync(dto.Email, dto.Password);
-              return Ok(result);
-          }
-        */
-
-        [HttpPost("login")]
-        public async Task<ActionResult<LoginResponseDto>> Login(
-            [FromBody] LoginRequestDto dto)
+        catch (UnauthorizedAccessException ex)
         {
-            var result = await AuthService.LoginAsync(dto.Email, dto.Password);
-            return Ok(result);
+            return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse(ex.Message));
         }
-
-        /*  [HttpPost]
-          public async Task<IActionResult> Login(LoginViewDto model)
-          {
-              var result = await _authApiClient.LoginAsync(model);
-
-              if (result == null)
-              {
-                  ModelState.AddModelError("", "Invalid login");
-                  return View(model);
-              }
-
-              HttpContext.Session.SetString("JWT", result.Token);
-              return RedirectToAction("Index", "Dashboard");
-          }
-        */
+        catch (Exception ex)
+        {
+            return BadRequest(ApiResponse<LoginResponseDto>.ErrorResponse(ex.Message));
+        }
     }
 }

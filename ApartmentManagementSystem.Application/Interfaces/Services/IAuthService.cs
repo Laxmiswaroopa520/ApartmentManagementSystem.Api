@@ -1,6 +1,4 @@
-﻿using ApartmentManagementSystem.Application.DTOs;
-using ApartmentManagementSystem.Application.DTOs.Auth;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace ApartmentManagementSystem.Application.Interfaces.Services
 {
+    using ApartmentManagementSystem.Application.DTOs.Auth;
+    using global::ApartmentManagementSystem.Application.DTOs.Auth;
+
+    //namespace ApartmentManagementSystem.Application.Interfaces.Services;
+
     public interface IAuthService
     {
-        // Task<LoginResponse> LoginAsync(string email, string password);
-        //<string> LoginAsync(string email, string password);
-        Task<LoginResult> LoginAsync(LoginCommand command);
+        Task<LoginResponseDto> LoginAsync(LoginRequestDto request);
     }
 }

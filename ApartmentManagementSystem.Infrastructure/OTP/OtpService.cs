@@ -1,23 +1,55 @@
-﻿using ApartmentManagementSystem.Application.Interfaces.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// ApartmentManagementSystem.Infrastructure/OTP/OtpService.cs
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
-namespace ApartmentManagementSystem.Infrastructure.OTP
-{
-    public class OtpService : IOtpService
-    {
-        public string GenerateOtp()
-        {
-            return new Random().Next(100000, 999999).ToString();
-        }
+using Microsoft.Extensions.Logging;
+using System.Security.Cryptography;
 
-        public Task SendOtpAsync(string mobile, string otp)
-        {
-            Console.WriteLine($"OTP sent to {mobile}: {otp}");
-            return Task.CompletedTask;
-        }
+namespace ApartmentManagementSystem.Infrastructure.OTP;
+
+public class OtpService : IOtpService
+{
+    private readonly IUserOtpRepository _otpRepository;
+    private readonly ILogger<OtpService> _logger;
+
+    public OtpService(IUserOtpRepository otpRepository, ILogger<OtpService> logger)
+    {
+        _otpRepository = otpRepository;
+        _logger = logger;
+    }
+    public string GenerateOtp()
+    {
+        return RandomNumberGenerator
+            .GetInt32(100000, 999999)
+            .ToString();
+    }
+  /*  public string GenerateOtp()
+    {
+        // Generate 6-digit OTP
+        var random = new Random();
+        return random.Next(100000, 999999).ToString();
+    }
+  */
+    public async Task<bool> ValidateOtpAsync(Guid userId, string otpCode)
+    {
+        var otp = await _otpRepository.GetValidOtpAsync(userId, otpCode);
+
+        if (otp == null)
+            return false;
+
+        // Mark OTP as used
+        await _otpRepository.MarkAsUsedAsync(otp.Id);
+
+        return true;
+    }
+
+    public async Task SendOtpAsync(string phone, string otp)
+    {
+        // DEV MODE: Just log it
+        // PRODUCTION: Integrate with SMS gateway (Twilio, AWS SNS, etc.)
+
+        _logger.LogInformation($"[DEV MODE] OTP for {phone}: {otp}");
+
+        // TODO: Implement actual SMS sending in production
+        await Task.CompletedTask;
     }
 }
