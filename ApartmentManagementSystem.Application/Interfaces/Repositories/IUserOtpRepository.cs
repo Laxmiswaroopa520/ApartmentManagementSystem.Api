@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 {
     using ApartmentManagementSystem.Domain.Entities;
-    using global::ApartmentManagementSystem.Domain.Entities;
 
    // namespace ApartmentManagementSystem.Application.Interfaces.Repositories;
 

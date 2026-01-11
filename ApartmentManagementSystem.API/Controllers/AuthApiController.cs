@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using ApartmentManagementSystem.Application.DTOs.Auth;
 using ApartmentManagementSystem.Application.DTOs.Common;
-using ApartmentManagementSystem.Application.Interfaces.Services;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace ApartmentManagementSystem.API.Controllers;
 

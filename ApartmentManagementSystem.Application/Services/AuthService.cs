@@ -1,23 +1,18 @@
-﻿using ApartmentManagementSystem.Application.Interfaces.Repositories;
-using ApartmentManagementSystem.Application.Interfaces.Services;
+﻿//using ApartmentManagementSystem.Application.Interfaces.Repositories;
+//using ApartmentManagementSystem.Application.Interfaces.Services;
 
 namespace ApartmentManagementSystem.Application.Services
 {
     using ApartmentManagementSystem.Application.DTOs.Auth;
     using ApartmentManagementSystem.Application.Interfaces.Repositories;
     using ApartmentManagementSystem.Application.Interfaces.Services;
-    using global::ApartmentManagementSystem.Application.DTOs.Auth;
+  //  using global::ApartmentManagementSystem.Application.DTOs.Auth;
     using Microsoft.Extensions.Configuration;
     using Microsoft.IdentityModel.Tokens;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Text;
-    using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-
+ 
 
     //namespace ApartmentManagementSystem.Application.Services;
 
@@ -58,7 +53,10 @@ using System.Text;
                 expires: DateTime.UtcNow.AddHours(24),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
-
+            // temporary lines
+            Console.WriteLine("SIGNING KEY:");
+            Console.WriteLine(_config["JwtSettings:SecretKey"]);
+//---
             return new LoginResponseDto
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),

@@ -14,7 +14,7 @@ public class UserOtp
     public DateTime ExpiryTime { get; set; }
     public bool IsUsed { get; set; }
     public DateTime CreatedAt { get; set; }
-
+    public DateTime ExpiresAt { get; set; }
     // Navigation
-    public User User { get; set; } = null!;
+     public User User { get; set; } = null!;
 }
