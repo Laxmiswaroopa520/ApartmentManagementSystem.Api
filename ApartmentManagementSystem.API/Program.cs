@@ -14,15 +14,11 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// =======================
 // DATABASE
-// =======================
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// =======================
 // REPOSITORIES
-// =======================
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserOtpRepository, UserOtpRepository>();
