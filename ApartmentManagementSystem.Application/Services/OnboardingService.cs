@@ -120,33 +120,52 @@ public class OnboardingService : IOnboardingService
     // =========================
     // VERIFY OTP
     // =========================
-  /*  public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto dto)
-    {
-        var user = await _users.GetByPhoneAsync(dto.PrimaryPhone)
-            ?? throw new Exception("User not found");
+    /*  public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto dto)
+      {
+          var user = await _users.GetByPhoneAsync(dto.PrimaryPhone)
+              ?? throw new Exception("User not found");
 
-        var otp = await _otps.GetValidOtpAsync(user.Id, dto.OtpCode)
-            ?? throw new Exception("Invalid or expired OTP");
+          var otp = await _otps.GetValidOtpAsync(user.Id, dto.OtpCode)
+              ?? throw new Exception("Invalid or expired OTP");
 
-        await _otps.MarkAsUsedAsync(otp.Id);
+          await _otps.MarkAsUsedAsync(otp.Id);
 
-        return new VerifyOtpResponseDto
-        {
-            UserId = user.Id,
-            IsVerified = true
-        };
-    }*/
+          return new VerifyOtpResponseDto
+          {
+              UserId = user.Id,
+              IsVerified = true
+          };
+      }*/
+    /* public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto dto)
+     {
+         var user = await _users.GetByPhoneAsync(dto.PrimaryPhone)
+             ?? throw new Exception("User not found");
+         var otp = await _otps.GetValidOtpAsync(dto.PrimaryPhone, dto.OtpCode)
+             ?? throw new Exception("Invalid or expired OTP");
+
+         await _otps.MarkAsUsedAsync(otp.Id);
+
+         return new VerifyOtpResponseDto
+         {
+             IsVerified = true
+         };
+     }*/
     public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto dto)
     {
-        var user = await _users.GetByPhoneAsync(dto.PrimaryPhone)
-            ?? throw new Exception("User not found");
         var otp = await _otps.GetValidOtpAsync(dto.PrimaryPhone, dto.OtpCode)
-            ?? throw new Exception("Invalid or expired OTP");
+    ?? throw new Exception("Invalid or expired OTP");
 
+        // Mark OTP used
         await _otps.MarkAsUsedAsync(otp.Id);
+
+        // Mark invite as OTP verified (optional but recommended)
+        var invite = await _invites.GetByPhoneAsync(dto.PrimaryPhone);
+        invite.IsOtpVerified = true;
+        await _invites.SaveChangesAsync();
 
         return new VerifyOtpResponseDto
         {
+            PhoneNumber = dto.PrimaryPhone,
             IsVerified = true
         };
     }
