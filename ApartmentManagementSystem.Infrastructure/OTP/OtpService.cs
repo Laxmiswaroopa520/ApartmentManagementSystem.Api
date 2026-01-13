@@ -22,23 +22,33 @@ public class OtpService : IOtpService
             .GetInt32(100000, 999999)
             .ToString();
     }
-  /*  public string GenerateOtp()
+    /*  public string GenerateOtp()
+      {
+          // Generate 6-digit OTP
+          var random = new Random();
+          return random.Next(100000, 999999).ToString();
+      }
+    */
+    /*  public async Task<bool> ValidateOtpAsync(Guid userId, string otpCode)
+      {
+          var otp = await _otpRepository.GetValidOtpAsync(userId, otpCode);
+
+          if (otp == null)
+              return false;
+
+          // Mark OTP as used
+          await _otpRepository.MarkAsUsedAsync(otp.Id);
+
+          return true;
+      }*/
+    public async Task<bool> ValidateOtpAsync(string phoneNumber, string otpCode)
     {
-        // Generate 6-digit OTP
-        var random = new Random();
-        return random.Next(100000, 999999).ToString();
-    }
-  */
-    public async Task<bool> ValidateOtpAsync(Guid userId, string otpCode)
-    {
-        var otp = await _otpRepository.GetValidOtpAsync(userId, otpCode);
+        var otp = await _otpRepository.GetValidOtpAsync(phoneNumber, otpCode);
 
         if (otp == null)
             return false;
 
-        // Mark OTP as used
         await _otpRepository.MarkAsUsedAsync(otp.Id);
-
         return true;
     }
 

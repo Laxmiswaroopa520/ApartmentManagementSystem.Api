@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApartmentManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260112102405_NewMigrate")]
+    [Migration("20260113065620_NewMigrate")]
     partial class NewMigrate
     {
         /// <inheritdoc />
@@ -49,43 +49,43 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 12, 10, 24, 5, 350, DateTimeKind.Utc).AddTicks(5972),
+                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9213),
                             Name = "SuperAdmin"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 12, 10, 24, 5, 350, DateTimeKind.Utc).AddTicks(5976),
+                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9216),
                             Name = "President"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 12, 10, 24, 5, 350, DateTimeKind.Utc).AddTicks(5977),
+                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9217),
                             Name = "Secretary"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 1, 12, 10, 24, 5, 350, DateTimeKind.Utc).AddTicks(5978),
+                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9218),
                             Name = "Resident Owner"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 1, 12, 10, 24, 5, 350, DateTimeKind.Utc).AddTicks(5980),
+                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9219),
                             Name = "Tenant"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 1, 12, 10, 24, 5, 350, DateTimeKind.Utc).AddTicks(5981),
+                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9220),
                             Name = "Security"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 1, 12, 10, 24, 5, 350, DateTimeKind.Utc).AddTicks(5982),
+                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9221),
                             Name = "Maintenance Staff"
                         });
                 });
@@ -144,12 +144,12 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2026, 1, 12, 10, 24, 5, 550, DateTimeKind.Utc).AddTicks(1850),
+                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 926, DateTimeKind.Utc).AddTicks(8435),
                             FullName = "",
                             IsActive = true,
                             IsOtpVerified = false,
                             IsRegistrationCompleted = false,
-                            PasswordHash = "$2a$11$22zWNGkazkVUP88GSaakeenYDGFvoRprNR7C.C84mKYtPeFF1HFd.",
+                            PasswordHash = "$2a$11$132s2nKtedH4.tNCk7S0KOrTbFcrRF.20R72WuyWl0H9UZeiidgre",
                             PrimaryPhone = "",
                             RoleId = new Guid("10000000-0000-0000-0000-000000000001"),
                             Username = "admin"
@@ -211,9 +211,6 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ExpiryTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
@@ -221,7 +218,11 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -255,13 +256,9 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.UserOtp", b =>
                 {
-                    b.HasOne("ApartmentManagementSystem.Domain.Entities.User", "User")
+                    b.HasOne("ApartmentManagementSystem.Domain.Entities.User", null)
                         .WithMany("UserOtps")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Role", b =>

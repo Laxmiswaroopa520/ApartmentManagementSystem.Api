@@ -33,11 +33,44 @@ public class OnboardingService : IOnboardingService
     // =========================
     // CREATE INVITE
     // =========================
+    /* public async Task<CreateInviteResponseDto> CreateInviteAsync(
+         CreateUserInviteDto request,
+         Guid loggedInUserId)
+     {
+         // Validate role exists
+         var role = await _roles.GetByIdAsync(request.RoleId)
+             ?? throw new Exception("Invalid role");
+
+         var invite = new UserInvite
+         {
+             Id = Guid.NewGuid(),
+             FullName = request.FullName,
+             PrimaryPhone = request.PrimaryPhone,
+             RoleId = role.Id,
+
+             InviteStatus = "Pending",
+             CreatedAt = DateTime.UtcNow,
+             CreatedByUserId = loggedInUserId,
+
+             UserId = Guid.Empty, // User not created yet
+             ExpiresAt = DateTime.UtcNow.AddDays(7)
+         };
+
+         await _invites.AddAsync(invite);
+         await _invites.SaveChangesAsync();
+
+         return new CreateInviteResponseDto
+         {
+             InviteId = invite.Id,
+             ExpiresAt = invite.ExpiresAt
+         };
+     }
+    */
+
     public async Task<CreateInviteResponseDto> CreateInviteAsync(
-        CreateUserInviteDto request,
-        Guid loggedInUserId)
+    CreateUserInviteDto request,
+    Guid loggedInUserId)
     {
-        // Validate role exists
         var role = await _roles.GetByIdAsync(request.RoleId)
             ?? throw new Exception("Invalid role");
 
@@ -47,29 +80,47 @@ public class OnboardingService : IOnboardingService
             FullName = request.FullName,
             PrimaryPhone = request.PrimaryPhone,
             RoleId = role.Id,
-
             InviteStatus = "Pending",
             CreatedAt = DateTime.UtcNow,
             CreatedByUserId = loggedInUserId,
-
-            UserId = Guid.Empty, // User not created yet
+            UserId = Guid.Empty,
             ExpiresAt = DateTime.UtcNow.AddDays(7)
         };
 
         await _invites.AddAsync(invite);
         await _invites.SaveChangesAsync();
 
+        //  GENERATE OTP
+        var otpCode = _otpService.GenerateOtp();
+
+        var otp = new UserOtp
+        {
+            Id = Guid.NewGuid(),
+          //  UserId = invite.Id, // or temp user id if applicable
+         PhoneNumber=request.PrimaryPhone,
+            OtpCode = otpCode,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(10),
+            IsUsed = false
+        };
+
+        await _otps.AddAsync(otp);
+        await _invites.SaveChangesAsync();
+
         return new CreateInviteResponseDto
         {
             InviteId = invite.Id,
-            ExpiresAt = invite.ExpiresAt
+            FullName = invite.FullName,
+            PrimaryPhone = invite.PrimaryPhone,
+            OtpCode = otpCode,
+            OtpExpiresAt = otp.ExpiresAt
         };
     }
+
 
     // =========================
     // VERIFY OTP
     // =========================
-    public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto dto)
+  /*  public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto dto)
     {
         var user = await _users.GetByPhoneAsync(dto.PrimaryPhone)
             ?? throw new Exception("User not found");
@@ -82,6 +133,20 @@ public class OnboardingService : IOnboardingService
         return new VerifyOtpResponseDto
         {
             UserId = user.Id,
+            IsVerified = true
+        };
+    }*/
+    public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto dto)
+    {
+        var user = await _users.GetByPhoneAsync(dto.PrimaryPhone)
+            ?? throw new Exception("User not found");
+        var otp = await _otps.GetValidOtpAsync(dto.PrimaryPhone, dto.OtpCode)
+            ?? throw new Exception("Invalid or expired OTP");
+
+        await _otps.MarkAsUsedAsync(otp.Id);
+
+        return new VerifyOtpResponseDto
+        {
             IsVerified = true
         };
     }

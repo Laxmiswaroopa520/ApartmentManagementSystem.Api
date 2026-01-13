@@ -16,10 +16,10 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         private readonly AppDbContext _db;
         public UserOtpRepository(AppDbContext db) => _db = db;
 
-        public async Task<UserOtp?> GetValidOtpAsync(Guid userId, string otp)
+        public async Task<UserOtp?> GetValidOtpAsync(string phone, string otp)
         {
             return await _db.UserOtps.FirstOrDefaultAsync(x =>
-                x.UserId == userId &&
+                x.PhoneNumber == phone&&
                 x.OtpCode == otp &&
                 !x.IsUsed &&
                 x.ExpiresAt > DateTime.UtcNow);
