@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApartmentManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260113065620_NewMigrate")]
-    partial class NewMigrate
+    [Migration("20260116062843_OtpVerificationMigrate")]
+    partial class OtpVerificationMigrate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,43 +49,43 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9213),
+                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3021),
                             Name = "SuperAdmin"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9216),
+                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3028),
                             Name = "President"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9217),
+                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3031),
                             Name = "Secretary"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9218),
+                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3034),
                             Name = "Resident Owner"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9219),
+                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3037),
                             Name = "Tenant"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9220),
+                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3040),
                             Name = "Security"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9221),
+                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3043),
                             Name = "Maintenance Staff"
                         });
                 });
@@ -144,12 +144,12 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2026, 1, 13, 6, 56, 19, 926, DateTimeKind.Utc).AddTicks(8435),
+                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 700, DateTimeKind.Utc).AddTicks(6979),
                             FullName = "",
                             IsActive = true,
                             IsOtpVerified = false,
                             IsRegistrationCompleted = false,
-                            PasswordHash = "$2a$11$132s2nKtedH4.tNCk7S0KOrTbFcrRF.20R72WuyWl0H9UZeiidgre",
+                            PasswordHash = "$2a$11$ZEERswtdfIRvmQt4ggsJl.ZxGAE.zgSgxC0.VZWme8XPnz4QXKS/G",
                             PrimaryPhone = "",
                             RoleId = new Guid("10000000-0000-0000-0000-000000000001"),
                             Username = "admin"
@@ -181,6 +181,9 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.Property<string>("InviteStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsOtpVerified")
+                        .HasColumnType("bit");
 
                     b.Property<string>("PrimaryPhone")
                         .IsRequired()

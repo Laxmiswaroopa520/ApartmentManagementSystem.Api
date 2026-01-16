@@ -163,9 +163,14 @@ public class OnboardingService : IOnboardingService
         invite.IsOtpVerified = true;
         await _invites.SaveChangesAsync();
 
+        /*  return new VerifyOtpResponseDto
+          {
+              PhoneNumber = dto.PrimaryPhone,
+              IsVerified = true
+          };*/
         return new VerifyOtpResponseDto
         {
-            PhoneNumber = dto.PrimaryPhone,
+            PrimaryPhone = dto.PrimaryPhone,
             IsVerified = true
         };
     }
@@ -173,17 +178,68 @@ public class OnboardingService : IOnboardingService
     // =========================
     // COMPLETE REGISTRATION
     // =========================
+    /* public async Task<CompleteRegistrationResponseDto> CompleteRegistrationAsync(
+         CompleteRegistrationDto dto)
+     {
+         var user = await _users.GetByPhoneAsync(dto.PrimaryPhone)
+             ?? throw new Exception("User not found");
+
+
+         user.Username = dto.Username;
+         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+         user.IsActive = true;
+
+         await _users.SaveChangesAsync();
+
+         return new CompleteRegistrationResponseDto
+         {
+             UserId = user.Id,
+             Username = user.Username
+         };
+     }*/
+    // =========================
+    // COMPLETE REGISTRATION
+    // =========================
     public async Task<CompleteRegistrationResponseDto> CompleteRegistrationAsync(
         CompleteRegistrationDto dto)
     {
-        var user = await _users.GetByPhoneAsync(dto.PrimaryPhone)
-            ?? throw new Exception("User not found");
+        // Validate invite exists
+        var invite = await _invites.GetByPhoneAsync(dto.PrimaryPhone)
+            ?? throw new Exception("Invite not found");
 
-        user.Username = dto.Username;
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-        user.IsActive = true;
+        // Ensure OTP was verified
+        if (!invite.IsOtpVerified)
+            throw new Exception("OTP not verified");
+
+        // Prevent duplicate registration
+        var existingUser = await _users.GetByPhoneAsync(dto.PrimaryPhone);
+        if (existingUser != null)
+            throw new Exception("User already exists");
+
+        //  Create new user
+       
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            FullName = invite.FullName,
+            PrimaryPhone = dto.PrimaryPhone,   
+            Email = dto.Email,
+            Username = dto.Username,
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+            RoleId = invite.RoleId,
+            IsActive = true,
+            IsRegistrationCompleted = true,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _users.AddAsync(user);
+
+        //  Update invite status
+        invite.UserId = user.Id;
+        invite.InviteStatus = "Completed";
 
         await _users.SaveChangesAsync();
+        await _invites.SaveChangesAsync();
 
         return new CompleteRegistrationResponseDto
         {
@@ -191,6 +247,7 @@ public class OnboardingService : IOnboardingService
             Username = user.Username
         };
     }
+
 
 
 }

@@ -10,7 +10,8 @@ namespace ApartmentManagementSystem.Application.DTOs.Onboarding
 
     public class VerifyOtpResponseDto
     {
-        public Guid UserId { get; set; }
+        //public Guid UserId { get; set; }
         public bool IsVerified { get; set; }
+        public string PrimaryPhone { get; set; } = string.Empty;
     }
 }

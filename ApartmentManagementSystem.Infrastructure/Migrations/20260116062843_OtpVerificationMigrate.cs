@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApartmentManagementSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigrate : Migration
+    public partial class OtpVerificationMigrate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -58,36 +58,43 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                 oldType: "nvarchar(100)",
                 oldMaxLength: 100);
 
+            migrationBuilder.AddColumn<bool>(
+                name: "IsOtpVerified",
+                table: "UserInvites",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
+
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("10000000-0000-0000-0000-000000000001"),
                 column: "CreatedAt",
-                value: new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9213));
+                value: new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3021));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("10000000-0000-0000-0000-000000000002"),
                 column: "CreatedAt",
-                value: new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9216));
+                value: new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3028));
 
             migrationBuilder.UpdateData(
                 table: "Roles",
                 keyColumn: "Id",
                 keyValue: new Guid("10000000-0000-0000-0000-000000000003"),
                 column: "CreatedAt",
-                value: new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9217));
+                value: new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3031));
 
             migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "Id", "CreatedAt", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("10000000-0000-0000-0000-000000000005"), new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9218), null, "Resident Owner" },
-                    { new Guid("10000000-0000-0000-0000-000000000006"), new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9219), null, "Tenant" },
-                    { new Guid("10000000-0000-0000-0000-000000000007"), new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9220), null, "Security" },
-                    { new Guid("10000000-0000-0000-0000-000000000008"), new DateTime(2026, 1, 13, 6, 56, 19, 707, DateTimeKind.Utc).AddTicks(9221), null, "Maintenance Staff" }
+                    { new Guid("10000000-0000-0000-0000-000000000005"), new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3034), null, "Resident Owner" },
+                    { new Guid("10000000-0000-0000-0000-000000000006"), new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3037), null, "Tenant" },
+                    { new Guid("10000000-0000-0000-0000-000000000007"), new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3040), null, "Security" },
+                    { new Guid("10000000-0000-0000-0000-000000000008"), new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3043), null, "Maintenance Staff" }
                 });
 
             migrationBuilder.UpdateData(
@@ -95,7 +102,7 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                 keyColumn: "Id",
                 keyValue: new Guid("11111111-1111-1111-1111-111111111111"),
                 columns: new[] { "CreatedAt", "PasswordHash" },
-                values: new object[] { new DateTime(2026, 1, 13, 6, 56, 19, 926, DateTimeKind.Utc).AddTicks(8435), "$2a$11$132s2nKtedH4.tNCk7S0KOrTbFcrRF.20R72WuyWl0H9UZeiidgre" });
+                values: new object[] { new DateTime(2026, 1, 16, 6, 28, 42, 700, DateTimeKind.Utc).AddTicks(6979), "$2a$11$ZEERswtdfIRvmQt4ggsJl.ZxGAE.zgSgxC0.VZWme8XPnz4QXKS/G" });
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserInvites_Roles_RoleId",
@@ -147,6 +154,10 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
             migrationBuilder.DropColumn(
                 name: "PhoneNumber",
                 table: "UserOtps");
+
+            migrationBuilder.DropColumn(
+                name: "IsOtpVerified",
+                table: "UserInvites");
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "UserId",

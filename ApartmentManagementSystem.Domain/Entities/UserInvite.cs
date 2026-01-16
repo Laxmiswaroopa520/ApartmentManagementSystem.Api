@@ -15,6 +15,9 @@ public class UserInvite
     public string FullName { get; set; } = string.Empty;
     public string PrimaryPhone { get; set; } = string.Empty;
 
+    public bool IsOtpVerified { get; set; }     //imp
+
+
     public Guid RoleId { get; set; }
     public Guid? FlatId { get; set; }
 

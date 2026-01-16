@@ -9,6 +9,8 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
     using ApartmentManagementSystem.Application.Interfaces.Repositories;
     using ApartmentManagementSystem.Domain.Entities;
     using ApartmentManagementSystem.Infrastructure.Persistence;
+    using Microsoft.EntityFrameworkCore;
+
     //   using global::ApartmentManagementSystem.Application.Interfaces.Repositories;
     // using global::ApartmentManagementSystem.Domain.Entities;
     //   using global::ApartmentManagementSystem.Infrastructure.Persistence;
@@ -25,23 +27,31 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
       }*/
 
 
+
     public class UserInviteRepository : IUserInviteRepository
     {
-        private readonly AppDbContext _db;
+        private readonly AppDbContext _context;
 
-        public UserInviteRepository(AppDbContext db)
+        public UserInviteRepository(AppDbContext context)
         {
-            _db = db;
+            _context = context;
+        }
+
+        public async Task<UserInvite?> GetByPhoneAsync(string phone)
+        {
+            return await _context.UserInvites
+                .FirstOrDefaultAsync(i => i.PrimaryPhone == phone);
         }
 
         public async Task AddAsync(UserInvite invite)
         {
-            await _db.UserInvites.AddAsync(invite);
+            await _context.UserInvites.AddAsync(invite);
         }
 
         public async Task SaveChangesAsync()
         {
-            await _db.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
     }
+
 }
