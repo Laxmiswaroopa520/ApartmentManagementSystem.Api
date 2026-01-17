@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApartmentManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260116062843_OtpVerificationMigrate")]
-    partial class OtpVerificationMigrate
+    [Migration("20260117182841_InitialMigrate")]
+    partial class InitialMigrate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,82 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Apartment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("TotalFlats")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Apartments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("30000000-0000-0000-0000-000000000001"),
+                            Address = "123 Main Street, Chennai",
+                            CreatedAt = new DateTime(2026, 1, 17, 18, 28, 40, 671, DateTimeKind.Utc).AddTicks(4783),
+                            Name = "Green Valley Apartments",
+                            TotalFlats = 0
+                        });
+                });
+
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Flat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApartmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FlatNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid?>("OwnerUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerUserId");
+
+                    b.HasIndex("ApartmentId", "FlatNumber")
+                        .IsUnique();
+
+                    b.ToTable("Flats");
+                });
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Role", b =>
                 {
@@ -49,43 +125,49 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3021),
+                            CreatedAt = new DateTime(2026, 1, 17, 18, 28, 40, 493, DateTimeKind.Utc).AddTicks(9282),
                             Name = "SuperAdmin"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3028),
+                            CreatedAt = new DateTime(2026, 1, 17, 18, 28, 40, 493, DateTimeKind.Utc).AddTicks(9286),
                             Name = "President"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3031),
+                            CreatedAt = new DateTime(2026, 1, 17, 18, 28, 40, 493, DateTimeKind.Utc).AddTicks(9288),
                             Name = "Secretary"
                         },
                         new
                         {
+                            Id = new Guid("10000000-0000-0000-0000-000000000004"),
+                            CreatedAt = new DateTime(2026, 1, 17, 18, 28, 40, 493, DateTimeKind.Utc).AddTicks(9289),
+                            Name = "Treasurer"
+                        },
+                        new
+                        {
                             Id = new Guid("10000000-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3034),
+                            CreatedAt = new DateTime(2026, 1, 17, 18, 28, 40, 493, DateTimeKind.Utc).AddTicks(9291),
                             Name = "Resident Owner"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3037),
+                            CreatedAt = new DateTime(2026, 1, 17, 18, 28, 40, 493, DateTimeKind.Utc).AddTicks(9292),
                             Name = "Tenant"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3040),
+                            CreatedAt = new DateTime(2026, 1, 17, 18, 28, 40, 493, DateTimeKind.Utc).AddTicks(9293),
                             Name = "Security"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 511, DateTimeKind.Utc).AddTicks(3043),
+                            CreatedAt = new DateTime(2026, 1, 17, 18, 28, 40, 493, DateTimeKind.Utc).AddTicks(9295),
                             Name = "Maintenance Staff"
                         });
                 });
@@ -143,17 +225,56 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                            CreatedAt = new DateTime(2026, 1, 16, 6, 28, 42, 700, DateTimeKind.Utc).AddTicks(6979),
-                            FullName = "",
+                            Id = new Guid("20000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 17, 18, 28, 40, 671, DateTimeKind.Utc).AddTicks(4389),
+                            Email = "admin@apartment.com",
+                            FullName = "System Administrator",
                             IsActive = true,
-                            IsOtpVerified = false,
-                            IsRegistrationCompleted = false,
-                            PasswordHash = "$2a$11$ZEERswtdfIRvmQt4ggsJl.ZxGAE.zgSgxC0.VZWme8XPnz4QXKS/G",
-                            PrimaryPhone = "",
+                            IsOtpVerified = true,
+                            IsRegistrationCompleted = true,
+                            PasswordHash = "$2a$11$Bxxpe50TdWSvu8HLpkhvJOpwsug9Ddy1ygaQOgk2VlEQfDZYn7xOK",
+                            PrimaryPhone = "9999999999",
                             RoleId = new Guid("10000000-0000-0000-0000-000000000001"),
                             Username = "admin"
                         });
+                });
+
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.UserFlatMapping", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FlatId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("FromDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RelationshipType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime?>("ToDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlatId");
+
+                    b.HasIndex("UserId", "FlatId", "IsActive");
+
+                    b.ToTable("UserFlatMappings");
                 });
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.UserInvite", b =>
@@ -235,6 +356,24 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.ToTable("UserOtps");
                 });
 
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Flat", b =>
+                {
+                    b.HasOne("ApartmentManagementSystem.Domain.Entities.Apartment", "Apartment")
+                        .WithMany("Flats")
+                        .HasForeignKey("ApartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ApartmentManagementSystem.Domain.Entities.User", "OwnerUser")
+                        .WithMany("OwnedFlats")
+                        .HasForeignKey("OwnerUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Apartment");
+
+                    b.Navigation("OwnerUser");
+                });
+
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.User", b =>
                 {
                     b.HasOne("ApartmentManagementSystem.Domain.Entities.Role", "Role")
@@ -244,6 +383,25 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.UserFlatMapping", b =>
+                {
+                    b.HasOne("ApartmentManagementSystem.Domain.Entities.Flat", "Flat")
+                        .WithMany("UserFlatMappings")
+                        .HasForeignKey("FlatId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ApartmentManagementSystem.Domain.Entities.User", "User")
+                        .WithMany("UserFlatMappings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Flat");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.UserInvite", b =>
@@ -264,6 +422,16 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Apartment", b =>
+                {
+                    b.Navigation("Flats");
+                });
+
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Flat", b =>
+                {
+                    b.Navigation("UserFlatMappings");
+                });
+
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Role", b =>
                 {
                     b.Navigation("Users");
@@ -271,6 +439,10 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.User", b =>
                 {
+                    b.Navigation("OwnedFlats");
+
+                    b.Navigation("UserFlatMappings");
+
                     b.Navigation("UserOtps");
                 });
 #pragma warning restore 612, 618

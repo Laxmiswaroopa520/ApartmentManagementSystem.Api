@@ -13,6 +13,8 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 
     public interface IUserRepository
     {
+        Task<User?> GetByIdAsync(Guid id);
+
         Task<User?> GetByUsernameAsync(string username);
         Task<User?> GetByPhoneAsync(string phone);
         Task AddAsync(User user);

@@ -16,6 +16,17 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public Task<User?> GetByUsernameAsync(string username) =>
             _db.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Username == username);
+        /*      public async Task<User?> GetByIdAsync(Guid id)
+              {
+                  return await _db.Users.FindAsync(id);
+              }*/
+        public async Task<User?> GetByIdAsync(Guid id)
+        {
+            return await _db.Users
+                .Include(u => u.Role)   // 🔥 THIS WAS MISSING
+                .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
 
         public Task<User?> GetByPhoneAsync(string phone) =>
             _db.Users.FirstOrDefaultAsync(x => x.PrimaryPhone == phone);
