@@ -1,4 +1,4 @@
-﻿using ApartmentManagementSystem.Application.Interfaces.Repositories;
+﻿/*using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -35,48 +35,55 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                     f.UserFlatMappings.Any(m => m.UserId == userId && m.IsActive))
                 .ToListAsync();
         }
-/*
+/*-----------------------
         public async Task<int> GetTotalCountAsync()
         {
             return await _context.Flats.CountAsync();
-        }*/
-        public async Task<int> GetTotalCountAsync()
-        {
-            return await _context.Flats
-                .AsNoTracking()
-                .CountAsync();
-        }
+        }-------------*/
+//   public async Task<int> GetTotalCountAsync()
+//    {
+//       return await _context.Flats
+//           .AsNoTracking()
+//        .CountAsync();
+//}
 
 
-        /*    public async Task<int> GetOccupiedCountAsync()
-            {
-                return await _context.Flats
-                    .Where(f => f.UserFlatMappings.Any(m => m.IsActive))
-                    .CountAsync();
-            }*/
-        public async Task<int> GetOccupiedCountAsync()
-        {
-            return await _context.UserFlatMappings
-                .AsNoTracking()
-                .Where(m => m.IsActive)
-                .Select(m => m.FlatId)
-                .Distinct()
-                .CountAsync();
-        }
-
-
-        public async Task<List<Flat>> GetFlatsWithMappingsByOwnerIdAsync(Guid ownerUserId)
-        {
-            return await _context.Flats
-                .Include(f => f.Apartment)
-                .Include(f => f.OwnerUser)
-                .Include(f => f.UserFlatMappings)
-                    .ThenInclude(ufm => ufm.User)
-                .Where(f => f.OwnerUserId == ownerUserId)
-                .ToListAsync();
-        }
-    }
+/*    public async Task<int> GetOccupiedCountAsync()
+    {
+        return await _context.Flats
+            .Where(f => f.UserFlatMappings.Any(m => m.IsActive))
+            .CountAsync();
+    } ------
+public async Task<int> GetOccupiedCountAsync()
+{
+    return await _context.UserFlatMappings
+        .AsNoTracking()
+        .Where(m => m.IsActive)
+        .Select(m => m.FlatId)
+        .Distinct()
+        .CountAsync();
 }
+
+
+public async Task<List<Flat>> GetFlatsWithMappingsByOwnerIdAsync(Guid ownerUserId)
+{
+    return await _context.Flats
+        .Include(f => f.Apartment)
+        .Include(f => f.OwnerUser)
+        .Include(f => f.UserFlatMappings)
+            .ThenInclude(ufm => ufm.User)
+        .Where(f => f.OwnerUserId == ownerUserId)
+        .ToListAsync();
+}
+public async Task UpdateAsync(Flat flat)
+{
+    _context.Flats.Update(flat);
+    await Task.CompletedTask;
+}
+
+}
+}
+*/
 
 
 
@@ -153,6 +160,182 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                     .ThenInclude(ufm => ufm.User)
                 .Where(f => f.OwnerUserId == ownerUserId)
                 .ToListAsync();
+        }
+    }
+}
+*/
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class FlatRepository : IFlatRepository
+    {
+        private readonly AppDbContext _context;
+
+        public FlatRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Flat?> GetByIdAsync(Guid id)
+        {
+            return await _context.Flats
+                .Include(f => f.Apartment)
+                .Include(f => f.OwnerUser)
+                .Include(f => f.UserFlatMappings)
+                    .ThenInclude(m => m.User)
+                .FirstOrDefaultAsync(f => f.Id == id);
+        }
+
+        public async Task<List<Flat>> GetByUserIdAsync(Guid userId)
+        {
+            return await _context.Flats
+                .Include(f => f.Apartment)
+                .Include(f => f.OwnerUser)
+                .Include(f => f.UserFlatMappings)
+                .Where(f =>
+                    f.OwnerUserId == userId ||
+                    f.UserFlatMappings.Any(m => m.UserId == userId && m.IsActive))
+                .ToListAsync();
+        }
+
+        // ✅ OWNER DASHBOARD METHOD
+        public async Task<List<Flat>> GetFlatsWithMappingsByOwnerIdAsync(Guid ownerUserId)
+        {
+            return await _context.Flats
+                .Include(f => f.Apartment)
+                .Include(f => f.OwnerUser)
+                .Include(f => f.UserFlatMappings)
+                    .ThenInclude(m => m.User)
+                .Where(f => f.OwnerUserId == ownerUserId)
+                .ToListAsync();
+        }
+
+        // ✅ ONBOARDING – AVAILABLE FLATS BY FLOOR
+        public async Task<List<Flat>> GetAvailableFlatsByFloorAsync(Guid floorId)
+        {
+            return await _context.Flats
+                .AsNoTracking()
+                .Where(f => f.FloorId == floorId && f.OwnerUserId == null && f.IsActive)
+                .OrderBy(f => f.FlatNumber)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetTotalCountAsync()
+        {
+            return await _context.Flats
+                .AsNoTracking()
+                .CountAsync();
+        }
+
+        public async Task<int> GetOccupiedCountAsync()
+        {
+            return await _context.Flats
+                .AsNoTracking()
+                .CountAsync(f => f.OwnerUserId != null);
+        }
+
+        public async Task UpdateAsync(Flat flat)
+        {
+            _context.Flats.Update(flat);
+            await Task.CompletedTask;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
+        }
+    }
+}
+
+/*
+
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class FlatRepository : IFlatRepository
+    {
+        private readonly AppDbContext _context;
+
+        public FlatRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Flat?> GetByIdAsync(Guid id)
+        {
+            return await _context.Flats
+                .Include(f => f.Apartment)
+                .Include(f => f.OwnerUser)
+                .Include(f => f.UserFlatMappings)
+                    .ThenInclude(m => m.User)
+                .FirstOrDefaultAsync(f => f.Id == id);
+        }
+
+        public async Task<List<Flat>> GetByUserIdAsync(Guid userId)
+        {
+            return await _context.Flats
+                .Include(f => f.Apartment)
+                .Include(f => f.OwnerUser)
+                .Include(f => f.UserFlatMappings)
+                .Where(f =>
+                    f.OwnerUserId == userId ||
+                    f.UserFlatMappings.Any(m => m.UserId == userId && m.IsActive))
+                .ToListAsync();
+        }
+
+        // ✅ OWNER DASHBOARD METHOD
+        public async Task<List<Flat>> GetFlatsWithMappingsByOwnerIdAsync(Guid ownerUserId)
+        {
+            return await _context.Flats
+                .Include(f => f.Apartment)
+                .Include(f => f.OwnerUser)
+                .Include(f => f.UserFlatMappings)
+                    .ThenInclude(m => m.User)
+                .Where(f => f.OwnerUserId == ownerUserId)
+                .ToListAsync();
+        }
+
+        // ✅ ONBOARDING – AVAILABLE FLATS BY FLOOR
+        public async Task<List<Flat>> GetAvailableFlatsByFloorAsync(Guid floorId)
+        {
+            return await _context.Flats
+                .AsNoTracking()
+                .Where(f => f.FloorId == floorId && f.OwnerUserId == null && f.IsActive)
+                .OrderBy(f => f.FlatNumber)
+                .ToListAsync();
+        }
+
+        public async Task<int> GetTotalCountAsync()
+        {
+            return await _context.Flats
+                .AsNoTracking()
+                .CountAsync();
+        }
+
+        public async Task<int> GetOccupiedCountAsync()
+        {
+            return await _context.Flats
+                .AsNoTracking()
+                .CountAsync(f => f.OwnerUserId != null);
+        }
+
+        public async Task UpdateAsync(Flat flat)
+        {
+            _context.Flats.Update(flat);
+            await Task.CompletedTask;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+
+using System;
 
 namespace ApartmentManagementSystem.Application.DTOs.Onboarding
 {
-   // namespace ApartmentManagementSystem.Application.DTOs.Onboarding;
-
     public class CompleteRegistrationDto
     {
         public string PrimaryPhone { get; set; } = string.Empty;
@@ -16,5 +12,9 @@ namespace ApartmentManagementSystem.Application.DTOs.Onboarding
         public string? Email { get; set; }
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+
+        // ✅ NEW
+        public Guid? FloorId { get; set; }
+        public Guid? FlatId { get; set; }
     }
 }

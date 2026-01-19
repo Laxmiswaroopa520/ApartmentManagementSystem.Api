@@ -24,21 +24,23 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence.EntityConfigurati
 
             builder.HasIndex(f => new { f.ApartmentId, f.FlatNumber })
                 .IsUnique();
+            builder
+   .HasOne(f => f.Apartment)
+   .WithMany(a => a.Flats)
+   .HasForeignKey(f => f.ApartmentId)
+   .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(f => f.Apartment)
-                .WithMany(a => a.Flats)
-                .HasForeignKey(f => f.ApartmentId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+            
             builder.HasOne(f => f.OwnerUser)
                 .WithMany(u => u.OwnedFlats)
                 .HasForeignKey(f => f.OwnerUserId)
                 .OnDelete(DeleteBehavior.SetNull);
+           
 
-         /*   builder.HasOne(f => f.TenantUser)
-                .WithMany(u => u.RentedFlats)
-                .HasForeignKey(f => f.TenantUserId)
-                .OnDelete(DeleteBehavior.SetNull);*/
+            /*   builder.HasOne(f => f.TenantUser)
+                   .WithMany(u => u.RentedFlats)
+                   .HasForeignKey(f => f.TenantUserId)
+                   .OnDelete(DeleteBehavior.SetNull);*/
         }
     }
 }

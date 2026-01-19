@@ -1,45 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-/*
-namespace ApartmentManagementSystem.Domain.Entities
-{
-       public class Flat
-       {
-           public Guid Id { get; set; }
-
-           public string FlatNumber { get; set; } = string.Empty;
-
-           // =========================
-           // FOREIGN KEYS
-           // =========================
-           public Guid ApartmentId { get; set; }
-           public Guid? OwnerUserId { get; set; }
-           public Guid? TenantUserId { get; set; }
-
-           // =========================
-           // NAVIGATION PROPERTIES
-           // =========================
-           public Apartment Apartment { get; set; } = null!;
-
-           public User? OwnerUser { get; set; }
-           public User? TenantUser { get; set; }
-
-           public ICollection<UserFlatMapping> UserFlatMappings { get; set; }
-               = new List<UserFlatMapping>();
-
-           // =========================
-           // SYSTEM FIELDS
-           // =========================
-           public bool IsActive { get; set; }
-
-           public DateTime CreatedAt { get; set; }
-           public DateTime? UpdatedAt { get; set; }
-       }
-   }
-   */
+﻿/*
 
     using System;
     using System.Collections.Generic;
+using System.Drawing;
 
     namespace ApartmentManagementSystem.Domain.Entities
     {
@@ -73,51 +36,60 @@ namespace ApartmentManagementSystem.Domain.Entities
 
             public DateTime CreatedAt { get; set; }
             public DateTime? UpdatedAt { get; set; }
-        }
+        public Guid FloorId { get; set; }
     }
+}*/
+using ApartmentManagementSystem.Domain.Entities.ApartmentManagementSystem.Domain.Entities;
+using System;
+using System.Collections.Generic;
 
-
-
-
-
-
-
-
-/*  public class Flat
+namespace ApartmentManagementSystem.Domain.Entities
 {
-    public Guid Id { get; set; }
+    public class Flat
+    {
+        public Guid Id { get; set; }
 
-    public string FlatNumber { get; set; } = string.Empty;
+        public string FlatNumber { get; set; } = string.Empty;
+        public string Name { get; set; } = null!;
 
-    // =========================
-    // APARTMENT RELATION
-    // =========================
-    public Guid ApartmentId { get; set; }
-    public Apartment Apartment { get; set; } = null!;
+        // =========================
+        // FOREIGN KEYS
+        // =========================
+        public Guid ApartmentId { get; set; }
+        public Guid FloorId { get; set; }
 
-    // =========================
-    // OWNER RELATION
-    // =========================
-    public Guid? OwnerUserId { get; set; }
-    public User? OwnerUser { get; set; }
+        public Guid? OwnerUserId { get; set; }   // NULL = available
 
-    // =========================
-    // TENANT RELATION
-    // =========================
-    public Guid? TenantUserId { get; set; }
-    public User? TenantUser { get; set; }
+        // =========================
+        // NAVIGATION PROPERTIES
+        // =========================
+        public Apartment? Apartment { get; set; } = null!;
+        //  public Floor Floor { get; set; } = null!;
 
-    // =========================
-    // STATUS & AUDIT
-    // =========================
-    public bool IsActive { get; set; } = true;
-    public DateTime CreatedAt { get; set; }
-    public DateTime? UpdatedAt { get; set; }
+        public User? OwnerUser { get; set; }
 
-    // =========================
-    // MAPPING (HISTORY / ROLES)
-    // =========================
-    public ICollection<UserFlatMapping> UserFlatMappings { get; set; }
-        = new List<UserFlatMapping>();
+        // Tenants via mapping table
+        public ICollection<UserFlatMapping> UserFlatMappings { get; set; }
+            = new List<UserFlatMapping>();
+
+        // =========================
+        // SYSTEM FIELDS
+        // =========================
+        public bool IsActive { get; set; } = true;
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; }
+
+       //new one 
+        public Floor Floor { get; set; } = null!;
+
+        public bool IsOccupied { get; set; }
+    }
 }
-*/
+
+
+
+
+
+
+

@@ -102,4 +102,21 @@ public class OnboardingApiController : ControllerBase
             Name = r.Name
         }));
     }
+
+
+
+    [HttpGet("floors")]
+    public async Task<IActionResult> GetFloors()
+    {
+        var floors = await _onboardingService.GetFloorsAsync();
+        return Ok(floors);
+    }
+
+    [HttpGet("available-flats")]
+    public async Task<IActionResult> GetAvailableFlats(Guid floorId)
+    {
+        var flats = await _onboardingService.GetAvailableFlatsByFloorAsync(floorId);
+        return Ok(flats);
+    }
+
 }

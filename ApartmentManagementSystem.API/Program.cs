@@ -38,6 +38,10 @@ builder.Services.AddScoped<IUserInviteRepository, UserInviteRepository>();
 builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
 builder.Services.AddScoped<IFlatRepository, FlatRepository>();
 builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
+builder.Services.AddScoped<IFlatRepository, FlatRepository>();
+builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
+builder.Services.AddScoped<IFloorRepository, FloorRepository>();
+
 //builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
 
 // =======================
