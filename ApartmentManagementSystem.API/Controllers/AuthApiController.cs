@@ -11,11 +11,11 @@ namespace ApartmentManagementSystem.API.Controllers;
 [Route("api/[controller]")]
 public class AuthApiController : ControllerBase
 {
-    private readonly IAuthService _authService;
+    private readonly IAuthService AuthService;
 
     public AuthApiController(IAuthService authService)
     {
-        _authService = authService;
+        AuthService = authService;
     }
 
     [HttpPost("login")]
@@ -23,7 +23,7 @@ public class AuthApiController : ControllerBase
     {
         try
         {
-            var result = await _authService.LoginAsync(request);
+            var result = await AuthService.LoginAsync(request);
             return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(result, "Login successful"));
         }
         catch (UnauthorizedAccessException ex)

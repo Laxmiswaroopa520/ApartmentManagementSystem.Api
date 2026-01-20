@@ -14,11 +14,11 @@ namespace ApartmentManagementSystem.API.Controllers
     [Authorize]
     public class DashboardApiController : ControllerBase
     {
-        private readonly IDashboardService _dashboardService;
+        private readonly IDashboardService DashBoardService;
 
         public DashboardApiController(IDashboardService dashboardService)
         {
-            _dashboardService = dashboardService;
+            DashBoardService = dashboardService;
         }
 
         [HttpGet("admin")]
@@ -28,7 +28,7 @@ namespace ApartmentManagementSystem.API.Controllers
             try
             {
                 var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-                var dashboard = await _dashboardService.GetAdminDashboardAsync(userId);
+                var dashboard = await DashBoardService.GetAdminDashboardAsync(userId);
 
                 return Ok(ApiResponse<AdminDashboardDto>.SuccessResponse(
                     dashboard,
@@ -48,7 +48,7 @@ namespace ApartmentManagementSystem.API.Controllers
             try
             {
                 var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-                var dashboard = await _dashboardService.GetOwnerDashboardAsync(userId);
+                var dashboard = await DashBoardService.GetOwnerDashboardAsync(userId);
 
                 return Ok(ApiResponse<OwnerDashboardDto>.SuccessResponse(
                     dashboard,
@@ -68,7 +68,7 @@ namespace ApartmentManagementSystem.API.Controllers
             try
             {
                 var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-                var dashboard = await _dashboardService.GetTenantDashboardAsync(userId);
+                var dashboard = await DashBoardService.GetTenantDashboardAsync(userId);
 
                 return Ok(ApiResponse<TenantDashboardDto>.SuccessResponse(
                     dashboard,
@@ -87,7 +87,7 @@ namespace ApartmentManagementSystem.API.Controllers
         {
             try
             {
-                var stats = await _dashboardService.GetDashboardStatsAsync();
+                var stats = await DashBoardService.GetDashboardStatsAsync();
 
                 return Ok(ApiResponse<DashboardStatsDto>.SuccessResponse(
                     stats,

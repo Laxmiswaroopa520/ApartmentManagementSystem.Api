@@ -11,27 +11,27 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
     public class ApartmentRepository : IApartmentRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext DBcontext;
 
         public ApartmentRepository(AppDbContext context)
         {
-            _context = context;
+            DBcontext = context;
         }
 
         public async Task<List<Apartment>> GetAllAsync()
-            => await _context.Apartments.ToListAsync();
+            => await DBcontext.Apartments.ToListAsync();
 
         public async Task<Apartment?> GetByIdAsync(Guid id)
-            => await _context.Apartments.FindAsync(id);
+            => await DBcontext.Apartments.FindAsync(id);
 
         public async Task<int> GetTotalCountAsync()
-            => await _context.Apartments.CountAsync();
+            => await DBcontext.Apartments.CountAsync();
 
         public async Task AddAsync(Apartment apartment)
-            => await _context.Apartments.AddAsync(apartment);
+            => await DBcontext.Apartments.AddAsync(apartment);
 
         public async Task SaveChangesAsync()
-            => await _context.SaveChangesAsync();
+            => await DBcontext.SaveChangesAsync();
     }
 }
 

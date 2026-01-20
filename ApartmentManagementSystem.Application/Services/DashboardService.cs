@@ -7,10 +7,10 @@ namespace ApartmentManagementSystem.Application.Services
 {
     public class DashboardService : IDashboardService
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IFlatRepository _flatRepository;
-        private readonly IApartmentRepository _apartmentRepository;
-        private readonly IUserFlatMappingRepository _userFlatMappingRepository;
+        private readonly IUserRepository UserRepo;
+        private readonly IFlatRepository FlatRepo;
+        private readonly IApartmentRepository ApartmentRepo;
+        private readonly IUserFlatMappingRepository UserFlatMappingRepo;
 
         public DashboardService(
             IUserRepository userRepository,
@@ -18,10 +18,10 @@ namespace ApartmentManagementSystem.Application.Services
             IApartmentRepository apartmentRepository,
             IUserFlatMappingRepository userFlatMappingRepository)
         {
-            _userRepository = userRepository;
-            _flatRepository = flatRepository;
-            _apartmentRepository = apartmentRepository;
-            _userFlatMappingRepository = userFlatMappingRepository;
+            UserRepo = userRepository;
+            FlatRepo = flatRepository;
+            ApartmentRepo = apartmentRepository;
+            UserFlatMappingRepo = userFlatMappingRepository;
         }
 
         /*     public async Task<AdminDashboardDto> GetAdminDashboardAsync(Guid userId)
@@ -43,7 +43,7 @@ namespace ApartmentManagementSystem.Application.Services
 
         public async Task<AdminDashboardDto> GetAdminDashboardAsync(Guid userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await UserRepo.GetByIdAsync(userId);
 
             if (user == null)
                 throw new Exception("User not found");
@@ -96,9 +96,9 @@ namespace ApartmentManagementSystem.Application.Services
         */
         public async Task<OwnerDashboardDto> GetOwnerDashboardAsync(Guid userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await UserRepo.GetByIdAsync(userId);
 
-            var flats = await _flatRepository.GetFlatsWithMappingsByOwnerIdAsync(userId);
+            var flats = await FlatRepo.GetFlatsWithMappingsByOwnerIdAsync(userId);
 
             var myFlats = flats.Select(f =>
             {
@@ -157,9 +157,9 @@ namespace ApartmentManagementSystem.Application.Services
         */
         public async Task<TenantDashboardDto> GetTenantDashboardAsync(Guid userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await UserRepo.GetByIdAsync(userId);
 
-            var mapping = (await _userFlatMappingRepository.GetByUserIdAsync(userId))
+            var mapping = (await UserFlatMappingRepo.GetByUserIdAsync(userId))
                             .FirstOrDefault(x => x.IsActive);
 
             FlatSummaryDto? flatSummary = null;
@@ -190,8 +190,8 @@ namespace ApartmentManagementSystem.Application.Services
 
         public async Task<DashboardStatsDto> GetDashboardStatsAsync()
         {
-            var totalFlats = await _flatRepository.GetTotalCountAsync();
-            var occupiedFlats = await _flatRepository.GetOccupiedCountAsync();
+            var totalFlats = await FlatRepo.GetTotalCountAsync();
+            var occupiedFlats = await FlatRepo.GetOccupiedCountAsync();
 
             return new DashboardStatsDto
             {

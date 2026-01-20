@@ -173,16 +173,16 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
     public class FlatRepository : IFlatRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext DBcontext;
 
         public FlatRepository(AppDbContext context)
         {
-            _context = context;
+            DBcontext = context;
         }
 
         public async Task<Flat?> GetByIdAsync(Guid id)
         {
-            return await _context.Flats
+            return await DBcontext.Flats
                 .Include(f => f.Apartment)
                 .Include(f => f.OwnerUser)
                 .Include(f => f.UserFlatMappings)
@@ -192,7 +192,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<List<Flat>> GetByUserIdAsync(Guid userId)
         {
-            return await _context.Flats
+            return await DBcontext.Flats
                 .Include(f => f.Apartment)
                 .Include(f => f.OwnerUser)
                 .Include(f => f.UserFlatMappings)
@@ -201,11 +201,15 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                     f.UserFlatMappings.Any(m => m.UserId == userId && m.IsActive))
                 .ToListAsync();
         }
+        public async Task<List<Floor>> GetAllFloorsAsync()
+        {
+            return await DBcontext.Floors.ToListAsync();
+        }
 
-        // ✅ OWNER DASHBOARD METHOD
+        //  OWNER DASHBOARD METHOD
         public async Task<List<Flat>> GetFlatsWithMappingsByOwnerIdAsync(Guid ownerUserId)
         {
-            return await _context.Flats
+            return await DBcontext.Flats
                 .Include(f => f.Apartment)
                 .Include(f => f.OwnerUser)
                 .Include(f => f.UserFlatMappings)
@@ -214,10 +218,10 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        // ✅ ONBOARDING – AVAILABLE FLATS BY FLOOR
+        // ONBOARDING – AVAILABLE FLATS BY FLOOR
         public async Task<List<Flat>> GetAvailableFlatsByFloorAsync(Guid floorId)
         {
-            return await _context.Flats
+            return await DBcontext.Flats
                 .AsNoTracking()
                 .Where(f => f.FloorId == floorId && f.OwnerUserId == null && f.IsActive)
                 .OrderBy(f => f.FlatNumber)
@@ -226,27 +230,46 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<int> GetTotalCountAsync()
         {
-            return await _context.Flats
+            return await DBcontext.Flats
                 .AsNoTracking()
                 .CountAsync();
         }
 
         public async Task<int> GetOccupiedCountAsync()
         {
-            return await _context.Flats
+            return await DBcontext.Flats
                 .AsNoTracking()
                 .CountAsync(f => f.OwnerUserId != null);
         }
 
-        public async Task UpdateAsync(Flat flat)
+        /* public async Task UpdateAsync(Flat flat)
+         {
+             _context.Flats.Update(flat);
+             await Task.CompletedTask;
+         }*/
+        public Task UpdateAsync(Flat flat)
         {
-            _context.Flats.Update(flat);
-            await Task.CompletedTask;
+            DBcontext.Flats.Update(flat);
+            return Task.CompletedTask;
         }
 
+        public async Task<List<Flat>> GetVacantFlatsByFloorAsync(Guid floorId)
+        {
+            return await DBcontext.Flats
+                .AsNoTracking()
+                .Where(f => f.FloorId == floorId && f.OwnerUserId == null && f.IsActive)
+                .OrderBy(f => f.FlatNumber)
+                .ToListAsync();
+        }
+      /*  public async Task<List<Flat>> GetVacantFlatsByFloorAsync(Guid floorId)
+        {
+            return await _dbContext.Flats
+                .Where(f => f.FloorId == floorId && f.IsVacant)
+                .ToListAsync();
+        }*/
         public async Task SaveChangesAsync()
         {
-            await _context.SaveChangesAsync();
+            await DBcontext.SaveChangesAsync();
         }
     }
 }

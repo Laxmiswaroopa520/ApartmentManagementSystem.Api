@@ -30,12 +30,17 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence.EntityConfigurati
    .HasForeignKey(f => f.ApartmentId)
    .OnDelete(DeleteBehavior.Restrict);
 
-            
+
+            /*   builder.HasOne(f => f.OwnerUser)
+                   .WithMany(u => u.OwnedFlats)
+                   .HasForeignKey(f => f.OwnerUserId)
+                   .OnDelete(DeleteBehavior.SetNull);
+              */
             builder.HasOne(f => f.OwnerUser)
-                .WithMany(u => u.OwnedFlats)
-                .HasForeignKey(f => f.OwnerUserId)
-                .OnDelete(DeleteBehavior.SetNull);
-           
+          .WithMany() // no navigation on User side
+          .HasForeignKey(f => f.OwnerUserId)
+          .OnDelete(DeleteBehavior.SetNull);
+
 
             /*   builder.HasOne(f => f.TenantUser)
                    .WithMany(u => u.RentedFlats)

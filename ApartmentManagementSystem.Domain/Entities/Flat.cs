@@ -39,7 +39,6 @@ using System.Drawing;
         public Guid FloorId { get; set; }
     }
 }*/
-using ApartmentManagementSystem.Domain.Entities.ApartmentManagementSystem.Domain.Entities;
 using System;
 using System.Collections.Generic;
 
@@ -52,17 +51,16 @@ namespace ApartmentManagementSystem.Domain.Entities
         public string FlatNumber { get; set; } = string.Empty;
         public string Name { get; set; } = null!;
 
-        // =========================
+       
         // FOREIGN KEYS
-        // =========================
+  
         public Guid ApartmentId { get; set; }
         public Guid FloorId { get; set; }
 
         public Guid? OwnerUserId { get; set; }   // NULL = available
 
-        // =========================
+       
         // NAVIGATION PROPERTIES
-        // =========================
         public Apartment? Apartment { get; set; } = null!;
         //  public Floor Floor { get; set; } = null!;
 
@@ -72,15 +70,15 @@ namespace ApartmentManagementSystem.Domain.Entities
         public ICollection<UserFlatMapping> UserFlatMappings { get; set; }
             = new List<UserFlatMapping>();
 
-        // =========================
+       
         // SYSTEM FIELDS
-        // =========================
+       
         public bool IsActive { get; set; } = true;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
 
-       //new one 
+    
         public Floor Floor { get; set; } = null!;
 
         public bool IsOccupied { get; set; }

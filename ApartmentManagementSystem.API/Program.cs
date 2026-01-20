@@ -15,19 +15,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ApartmentManagementSystem.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ApartmentManagementSystem.Infrastructure.Email;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// =======================
 // DATABASE
-// =======================
-// Phase 1 (inline) + Phase 2 (extension)
-// Keep extension, internally it uses UseSqlServer
-builder.Services.AddDatabaseServices(builder.Configuration);
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// =======================
 // REPOSITORIES
-// =======================
 // Phase 1
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
@@ -41,12 +37,11 @@ builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository
 builder.Services.AddScoped<IFlatRepository, FlatRepository>();
 builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
 builder.Services.AddScoped<IFloorRepository, FloorRepository>();
-
+// Register AdminResidentService
+builder.Services.AddScoped<IAdminResidentService, AdminResidentService>();
 //builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
 
-// =======================
 // SERVICES
-// =======================
 // Phase 1
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOnboardingService, OnboardingService>();
@@ -57,9 +52,7 @@ builder.Services.AddScoped<ISmsService, SmsService>();
 // Phase 2
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
-// =======================
 // JWT AUTHENTICATION
-// =======================
 // Moved to extension (internally same logic as your previous code)
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
@@ -71,9 +64,7 @@ builder.Services.AddAuthorization(options =>
     AuthorizationPolicies.AddPolicies(options);
 });
 
-// =======================
 // CORS
-// =======================
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowWebApp", policy =>
@@ -86,30 +77,21 @@ builder.Services.AddCors(options =>
     });
 });
 
-// =======================
 // CONTROLLERS + FILTERS
-// =======================
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<ValidationFilter>();
 });
 
-// =======================
 // SWAGGER
-// =======================
-// Phase 1 swagger + Phase 2 extension wrapper
 builder.Services.AddSwaggerDocumentation();
 
-// =======================
 // HTTP CONTEXT
-// =======================
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// =======================
 // MIDDLEWARE PIPELINE
-// =======================
 if (app.Environment.IsDevelopment())
 {
     app.UseSwaggerDocumentation();
@@ -123,15 +105,12 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowWebApp");
 
-// ⚠️ ORDER IS CRITICAL
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
-// =======================
 // AUTO MIGRATIONS (DEV ONLY)
-// =======================
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();

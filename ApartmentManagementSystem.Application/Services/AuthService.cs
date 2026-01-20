@@ -18,18 +18,18 @@ namespace ApartmentManagementSystem.Application.Services
 
     public class AuthService : IAuthService
     {
-        private readonly IUserRepository _users;
-        private readonly IConfiguration _config;
+        private readonly IUserRepository Users;
+        private readonly IConfiguration Config;
 
         public AuthService(IUserRepository users, IConfiguration config)
         {
-            _users = users;
-            _config = config;
+            Users = users;
+            Config = config;
         }
 
         public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
         {
-            var user = await _users.GetByUsernameAsync(request.Username)
+            var user = await Users.GetByUsernameAsync(request.Username)
                 ?? throw new UnauthorizedAccessException("Invalid credentials");
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
@@ -43,20 +43,17 @@ namespace ApartmentManagementSystem.Application.Services
         };
 
             var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["JwtSettings:SecretKey"]!)
+                Encoding.UTF8.GetBytes(Config["JwtSettings:SecretKey"]!)
             );
 
             var token = new JwtSecurityToken(
-                issuer: _config["JwtSettings:Issuer"],
-                audience: _config["JwtSettings:Audience"],
+                issuer: Config["JwtSettings:Issuer"],
+                audience: Config["JwtSettings:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(24),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
             );
-            // temporary lines
-            Console.WriteLine("SIGNING KEY:");
-            Console.WriteLine(_config["JwtSettings:SecretKey"]);
-//---
+           
             return new LoginResponseDto
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),

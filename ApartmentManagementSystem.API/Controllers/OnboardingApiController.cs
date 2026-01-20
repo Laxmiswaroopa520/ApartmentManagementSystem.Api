@@ -13,28 +13,31 @@ namespace ApartmentManagementSystem.API.Controllers;
 [Route("api/[controller]")]
 public class OnboardingApiController : ControllerBase
 {
-    private readonly IOnboardingService _onboardingService;
-    private readonly IRoleRepository _roleRepository;
+    private readonly IOnboardingService OnboardingService;
+    private readonly IRoleRepository RoleRepository;
 
     public OnboardingApiController(
         IOnboardingService onboardingService,
         IRoleRepository roleRepository)
     {
-        _onboardingService = onboardingService;
-        _roleRepository = roleRepository;
+        OnboardingService = onboardingService;
+        RoleRepository = roleRepository;
     }
 
-    // -------------------------
     // CREATE INVITE
-    // -------------------------
     [HttpPost("create-invite")]
-    [Authorize(Roles = "SuperAdmin,President,Secretary")]
+    [Authorize(Roles = "SuperAdmin,Manager")]
     public async Task<IActionResult> CreateInvite([FromBody] CreateUserInviteDto request)
     {
+        // Validate ResidentType (1=Owner, 2=Tenant, 3=Staff)
+        if (request.ResidentType < 1 || request.ResidentType > 3)
+        {
+            return BadRequest(ApiResponse<CreateInviteResponseDto>.ErrorResponse("Invalid resident type"));
+        }
         try
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _onboardingService.CreateInviteAsync(request, userId);
+            var result = await OnboardingService.CreateInviteAsync(request, userId);
 
             return Ok(ApiResponse<CreateInviteResponseDto>
                 .SuccessResponse(result, "Invite created successfully"));
@@ -46,16 +49,14 @@ public class OnboardingApiController : ControllerBase
         }
     }
 
-    // -------------------------
     // VERIFY OTP
-    // -------------------------
     [HttpPost("verify-otp")]
     [AllowAnonymous]
     public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpDto request)
     {
         try
         {
-            var result = await _onboardingService.VerifyOtpAsync(request);
+            var result = await OnboardingService.VerifyOtpAsync(request);
             return Ok(ApiResponse<VerifyOtpResponseDto>
                 .SuccessResponse(result, "OTP verified successfully"));
         }
@@ -77,7 +78,7 @@ public class OnboardingApiController : ControllerBase
     {
         try
         {
-            var result = await _onboardingService.CompleteRegistrationAsync(request);
+            var result = await OnboardingService.CompleteRegistrationAsync(request);
             return Ok(ApiResponse<CompleteRegistrationResponseDto>
                 .SuccessResponse(result, "Registration completed successfully"));
         }
@@ -94,7 +95,7 @@ public class OnboardingApiController : ControllerBase
     [HttpGet("roles")]
     public async Task<IActionResult> GetRoles()
     {
-        var roles = await _roleRepository.GetAllAsync();
+        var roles = await RoleRepository.GetAllAsync();
 
         return Ok(roles.Select(r => new RoleDto
         {
@@ -103,7 +104,7 @@ public class OnboardingApiController : ControllerBase
         }));
     }
 
-
+    /*
 
     [HttpGet("floors")]
     public async Task<IActionResult> GetFloors()
@@ -118,5 +119,5 @@ public class OnboardingApiController : ControllerBase
         var flats = await _onboardingService.GetAvailableFlatsByFloorAsync(floorId);
         return Ok(flats);
     }
-
+    */
 }

@@ -13,8 +13,6 @@ namespace ApartmentManagementSystem.Application.DTOs.Onboarding
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
 
-        // ✅ NEW
-        public Guid? FloorId { get; set; }
-        public Guid? FlatId { get; set; }
+        // NO FlatId, NO FloorId - Assigned by admin later
     }
 }

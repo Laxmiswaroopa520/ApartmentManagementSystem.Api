@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-//used in the ui for storing full name,mobile number and otp..
-namespace ApartmentManagementSystem.Application.DTOs.Onboarding
-{
 
-   public class CreateInviteResponseDto
+namespace ApartmentManagementSystem.Application.DTOs.Admin
+{
+   public class PendingResidentDto
     {
         public Guid UserId { get; set; }
         public string FullName { get; set; } = string.Empty;
         public string PrimaryPhone { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string ResidentType { get; set; } = string.Empty;
-        public string OtpCode { get; set; } = string.Empty;
-        public string Message { get; set; } = string.Empty;
+        public DateTime RegisteredOn { get; set; }
+        public string Status { get; set; } = string.Empty;
     }
-
-
 }

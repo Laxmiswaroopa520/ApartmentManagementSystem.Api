@@ -1,4 +1,4 @@
-﻿using ApartmentManagementSystem.Domain.Entities.ApartmentManagementSystem.Domain.Entities;
+﻿using ApartmentManagementSystem.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

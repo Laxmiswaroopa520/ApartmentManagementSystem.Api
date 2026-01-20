@@ -7,17 +7,17 @@ namespace ApartmentManagementSystem.API.Controllers
     [Route("api/roles")]
     public class RolesController : ControllerBase
     {
-        private readonly IRoleRepository _roleRepository;
+        private readonly IRoleRepository RoleRepo;
 
         public RolesController(IRoleRepository roleRepository)
         {
-            _roleRepository = roleRepository;
+            RoleRepo = roleRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetRoles()
         {
-            var roles = await _roleRepository.GetAllAsync();
+            var roles = await RoleRepo.GetAllAsync();
 
             var result = roles.Select(r => new
             {

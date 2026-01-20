@@ -1,38 +1,67 @@
 ﻿
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Domain.Enums;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using ApartmentManagementSystem.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
-    using ApartmentManagementSystem.Application.Interfaces.Repositories;
-    using ApartmentManagementSystem.Domain.Entities;
-    using ApartmentManagementSystem.Infrastructure.Persistence;
-    using Microsoft.EntityFrameworkCore;
-
-   // namespace ApartmentManagementSystem.Infrastructure.Repositories;
-
-    public class UserRepository : IUserRepository
+   public class UserRepository : IUserRepository
     {
-        private readonly AppDbContext _db;
+        private readonly AppDbContext DBContext;
 
-        public UserRepository(AppDbContext db) => _db = db;
+        public UserRepository(AppDbContext db) => DBContext = db;
 
+        // YOUR EXISTING METHODS
         public Task<User?> GetByUsernameAsync(string username) =>
-            _db.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Username == username);
-        /*      public async Task<User?> GetByIdAsync(Guid id)
-              {
-                  return await _db.Users.FindAsync(id);
-              }*/
+            DBContext.Users.Include(x => x.Role).FirstOrDefaultAsync(x => x.Username == username);
+
         public async Task<User?> GetByIdAsync(Guid id)
         {
-            return await _db.Users
-                .Include(u => u.Role)   // 🔥 THIS WAS MISSING
+            return await DBContext.Users
+                .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
-
         public Task<User?> GetByPhoneAsync(string phone) =>
-            _db.Users.FirstOrDefaultAsync(x => x.PrimaryPhone == phone);
+            DBContext.Users.Include(u => u.Role).FirstOrDefaultAsync(x => x.PrimaryPhone == phone);
 
-        public async Task AddAsync(User user) => await _db.Users.AddAsync(user);
+        public async Task AddAsync(User user) => await DBContext.Users.AddAsync(user);
 
-        public Task SaveChangesAsync() => _db.SaveChangesAsync();
+        public Task SaveChangesAsync() => DBContext.SaveChangesAsync();
+
+        public async Task<List<User>> GetPendingResidentsAsync()
+        {
+            return await DBContext.Users
+                .Include(u => u.Role)
+                .Where(u => u.Status == ResidentStatus.PendingFlatAllocation)
+                .OrderBy(u => u.CreatedAt)
+                .ToListAsync();
+        }
+
+        // ADDED: Missing methods
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await DBContext.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> PhoneExistsAsync(string phone)
+        {
+            return await DBContext.Users.AnyAsync(u => u.PrimaryPhone == phone);
+        }
+
+        public async Task<bool> UsernameExistsAsync(string username)
+        {
+            return await DBContext.Users.AnyAsync(u => u.Username == username);
+        }
+
+        public async Task UpdateAsync(User user)
+        {
+            DBContext.Users.Update(user);
+            await DBContext.SaveChangesAsync();
+        }
     }
 }

@@ -13,12 +13,12 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
     public class UserOtpRepository : IUserOtpRepository
     {
-        private readonly AppDbContext _db;
-        public UserOtpRepository(AppDbContext db) => _db = db;
+        private readonly AppDbContext DBContext;
+        public UserOtpRepository(AppDbContext db) => DBContext = db;
 
         public async Task<UserOtp?> GetValidOtpAsync(string phone, string otp)
         {
-            return await _db.UserOtps.FirstOrDefaultAsync(x =>
+            return await DBContext.UserOtps.FirstOrDefaultAsync(x =>
                 x.PhoneNumber == phone&&
                 x.OtpCode == otp &&
                 !x.IsUsed &&
@@ -26,13 +26,20 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         }
 
         public async Task AddAsync(UserOtp otp)
-            => await _db.UserOtps.AddAsync(otp);
+            => await DBContext.UserOtps.AddAsync(otp);
 
         public async Task MarkAsUsedAsync(Guid otpId)
         {
-            var otp = await _db.UserOtps.FindAsync(otpId);
+            var otp = await DBContext.UserOtps.FindAsync(otpId);
             otp!.IsUsed = true;
-            await _db.SaveChangesAsync();
+            await DBContext.SaveChangesAsync();
         }
+      /*  public async Task<UserOtp?> GetLatestByUserIdAsync(Guid userId)
+        {
+            return await _db.UserOtps
+                .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.CreatedAt)
+                .FirstOrDefaultAsync();
+        }*/
     }
 }

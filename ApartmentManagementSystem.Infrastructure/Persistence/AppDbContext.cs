@@ -1,6 +1,5 @@
 ﻿using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Domain.Entities;
-using ApartmentManagementSystem.Domain.Entities.ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApartmentManagementSystem.Infrastructure.Persistence
@@ -10,9 +9,9 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
 
-        // =========================
+      
         // PHASE 1 DB SETS
-        // =========================
+        
         public DbSet<Floor> Floors { get; set; }
         public DbSet<User> Users => Set<User>();
         public DbSet<Role> Roles => Set<Role>();

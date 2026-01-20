@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApartmentManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260118110817_Initiall")]
-    partial class Initiall
+    [Migration("20260120103621_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,13 +59,2263 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         {
                             Id = new Guid("30000000-0000-0000-0000-000000000001"),
                             Address = "123 Main Street, Chennai",
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 891, DateTimeKind.Utc).AddTicks(9736),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 967, DateTimeKind.Utc).AddTicks(621),
                             Name = "Green Valley Apartments",
                             TotalFlats = 200
                         });
                 });
 
-            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.ApartmentManagementSystem.Domain.Entities.Floor", b =>
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Flat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ApartmentId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FlatNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<Guid>("FloorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsOccupied")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("OwnerUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FloorId");
+
+                    b.HasIndex("OwnerUserId");
+
+                    b.HasIndex("ApartmentId", "FlatNumber")
+                        .IsUnique();
+
+                    b.ToTable("Flats");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000001"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 967, DateTimeKind.Utc).AddTicks(1346),
+                            FlatNumber = "101",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 101"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000002"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 967, DateTimeKind.Utc).AddTicks(1359),
+                            FlatNumber = "102",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 102"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000003"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 967, DateTimeKind.Utc).AddTicks(1366),
+                            FlatNumber = "103",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 103"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000004"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 967, DateTimeKind.Utc).AddTicks(1483),
+                            FlatNumber = "104",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 104"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000005"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9433),
+                            FlatNumber = "105",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 105"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000006"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9463),
+                            FlatNumber = "106",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 106"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000007"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9470),
+                            FlatNumber = "107",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 107"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000008"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9475),
+                            FlatNumber = "108",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 108"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000009"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9480),
+                            FlatNumber = "109",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 109"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000010"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9490),
+                            FlatNumber = "110",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 110"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000011"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9500),
+                            FlatNumber = "201",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 201"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000012"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9505),
+                            FlatNumber = "202",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 202"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000013"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9510),
+                            FlatNumber = "203",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 203"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000014"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9515),
+                            FlatNumber = "204",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 204"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000015"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9521),
+                            FlatNumber = "205",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 205"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000016"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9526),
+                            FlatNumber = "206",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 206"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000017"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9531),
+                            FlatNumber = "207",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 207"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000018"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9540),
+                            FlatNumber = "208",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 208"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000019"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9545),
+                            FlatNumber = "209",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 209"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000020"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9550),
+                            FlatNumber = "210",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 210"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000021"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9559),
+                            FlatNumber = "301",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 301"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000022"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9566),
+                            FlatNumber = "302",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 302"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000023"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9572),
+                            FlatNumber = "303",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 303"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000024"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9701),
+                            FlatNumber = "304",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 304"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000025"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9709),
+                            FlatNumber = "305",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 305"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000026"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9715),
+                            FlatNumber = "306",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 306"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000027"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9720),
+                            FlatNumber = "307",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 307"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000028"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9727),
+                            FlatNumber = "308",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 308"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000029"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9733),
+                            FlatNumber = "309",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 309"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000030"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9739),
+                            FlatNumber = "310",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 310"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000031"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9747),
+                            FlatNumber = "401",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 401"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000032"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9753),
+                            FlatNumber = "402",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 402"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000033"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9759),
+                            FlatNumber = "403",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 403"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000034"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9767),
+                            FlatNumber = "404",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 404"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000035"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9771),
+                            FlatNumber = "405",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 405"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000036"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9776),
+                            FlatNumber = "406",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 406"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000037"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9781),
+                            FlatNumber = "407",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 407"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000038"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9785),
+                            FlatNumber = "408",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 408"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000039"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9790),
+                            FlatNumber = "409",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 409"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000040"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9795),
+                            FlatNumber = "410",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 410"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000041"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9803),
+                            FlatNumber = "501",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 501"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000042"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9808),
+                            FlatNumber = "502",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 502"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000043"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9814),
+                            FlatNumber = "503",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 503"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000044"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9820),
+                            FlatNumber = "504",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 504"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000045"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9886),
+                            FlatNumber = "505",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 505"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000046"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9892),
+                            FlatNumber = "506",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 506"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000047"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9898),
+                            FlatNumber = "507",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 507"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000048"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9904),
+                            FlatNumber = "508",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 508"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000049"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9909),
+                            FlatNumber = "509",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 509"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000050"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9915),
+                            FlatNumber = "510",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 510"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000051"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9922),
+                            FlatNumber = "601",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 601"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000052"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9926),
+                            FlatNumber = "602",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 602"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000053"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9931),
+                            FlatNumber = "603",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 603"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000054"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9936),
+                            FlatNumber = "604",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 604"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000055"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9940),
+                            FlatNumber = "605",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 605"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000056"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9945),
+                            FlatNumber = "606",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 606"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000057"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9949),
+                            FlatNumber = "607",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 607"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000058"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9954),
+                            FlatNumber = "608",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 608"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000059"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9960),
+                            FlatNumber = "609",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 609"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000060"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9965),
+                            FlatNumber = "610",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 610"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000061"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9973),
+                            FlatNumber = "701",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 701"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000062"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9978),
+                            FlatNumber = "702",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 702"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000063"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9983),
+                            FlatNumber = "703",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 703"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000064"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9988),
+                            FlatNumber = "704",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 704"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000065"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 968, DateTimeKind.Utc).AddTicks(9992),
+                            FlatNumber = "705",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 705"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000066"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(41),
+                            FlatNumber = "706",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 706"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000067"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(46),
+                            FlatNumber = "707",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 707"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000068"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(50),
+                            FlatNumber = "708",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 708"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000069"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(55),
+                            FlatNumber = "709",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 709"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000070"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(60),
+                            FlatNumber = "710",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 710"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000071"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(66),
+                            FlatNumber = "801",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 801"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000072"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(71),
+                            FlatNumber = "802",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 802"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000073"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(77),
+                            FlatNumber = "803",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 803"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000074"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(82),
+                            FlatNumber = "804",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 804"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000075"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(87),
+                            FlatNumber = "805",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 805"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000076"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(92),
+                            FlatNumber = "806",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 806"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000077"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(97),
+                            FlatNumber = "807",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 807"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000078"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(103),
+                            FlatNumber = "808",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 808"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000079"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(108),
+                            FlatNumber = "809",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 809"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000080"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(113),
+                            FlatNumber = "810",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 810"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000081"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(120),
+                            FlatNumber = "901",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 901"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000082"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(125),
+                            FlatNumber = "902",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 902"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000083"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(130),
+                            FlatNumber = "903",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 903"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000084"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(135),
+                            FlatNumber = "904",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 904"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000085"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(140),
+                            FlatNumber = "905",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 905"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000086"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(189),
+                            FlatNumber = "906",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 906"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000087"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(195),
+                            FlatNumber = "907",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 907"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000088"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(200),
+                            FlatNumber = "908",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 908"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000089"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(205),
+                            FlatNumber = "909",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 909"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000090"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(210),
+                            FlatNumber = "910",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 910"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000091"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(218),
+                            FlatNumber = "1001",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1001"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000092"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(224),
+                            FlatNumber = "1002",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1002"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000093"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(231),
+                            FlatNumber = "1003",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1003"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000094"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(237),
+                            FlatNumber = "1004",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1004"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000095"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(244),
+                            FlatNumber = "1005",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1005"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000096"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(250),
+                            FlatNumber = "1006",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1006"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000097"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(255),
+                            FlatNumber = "1007",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1007"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000098"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(262),
+                            FlatNumber = "1008",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1008"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000099"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(268),
+                            FlatNumber = "1009",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1009"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000100"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(274),
+                            FlatNumber = "1010",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1010"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000101"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(281),
+                            FlatNumber = "1101",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1101"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000102"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(285),
+                            FlatNumber = "1102",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1102"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000103"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(291),
+                            FlatNumber = "1103",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1103"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000104"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(297),
+                            FlatNumber = "1104",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1104"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000105"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(301),
+                            FlatNumber = "1105",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1105"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000106"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(307),
+                            FlatNumber = "1106",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1106"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000107"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(312),
+                            FlatNumber = "1107",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1107"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000108"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(319),
+                            FlatNumber = "1108",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1108"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000109"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(362),
+                            FlatNumber = "1109",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1109"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000110"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(368),
+                            FlatNumber = "1110",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1110"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000111"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(377),
+                            FlatNumber = "1201",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1201"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000112"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(382),
+                            FlatNumber = "1202",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1202"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000113"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(388),
+                            FlatNumber = "1203",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1203"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000114"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(394),
+                            FlatNumber = "1204",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1204"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000115"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(399),
+                            FlatNumber = "1205",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1205"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000116"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(405),
+                            FlatNumber = "1206",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1206"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000117"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(411),
+                            FlatNumber = "1207",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1207"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000118"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(417),
+                            FlatNumber = "1208",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1208"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000119"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(423),
+                            FlatNumber = "1209",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1209"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000120"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(428),
+                            FlatNumber = "1210",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1210"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000121"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(436),
+                            FlatNumber = "1301",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1301"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000122"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(444),
+                            FlatNumber = "1302",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1302"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000123"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(450),
+                            FlatNumber = "1303",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1303"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000124"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(457),
+                            FlatNumber = "1304",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1304"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000125"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(463),
+                            FlatNumber = "1305",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1305"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000126"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(469),
+                            FlatNumber = "1306",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1306"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000127"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(476),
+                            FlatNumber = "1307",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1307"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000128"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(481),
+                            FlatNumber = "1308",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1308"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000129"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(487),
+                            FlatNumber = "1309",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1309"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000130"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(542),
+                            FlatNumber = "1310",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1310"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000131"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(553),
+                            FlatNumber = "1401",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1401"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000132"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(560),
+                            FlatNumber = "1402",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1402"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000133"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(567),
+                            FlatNumber = "1403",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1403"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000134"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(574),
+                            FlatNumber = "1404",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1404"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000135"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(581),
+                            FlatNumber = "1405",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1405"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000136"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(587),
+                            FlatNumber = "1406",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1406"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000137"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(592),
+                            FlatNumber = "1407",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1407"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000138"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(599),
+                            FlatNumber = "1408",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1408"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000139"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(605),
+                            FlatNumber = "1409",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1409"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000140"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(610),
+                            FlatNumber = "1410",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1410"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000141"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(618),
+                            FlatNumber = "1501",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1501"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000142"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(624),
+                            FlatNumber = "1502",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1502"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000143"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(630),
+                            FlatNumber = "1503",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1503"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000144"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(635),
+                            FlatNumber = "1504",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1504"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000145"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(640),
+                            FlatNumber = "1505",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1505"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000146"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(645),
+                            FlatNumber = "1506",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1506"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000147"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(692),
+                            FlatNumber = "1507",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1507"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000148"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(699),
+                            FlatNumber = "1508",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1508"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000149"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(706),
+                            FlatNumber = "1509",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1509"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000150"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(712),
+                            FlatNumber = "1510",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1510"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000151"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(720),
+                            FlatNumber = "1601",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1601"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000152"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(727),
+                            FlatNumber = "1602",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1602"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000153"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(732),
+                            FlatNumber = "1603",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1603"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000154"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(737),
+                            FlatNumber = "1604",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1604"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000155"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(743),
+                            FlatNumber = "1605",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1605"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000156"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(748),
+                            FlatNumber = "1606",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1606"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000157"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(753),
+                            FlatNumber = "1607",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1607"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000158"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(758),
+                            FlatNumber = "1608",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1608"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000159"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(763),
+                            FlatNumber = "1609",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1609"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000160"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(769),
+                            FlatNumber = "1610",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1610"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000161"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(778),
+                            FlatNumber = "1701",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1701"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000162"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(784),
+                            FlatNumber = "1702",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1702"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000163"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(789),
+                            FlatNumber = "1703",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1703"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000164"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(794),
+                            FlatNumber = "1704",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1704"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000165"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(799),
+                            FlatNumber = "1705",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1705"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000166"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(804),
+                            FlatNumber = "1706",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1706"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000167"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(809),
+                            FlatNumber = "1707",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1707"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000168"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(815),
+                            FlatNumber = "1708",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1708"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000169"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(819),
+                            FlatNumber = "1709",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1709"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000170"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(854),
+                            FlatNumber = "1710",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1710"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000171"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(863),
+                            FlatNumber = "1801",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1801"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000172"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(868),
+                            FlatNumber = "1802",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1802"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000173"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(873),
+                            FlatNumber = "1803",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1803"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000174"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(878),
+                            FlatNumber = "1804",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1804"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000175"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(885),
+                            FlatNumber = "1805",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1805"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000176"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(891),
+                            FlatNumber = "1806",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1806"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000177"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(897),
+                            FlatNumber = "1807",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1807"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000178"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(903),
+                            FlatNumber = "1808",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1808"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000179"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(909),
+                            FlatNumber = "1809",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1809"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000180"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(915),
+                            FlatNumber = "1810",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1810"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000181"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(923),
+                            FlatNumber = "1901",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1901"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000182"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(928),
+                            FlatNumber = "1902",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1902"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000183"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(933),
+                            FlatNumber = "1903",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1903"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000184"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(939),
+                            FlatNumber = "1904",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1904"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000185"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(945),
+                            FlatNumber = "1905",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1905"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000186"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(951),
+                            FlatNumber = "1906",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1906"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000187"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(957),
+                            FlatNumber = "1907",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1907"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000188"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(963),
+                            FlatNumber = "1908",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1908"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000189"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(968),
+                            FlatNumber = "1909",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1909"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000190"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(974),
+                            FlatNumber = "1910",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 1910"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000191"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(1043),
+                            FlatNumber = "2001",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 2001"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000192"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(1048),
+                            FlatNumber = "2002",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 2002"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000193"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(1055),
+                            FlatNumber = "2003",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 2003"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000194"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(1061),
+                            FlatNumber = "2004",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 2004"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000195"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(1066),
+                            FlatNumber = "2005",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 2005"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000196"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(1071),
+                            FlatNumber = "2006",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 2006"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000197"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(1076),
+                            FlatNumber = "2007",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 2007"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000198"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(1080),
+                            FlatNumber = "2008",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 2008"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000199"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(1086),
+                            FlatNumber = "2009",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 2009"
+                        },
+                        new
+                        {
+                            Id = new Guid("50000000-0000-0000-0000-000000000200"),
+                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 969, DateTimeKind.Utc).AddTicks(1091),
+                            FlatNumber = "2010",
+                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
+                            IsActive = true,
+                            IsOccupied = false,
+                            Name = "Flat 2010"
+                        });
+                });
+
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Floor", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -230,2256 +2480,6 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Flat", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ApartmentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FlatNumber")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<Guid>("FloorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsOccupied")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("OwnerUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FloorId");
-
-                    b.HasIndex("OwnerUserId");
-
-                    b.HasIndex("ApartmentId", "FlatNumber")
-                        .IsUnique();
-
-                    b.ToTable("Flats");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000001"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1532),
-                            FlatNumber = "101",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 101"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000002"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1560),
-                            FlatNumber = "102",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 102"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000003"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1571),
-                            FlatNumber = "103",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 103"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000004"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1594),
-                            FlatNumber = "104",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 104"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000005"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1625),
-                            FlatNumber = "105",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 105"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000006"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1707),
-                            FlatNumber = "106",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 106"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000007"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1729),
-                            FlatNumber = "107",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 107"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000008"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1749),
-                            FlatNumber = "108",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 108"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000009"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1768),
-                            FlatNumber = "109",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 109"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000010"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1804),
-                            FlatNumber = "110",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000001"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 110"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000011"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1823),
-                            FlatNumber = "201",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 201"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000012"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1832),
-                            FlatNumber = "202",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 202"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000013"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1857),
-                            FlatNumber = "203",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 203"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000014"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1874),
-                            FlatNumber = "204",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 204"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000015"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1885),
-                            FlatNumber = "205",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 205"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000016"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1894),
-                            FlatNumber = "206",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 206"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000017"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1904),
-                            FlatNumber = "207",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 207"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000018"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1915),
-                            FlatNumber = "208",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 208"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000019"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1925),
-                            FlatNumber = "209",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 209"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000020"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1935),
-                            FlatNumber = "210",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000002"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 210"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000021"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1948),
-                            FlatNumber = "301",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 301"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000022"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1957),
-                            FlatNumber = "302",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 302"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000023"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1966),
-                            FlatNumber = "303",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 303"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000024"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1975),
-                            FlatNumber = "304",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 304"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000025"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1984),
-                            FlatNumber = "305",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 305"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000026"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(1994),
-                            FlatNumber = "306",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 306"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000027"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2002),
-                            FlatNumber = "307",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 307"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000028"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2010),
-                            FlatNumber = "308",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 308"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000029"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2019),
-                            FlatNumber = "309",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 309"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000030"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2041),
-                            FlatNumber = "310",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000003"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 310"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000031"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2068),
-                            FlatNumber = "401",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 401"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000032"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2087),
-                            FlatNumber = "402",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 402"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000033"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2105),
-                            FlatNumber = "403",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 403"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000034"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2120),
-                            FlatNumber = "404",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 404"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000035"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2140),
-                            FlatNumber = "405",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 405"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000036"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2157),
-                            FlatNumber = "406",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 406"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000037"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2167),
-                            FlatNumber = "407",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 407"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000038"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2174),
-                            FlatNumber = "408",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 408"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000039"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2181),
-                            FlatNumber = "409",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 409"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000040"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2189),
-                            FlatNumber = "410",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000004"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 410"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000041"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2200),
-                            FlatNumber = "501",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 501"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000042"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2208),
-                            FlatNumber = "502",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 502"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000043"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2215),
-                            FlatNumber = "503",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 503"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000044"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2222),
-                            FlatNumber = "504",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 504"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000045"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2231),
-                            FlatNumber = "505",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 505"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000046"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2239),
-                            FlatNumber = "506",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 506"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000047"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2246),
-                            FlatNumber = "507",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 507"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000048"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2259),
-                            FlatNumber = "508",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 508"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000049"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2279),
-                            FlatNumber = "509",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 509"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000050"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2299),
-                            FlatNumber = "510",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000005"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 510"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000051"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2325),
-                            FlatNumber = "601",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 601"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000052"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2344),
-                            FlatNumber = "602",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 602"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000053"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2374),
-                            FlatNumber = "603",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 603"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000054"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2395),
-                            FlatNumber = "604",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 604"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000055"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2415),
-                            FlatNumber = "605",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 605"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000056"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2434),
-                            FlatNumber = "606",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 606"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000057"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2454),
-                            FlatNumber = "607",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 607"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000058"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2473),
-                            FlatNumber = "608",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 608"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000059"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2493),
-                            FlatNumber = "609",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 609"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000060"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2513),
-                            FlatNumber = "610",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000006"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 610"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000061"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2540),
-                            FlatNumber = "701",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 701"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000062"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2560),
-                            FlatNumber = "702",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 702"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000063"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2580),
-                            FlatNumber = "703",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 703"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000064"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2596),
-                            FlatNumber = "704",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 704"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000065"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2603),
-                            FlatNumber = "705",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 705"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000066"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2613),
-                            FlatNumber = "706",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 706"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000067"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2622),
-                            FlatNumber = "707",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 707"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000068"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2647),
-                            FlatNumber = "708",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 708"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000069"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2667),
-                            FlatNumber = "709",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 709"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000070"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2688),
-                            FlatNumber = "710",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000007"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 710"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000071"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2724),
-                            FlatNumber = "801",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 801"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000072"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2745),
-                            FlatNumber = "802",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 802"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000073"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2765),
-                            FlatNumber = "803",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 803"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000074"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2785),
-                            FlatNumber = "804",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 804"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000075"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2805),
-                            FlatNumber = "805",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 805"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000076"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2813),
-                            FlatNumber = "806",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 806"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000077"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2828),
-                            FlatNumber = "807",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 807"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000078"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2849),
-                            FlatNumber = "808",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 808"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000079"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2869),
-                            FlatNumber = "809",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 809"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000080"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2908),
-                            FlatNumber = "810",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000008"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 810"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000081"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2934),
-                            FlatNumber = "901",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 901"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000082"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2970),
-                            FlatNumber = "902",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 902"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000083"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(2992),
-                            FlatNumber = "903",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 903"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000084"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3162),
-                            FlatNumber = "904",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 904"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000085"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3200),
-                            FlatNumber = "905",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 905"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000086"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3216),
-                            FlatNumber = "906",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 906"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000087"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3224),
-                            FlatNumber = "907",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 907"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000088"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3232),
-                            FlatNumber = "908",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 908"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000089"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3240),
-                            FlatNumber = "909",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 909"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000090"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3249),
-                            FlatNumber = "910",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000009"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 910"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000091"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3261),
-                            FlatNumber = "1001",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1001"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000092"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3286),
-                            FlatNumber = "1002",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1002"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000093"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3314),
-                            FlatNumber = "1003",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1003"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000094"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3337),
-                            FlatNumber = "1004",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1004"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000095"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3375),
-                            FlatNumber = "1005",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1005"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000096"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3387),
-                            FlatNumber = "1006",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1006"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000097"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3396),
-                            FlatNumber = "1007",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1007"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000098"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3404),
-                            FlatNumber = "1008",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1008"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000099"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3412),
-                            FlatNumber = "1009",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1009"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000100"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3420),
-                            FlatNumber = "1010",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000010"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1010"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000101"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3432),
-                            FlatNumber = "1101",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1101"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000102"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3440),
-                            FlatNumber = "1102",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1102"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000103"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3449),
-                            FlatNumber = "1103",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1103"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000104"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3470),
-                            FlatNumber = "1104",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1104"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000105"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3489),
-                            FlatNumber = "1105",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1105"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000106"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3499),
-                            FlatNumber = "1106",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1106"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000107"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3507),
-                            FlatNumber = "1107",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1107"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000108"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3520),
-                            FlatNumber = "1108",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1108"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000109"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3539),
-                            FlatNumber = "1109",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1109"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000110"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3549),
-                            FlatNumber = "1110",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1110"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000111"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3575),
-                            FlatNumber = "1201",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1201"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000112"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3594),
-                            FlatNumber = "1202",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1202"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000113"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3627),
-                            FlatNumber = "1203",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1203"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000114"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3643),
-                            FlatNumber = "1204",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1204"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000115"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3661),
-                            FlatNumber = "1205",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1205"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000116"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3677),
-                            FlatNumber = "1206",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1206"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000117"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3693),
-                            FlatNumber = "1207",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1207"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000118"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3711),
-                            FlatNumber = "1208",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1208"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000119"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3729),
-                            FlatNumber = "1209",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1209"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000120"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3746),
-                            FlatNumber = "1210",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000012"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1210"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000121"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3770),
-                            FlatNumber = "1301",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1301"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000122"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3787),
-                            FlatNumber = "1302",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1302"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000123"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3804),
-                            FlatNumber = "1303",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1303"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000124"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3820),
-                            FlatNumber = "1304",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1304"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000125"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3836),
-                            FlatNumber = "1305",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1305"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000126"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3851),
-                            FlatNumber = "1306",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1306"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000127"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3868),
-                            FlatNumber = "1307",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1307"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000128"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3883),
-                            FlatNumber = "1308",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1308"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000129"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3899),
-                            FlatNumber = "1309",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1309"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000130"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3938),
-                            FlatNumber = "1310",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000013"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1310"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000131"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3961),
-                            FlatNumber = "1401",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1401"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000132"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3979),
-                            FlatNumber = "1402",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1402"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000133"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(3996),
-                            FlatNumber = "1403",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1403"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000134"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4012),
-                            FlatNumber = "1404",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1404"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000135"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4030),
-                            FlatNumber = "1405",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1405"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000136"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4045),
-                            FlatNumber = "1406",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1406"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000137"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4063),
-                            FlatNumber = "1407",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1407"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000138"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4080),
-                            FlatNumber = "1408",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1408"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000139"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4095),
-                            FlatNumber = "1409",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1409"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000140"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4114),
-                            FlatNumber = "1410",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000014"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1410"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000141"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4136),
-                            FlatNumber = "1501",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1501"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000142"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4153),
-                            FlatNumber = "1502",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1502"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000143"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4168),
-                            FlatNumber = "1503",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1503"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000144"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4185),
-                            FlatNumber = "1504",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1504"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000145"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4199),
-                            FlatNumber = "1505",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1505"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000146"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4216),
-                            FlatNumber = "1506",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1506"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000147"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4231),
-                            FlatNumber = "1507",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1507"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000148"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4249),
-                            FlatNumber = "1508",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1508"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000149"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4276),
-                            FlatNumber = "1509",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1509"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000150"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4295),
-                            FlatNumber = "1510",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000015"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1510"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000151"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4316),
-                            FlatNumber = "1601",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1601"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000152"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4329),
-                            FlatNumber = "1602",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1602"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000153"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4348),
-                            FlatNumber = "1603",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1603"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000154"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4366),
-                            FlatNumber = "1604",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1604"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000155"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4381),
-                            FlatNumber = "1605",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1605"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000156"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4399),
-                            FlatNumber = "1606",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1606"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000157"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4413),
-                            FlatNumber = "1607",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1607"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000158"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4432),
-                            FlatNumber = "1608",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1608"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000159"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4448),
-                            FlatNumber = "1609",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1609"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000160"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4464),
-                            FlatNumber = "1610",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000016"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1610"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000161"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4486),
-                            FlatNumber = "1701",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1701"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000162"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4504),
-                            FlatNumber = "1702",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1702"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000163"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4518),
-                            FlatNumber = "1703",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1703"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000164"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4536),
-                            FlatNumber = "1704",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1704"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000165"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4552),
-                            FlatNumber = "1705",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1705"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000166"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4569),
-                            FlatNumber = "1706",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1706"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000167"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4586),
-                            FlatNumber = "1707",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1707"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000168"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4601),
-                            FlatNumber = "1708",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1708"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000169"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4619),
-                            FlatNumber = "1709",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1709"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000170"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4646),
-                            FlatNumber = "1710",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000017"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1710"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000171"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4668),
-                            FlatNumber = "1801",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1801"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000172"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4687),
-                            FlatNumber = "1802",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1802"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000173"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4702),
-                            FlatNumber = "1803",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1803"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000174"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4717),
-                            FlatNumber = "1804",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1804"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000175"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4754),
-                            FlatNumber = "1805",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1805"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000176"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4771),
-                            FlatNumber = "1806",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1806"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000177"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4780),
-                            FlatNumber = "1807",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1807"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000178"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4788),
-                            FlatNumber = "1808",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1808"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000179"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4798),
-                            FlatNumber = "1809",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1809"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000180"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4804),
-                            FlatNumber = "1810",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000018"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1810"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000181"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4812),
-                            FlatNumber = "1901",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1901"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000182"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4818),
-                            FlatNumber = "1902",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1902"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000183"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4824),
-                            FlatNumber = "1903",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1903"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000184"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4829),
-                            FlatNumber = "1904",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1904"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000185"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4835),
-                            FlatNumber = "1905",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1905"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000186"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4841),
-                            FlatNumber = "1906",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1906"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000187"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4847),
-                            FlatNumber = "1907",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1907"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000188"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4852),
-                            FlatNumber = "1908",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1908"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000189"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4858),
-                            FlatNumber = "1909",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1909"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000190"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4865),
-                            FlatNumber = "1910",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000019"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 1910"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000191"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4884),
-                            FlatNumber = "2001",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 2001"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000192"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4889),
-                            FlatNumber = "2002",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 2002"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000193"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4895),
-                            FlatNumber = "2003",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 2003"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000194"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4901),
-                            FlatNumber = "2004",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 2004"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000195"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4907),
-                            FlatNumber = "2005",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 2005"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000196"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4912),
-                            FlatNumber = "2006",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 2006"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000197"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4918),
-                            FlatNumber = "2007",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 2007"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000198"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4924),
-                            FlatNumber = "2008",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 2008"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000199"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4930),
-                            FlatNumber = "2009",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 2009"
-                        },
-                        new
-                        {
-                            Id = new Guid("50000000-0000-0000-0000-000000000200"),
-                            ApartmentId = new Guid("30000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 892, DateTimeKind.Utc).AddTicks(4935),
-                            FlatNumber = "2010",
-                            FloorId = new Guid("40000000-0000-0000-0000-000000000020"),
-                            IsActive = true,
-                            IsOccupied = false,
-                            Name = "Flat 2010"
-                        });
-                });
-
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2504,49 +2504,49 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 708, DateTimeKind.Utc).AddTicks(3180),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 810, DateTimeKind.Utc).AddTicks(6272),
                             Name = "SuperAdmin"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 708, DateTimeKind.Utc).AddTicks(3183),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 810, DateTimeKind.Utc).AddTicks(6280),
                             Name = "President"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 708, DateTimeKind.Utc).AddTicks(3184),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 810, DateTimeKind.Utc).AddTicks(6282),
                             Name = "Secretary"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000004"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 708, DateTimeKind.Utc).AddTicks(3186),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 810, DateTimeKind.Utc).AddTicks(6283),
                             Name = "Treasurer"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 708, DateTimeKind.Utc).AddTicks(3187),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 810, DateTimeKind.Utc).AddTicks(6284),
                             Name = "Resident Owner"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 708, DateTimeKind.Utc).AddTicks(3188),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 810, DateTimeKind.Utc).AddTicks(6285),
                             Name = "Tenant"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 708, DateTimeKind.Utc).AddTicks(3190),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 810, DateTimeKind.Utc).AddTicks(6286),
                             Name = "Security"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 708, DateTimeKind.Utc).AddTicks(3191),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 810, DateTimeKind.Utc).AddTicks(6287),
                             Name = "Maintenance Staff"
                         });
                 });
@@ -2562,6 +2562,9 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("FlatId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -2583,11 +2586,17 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ResidentType")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SecondaryPhone")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -2597,6 +2606,8 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("FlatId");
+
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
@@ -2605,15 +2616,16 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("20000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 18, 11, 8, 16, 891, DateTimeKind.Utc).AddTicks(9107),
+                            CreatedAt = new DateTime(2026, 1, 20, 10, 36, 20, 966, DateTimeKind.Utc).AddTicks(9413),
                             Email = "admin@apartment.com",
                             FullName = "System Administrator",
                             IsActive = true,
                             IsOtpVerified = true,
                             IsRegistrationCompleted = true,
-                            PasswordHash = "$2a$11$S5K4o8luFAZc8CA3NhyWDelDL6YCfELfl3fa331X.pplvHmTYkDly",
+                            PasswordHash = "$2a$11$jOS76NzTMy3xOX/vdQ4OHuJpf87t3Z8iSNDgwA5Pzt.liTEf1VvH.",
                             PrimaryPhone = "9999999999",
                             RoleId = new Guid("10000000-0000-0000-0000-000000000001"),
+                            Status = 1,
                             Username = "admin"
                         });
                 });
@@ -2668,12 +2680,6 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.Property<Guid>("CreatedByUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("FlatId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -2682,17 +2688,14 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsOtpVerified")
-                        .HasColumnType("bit");
-
                     b.Property<string>("PrimaryPhone")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ResidentType")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -2735,17 +2738,6 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.ToTable("UserOtps");
                 });
 
-            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.ApartmentManagementSystem.Domain.Entities.Floor", b =>
-                {
-                    b.HasOne("ApartmentManagementSystem.Domain.Entities.Apartment", "Apartment")
-                        .WithMany()
-                        .HasForeignKey("ApartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Apartment");
-                });
-
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Flat", b =>
                 {
                     b.HasOne("ApartmentManagementSystem.Domain.Entities.Apartment", "Apartment")
@@ -2754,14 +2746,14 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("ApartmentManagementSystem.Domain.Entities.ApartmentManagementSystem.Domain.Entities.Floor", "Floor")
+                    b.HasOne("ApartmentManagementSystem.Domain.Entities.Floor", "Floor")
                         .WithMany("Flats")
                         .HasForeignKey("FloorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApartmentManagementSystem.Domain.Entities.User", "OwnerUser")
-                        .WithMany("OwnedFlats")
+                        .WithMany()
                         .HasForeignKey("OwnerUserId")
                         .OnDelete(DeleteBehavior.SetNull);
 
@@ -2772,13 +2764,30 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.Navigation("OwnerUser");
                 });
 
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Floor", b =>
+                {
+                    b.HasOne("ApartmentManagementSystem.Domain.Entities.Apartment", "Apartment")
+                        .WithMany()
+                        .HasForeignKey("ApartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Apartment");
+                });
+
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.User", b =>
                 {
+                    b.HasOne("ApartmentManagementSystem.Domain.Entities.Flat", "Flat")
+                        .WithMany()
+                        .HasForeignKey("FlatId");
+
                     b.HasOne("ApartmentManagementSystem.Domain.Entities.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Flat");
 
                     b.Navigation("Role");
                 });
@@ -2825,14 +2834,14 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.Navigation("Flats");
                 });
 
-            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.ApartmentManagementSystem.Domain.Entities.Floor", b =>
-                {
-                    b.Navigation("Flats");
-                });
-
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Flat", b =>
                 {
                     b.Navigation("UserFlatMappings");
+                });
+
+            modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Floor", b =>
+                {
+                    b.Navigation("Flats");
                 });
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.Role", b =>
@@ -2842,8 +2851,6 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.User", b =>
                 {
-                    b.Navigation("OwnedFlats");
-
                     b.Navigation("UserFlatMappings");
 
                     b.Navigation("UserOtps");
