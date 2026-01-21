@@ -48,9 +48,19 @@ builder.Services.AddScoped<IOnboardingService, OnboardingService>();
 builder.Services.AddScoped<IOtpService, OtpService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ISmsService, SmsService>();
-
+//egister new services in your API project
+builder.Services.AddScoped<ICommunityMemberService, CommunityMemberService>();
+builder.Services.AddScoped<IStaffMemberService, StaffMemberService>();
+builder.Services.AddScoped<IResidentManagementService, ResidentManagementService>();
+builder.Services.AddScoped<IEnhancedDashboardService, EnhancedDashboardService>();
 // Phase 2
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<ICommunityMemberRepository, CommunityMemberRepository>();
+builder.Services.AddScoped<ICommunityMemberService, CommunityMemberService>();
+builder.Services.AddScoped<IStaffMemberRepository, StaffMemberRepository>();
+builder.Services.AddScoped<IStaffMemberService, StaffMemberService>();
+builder.Services.AddScoped<IResidentManagementRepository, ResidentManagementRepository>();
+builder.Services.AddScoped<IResidentManagementService, ResidentManagementService>();
 
 // JWT AUTHENTICATION
 // Moved to extension (internally same logic as your previous code)

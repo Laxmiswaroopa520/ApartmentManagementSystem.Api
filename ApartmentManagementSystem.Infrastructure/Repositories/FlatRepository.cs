@@ -261,12 +261,22 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                 .OrderBy(f => f.FlatNumber)
                 .ToListAsync();
         }
-      /*  public async Task<List<Flat>> GetVacantFlatsByFloorAsync(Guid floorId)
+       public async Task<Flat?> GetFlatByResidentIdAsync(Guid userId)
         {
-            return await _dbContext.Flats
-                .Where(f => f.FloorId == floorId && f.IsVacant)
-                .ToListAsync();
-        }*/
+            //  Find flat by checking Users who have this FlatId
+            var user = await DBcontext.Users
+                .Include(u => u.Flat)
+                .ThenInclude(f => f.Apartment)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            return user?.Flat;
+        }
+        /*  public async Task<List<Flat>> GetVacantFlatsByFloorAsync(Guid floorId)
+          {
+              return await _dbContext.Flats
+                  .Where(f => f.FloorId == floorId && f.IsVacant)
+                  .ToListAsync();
+          }*/
         public async Task SaveChangesAsync()
         {
             await DBcontext.SaveChangesAsync();

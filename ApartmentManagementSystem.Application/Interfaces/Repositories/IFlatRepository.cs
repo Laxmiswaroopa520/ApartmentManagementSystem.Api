@@ -39,6 +39,7 @@ using System.Threading.Tasks;
             Task<int> GetOccupiedCountAsync();
 
         // ONBOARDING
+        Task<Flat?> GetFlatByResidentIdAsync(Guid userId); //newly added
         Task<List<Floor>> GetAllFloorsAsync();
         Task<List<Flat>> GetAvailableFlatsByFloorAsync(Guid floorId);
         Task<List<Flat>> GetVacantFlatsByFloorAsync(Guid floorId);
