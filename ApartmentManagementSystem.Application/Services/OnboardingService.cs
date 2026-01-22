@@ -51,7 +51,7 @@ public class OnboardingService : IOnboardingService
             Id = Guid.NewGuid(),
             FullName = request.FullName,
             PrimaryPhone = request.PrimaryPhone,
-            RoleId = role.Id,
+            //RoleId = role.Id,
             ResidentType = (ResidentType)request.ResidentType,
             Status = ResidentStatus.PendingOtpVerification,
             IsActive = true,
@@ -59,6 +59,12 @@ public class OnboardingService : IOnboardingService
             IsRegistrationCompleted = false,
             CreatedAt = DateTime.UtcNow
         };
+        // because you removed roleid from the user right Assign role via UserRoles (THIS IS THE KEY FIX)
+        user.UserRoles.Add(new UserRole
+        {
+            UserId = user.Id,
+            RoleId = role.Id
+        });
 
         // Use YOUR pattern: AddAsync + SaveChangesAsync
         await UserRepo.AddAsync(user);
@@ -232,11 +238,11 @@ public class OnboardingService : IOnboardingService
     {
         var roleName = residentType switch
         {
-             ResidentType.Owner => UserRole.ResidentOwner,
-          //  ResidentType.Owner => UserRole.Owner,
+            ResidentType.Owner => RoleNames.ResidentOwner,
+            //  ResidentType.Owner => UserRole.Owner,
 
-            ResidentType.Tenant => UserRole.Tenant,
-            ResidentType.Staff => UserRole.Security,
+            ResidentType.Tenant => RoleNames.Tenant,
+            ResidentType.Staff => RoleNames.Security,
             _ => null
         };
 

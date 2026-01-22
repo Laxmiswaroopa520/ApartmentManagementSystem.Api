@@ -1,6 +1,73 @@
 ﻿using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class UserFlatMappingRepository : IUserFlatMappingRepository
+    {
+        private readonly AppDbContext _dbContext;
+
+        public UserFlatMappingRepository(AppDbContext context)
+        {
+            _dbContext = context;
+        }
+
+        public async Task<List<UserFlatMapping>> GetByUserIdAsync(Guid userId)
+        {
+            return await _dbContext.UserFlatMappings
+                .Include(m => m.Flat)
+                    .ThenInclude(f => f.Apartment)
+                .Where(m => m.UserId == userId && m.IsActive)
+                .ToListAsync();
+        }
+
+        public async Task<List<UserFlatMapping>> GetByFlatIdAsync(Guid flatId)
+        {
+            return await _dbContext.UserFlatMappings
+                .Include(m => m.User)
+                    .ThenInclude(u => u.UserRoles)
+                        .ThenInclude(ur => ur.Role)
+                .Where(m => m.FlatId == flatId && m.IsActive)
+                .ToListAsync();
+        }
+
+        public async Task AddAsync(UserFlatMapping mapping)
+        {
+            await _dbContext.UserFlatMappings.AddAsync(mapping);
+        }
+
+        public async Task<UserFlatMapping> CreateAsync(UserFlatMapping mapping)
+        {
+            await AddAsync(mapping);
+            await SaveChangesAsync();
+            return mapping;
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _dbContext.SaveChangesAsync();
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 
@@ -50,3 +117,4 @@ using ApartmentManagementSystem.Application.Interfaces.Repositories;
             }
         }
     }
+*/

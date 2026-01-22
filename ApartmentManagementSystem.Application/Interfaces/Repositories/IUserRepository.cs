@@ -29,6 +29,7 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
             Task<bool> PhoneExistsAsync(string phone);
             Task<bool> UsernameExistsAsync(string username);
             Task UpdateAsync(User user);
-        }
+        Task<User?> GetByUsernameWithRolesAsync(string username);//added new method
+    }
 
     }

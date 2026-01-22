@@ -40,20 +40,21 @@ namespace ApartmentManagementSystem.Application.Services
                  }
                  };
              }*/
-
         public async Task<AdminDashboardDto> GetAdminDashboardAsync(Guid userId)
         {
-            var user = await UserRepo.GetByIdAsync(userId);
+            var user = await UserRepo.GetByIdAsync(userId)
+                ?? throw new Exception("User not found");
 
-            if (user == null)
-                throw new Exception("User not found");
+            var roleName = user.UserRoles
+                .Select(ur => ur.Role.Name)
+                .FirstOrDefault() ?? "SuperAdmin";
 
             var stats = await GetDashboardStatsAsync();
 
             return new AdminDashboardDto
             {
                 FullName = user.FullName ?? "Admin",
-                Role = user.Role?.Name ?? "SuperAdmin",
+                Role = roleName,
                 Stats = stats,
                 RecentActivities = new List<RecentActivityDto>
         {
@@ -67,6 +68,32 @@ namespace ApartmentManagementSystem.Application.Services
             };
         }
 
+        /*  public async Task<AdminDashboardDto> GetAdminDashboardAsync(Guid userId)
+          {
+              var user = await UserRepo.GetByIdAsync(userId);
+
+              if (user == null)
+                  throw new Exception("User not found");
+
+              var stats = await GetDashboardStatsAsync();
+
+              return new AdminDashboardDto
+              {
+                  FullName = user.FullName ?? "Admin",
+                  Role = user.Role?.Name ?? "SuperAdmin",
+                  Stats = stats,
+                  RecentActivities = new List<RecentActivityDto>
+          {
+              new RecentActivityDto
+              {
+                  Activity = "System initialized",
+                  Timestamp = DateTime.UtcNow,
+                  Type = "System"
+              }
+          }
+              };
+          }
+        */
 
         /*     public async Task<OwnerDashboardDto> GetOwnerDashboardAsync(Guid userId)
              {

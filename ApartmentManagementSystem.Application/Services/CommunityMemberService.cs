@@ -28,7 +28,7 @@ namespace ApartmentManagementSystem.Application.Services
         public async Task<CommunityMemberDto> AssignCommunityRoleAsync(
             AssignCommunityRoleDto dto, Guid assignedBy)
         {
-            if (!UserRole.GetCommunityRoles().Contains(dto.CommunityRole))
+            if (!RoleNames.GetCommunityRoles().Contains(dto.CommunityRole))
                 throw new Exception("Invalid community role");
 
             var exists = await _repository.CommunityRoleExistsAsync(dto.CommunityRole);

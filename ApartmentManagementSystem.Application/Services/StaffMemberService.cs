@@ -32,7 +32,7 @@ namespace ApartmentManagementSystem.Application.Services
         public async Task<StaffMemberDto> CreateStaffMemberAsync(
             CreateStaffMemberDto dto, Guid createdBy)
         {
-            if (!UserRole.GetStaffRoles().Contains(dto.StaffType))
+            if (!RoleNames.GetStaffRoles().Contains(dto.StaffType))
                 throw new Exception($"Invalid staff type: {dto.StaffType}");
 
             var phoneExists = await _repository.PhoneExistsAsync(dto.Phone);

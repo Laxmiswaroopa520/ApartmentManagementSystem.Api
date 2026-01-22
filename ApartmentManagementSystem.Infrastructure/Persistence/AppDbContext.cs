@@ -3,9 +3,7 @@ using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 
-using ApartmentManagementSystem.Domain.Constants;
-using ApartmentManagementSystem.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace ApartmentManagementSystem.Infrastructure.Persistence
 {
@@ -23,6 +21,7 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
         public DbSet<UserOtp> UserOtps => Set<UserOtp>();
         public DbSet<UserInvite> UserInvites => Set<UserInvite>();
         public DbSet<StaffMember> StaffMembers { get; set; }
+        public DbSet<UserRole> UserRoles => Set<UserRole>();//for many users can have many roles..
 
         // =========================
         // PHASE 2 DB SETS
@@ -34,6 +33,21 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // USER ↔ ROLE MANY-TO-MANY
+            modelBuilder.Entity<UserRole>()
+                .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId);
+
 
             // Apply Fluent configs from IEntityTypeConfiguration<>
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
@@ -189,11 +203,17 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin@123"),
                 PrimaryPhone = "9999999999",
                 Email = "admin@apartment.com",
-                RoleId = SystemRoleIds.SuperAdmin,
+             //   RoleId = SystemRoleIds.SuperAdmin,
                 IsActive = true,
                 IsOtpVerified = true,
                 IsRegistrationCompleted = true,
                 CreatedAt = DateTime.UtcNow
+            });
+            // THIS is where role is assigned now
+            modelBuilder.Entity<UserRole>().HasData(new UserRole
+            {
+                UserId = adminUserId,
+                RoleId = SystemRoleIds.SuperAdmin
             });
         }
     }

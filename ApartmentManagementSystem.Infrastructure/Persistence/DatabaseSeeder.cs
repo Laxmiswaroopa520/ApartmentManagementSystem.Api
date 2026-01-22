@@ -25,26 +25,26 @@ public class DatabaseSeeder
         var rolesToSeed = new List<(string Name, string Description)>
         {
             // System Roles
-            (UserRole.SuperAdmin, "Super Administrator with full system access"),
-            (UserRole.Manager, "Manager with administrative privileges"),
+            (RoleNames.SuperAdmin, "Super Administrator with full system access"),
+            (RoleNames.Manager, "Manager with administrative privileges"),
             
             // Community Roles
-            (UserRole.President, "Community President - Leadership role"),
-            (UserRole.Secretary, "Community Secretary - Administrative role"),
-            (UserRole.Treasurer, "Community Treasurer - Financial management role"),
+            (RoleNames.President, "Community President - Leadership role"),
+            (RoleNames.Secretary, "Community Secretary - Administrative role"),
+            (RoleNames.Treasurer, "Community Treasurer - Financial management role"),
             
             // Resident Roles
-            (UserRole.ResidentOwner, "Resident Owner of the flat"),
-            (UserRole.Tenant, "Tenant renting the flat"),
+            (RoleNames.ResidentOwner, "Resident Owner of the flat"),
+            (RoleNames.Tenant, "Tenant renting the flat"),
             
             // Staff Roles
-            (UserRole.Security, "Security personnel"),
-            (UserRole.Plumber, "Plumber staff"),
-            (UserRole.Electrician, "Electrician staff"),
-            (UserRole.Carpenter, "Carpenter staff"),
-            (UserRole.Sweeper, "Cleaning staff"),
-            (UserRole.Gardener, "Gardening staff"),
-            (UserRole.MaintenanceStaff, "General maintenance staff")
+            (RoleNames.Security, "Security personnel"),
+            (RoleNames.Plumber, "Plumber staff"),
+            (RoleNames.Electrician, "Electrician staff"),
+            (RoleNames.Carpenter, "Carpenter staff"),
+            (RoleNames.Sweeper, "Cleaning staff"),
+            (RoleNames.Gardener, "Gardening staff"),
+            (RoleNames.MaintenanceStaff, "General maintenance staff")
         };
 
         foreach (var (name, description) in rolesToSeed)

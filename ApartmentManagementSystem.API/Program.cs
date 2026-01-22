@@ -8,17 +8,21 @@ using ApartmentManagementSystem.API.Policies;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using ApartmentManagementSystem.Application.Services;
+using ApartmentManagementSystem.Infrastructure.Email;
 using ApartmentManagementSystem.Infrastructure.OTP;
 using ApartmentManagementSystem.Infrastructure.Persistence;
 using ApartmentManagementSystem.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ApartmentManagementSystem.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using ApartmentManagementSystem.Infrastructure.Email;
 
 var builder = WebApplication.CreateBuilder(args);
-
+//Add services to the container
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 // DATABASE
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -37,6 +41,7 @@ builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository
 builder.Services.AddScoped<IFlatRepository, FlatRepository>();
 builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
 builder.Services.AddScoped<IFloorRepository, FloorRepository>();
+builder.Services.AddScoped<IEnhancedDashboardRepository, EnhancedDashboardRepository>();
 // Register AdminResidentService
 builder.Services.AddScoped<IAdminResidentService, AdminResidentService>();
 //builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
@@ -48,7 +53,9 @@ builder.Services.AddScoped<IOnboardingService, OnboardingService>();
 builder.Services.AddScoped<IOtpService, OtpService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ISmsService, SmsService>();
-//egister new services in your API project
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+//Register new services in your API project
 builder.Services.AddScoped<ICommunityMemberService, CommunityMemberService>();
 builder.Services.AddScoped<IStaffMemberService, StaffMemberService>();
 builder.Services.AddScoped<IResidentManagementService, ResidentManagementService>();
@@ -56,9 +63,7 @@ builder.Services.AddScoped<IEnhancedDashboardService, EnhancedDashboardService>(
 // Phase 2
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<ICommunityMemberRepository, CommunityMemberRepository>();
-builder.Services.AddScoped<ICommunityMemberService, CommunityMemberService>();
 builder.Services.AddScoped<IStaffMemberRepository, StaffMemberRepository>();
-builder.Services.AddScoped<IStaffMemberService, StaffMemberService>();
 builder.Services.AddScoped<IResidentManagementRepository, ResidentManagementRepository>();
 builder.Services.AddScoped<IResidentManagementService, ResidentManagementService>();
 
