@@ -24,7 +24,6 @@ public class AuthService : IAuthService
         Users = users;
         Config = config;
     }
-
     public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
     {
         var user = await Users.GetByUsernameWithRolesAsync(request.Username)
@@ -33,14 +32,20 @@ public class AuthService : IAuthService
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             throw new UnauthorizedAccessException("Invalid credentials");
 
-        // Base claims
-        var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.FullName)
-        };
+        //  STATUS CHECK  here like whether the user is active or inactive..
+        if (!user.IsActive)   // or user.Status != UserStatus.Active
+            throw new UnauthorizedAccessException(
+                "Your account is inactive. Please contact the administrator."
+            );
 
-        // Add ONE role claim per role
+        // Base claims (UNCHANGED)
+        var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Name, user.FullName)
+    };
+
+        // Add ONE role claim per role (UNCHANGED)
         foreach (var role in user.UserRoles.Select(ur => ur.Role.Name))
         {
             claims.Add(new Claim(ClaimTypes.Role, role));
@@ -64,13 +69,65 @@ public class AuthService : IAuthService
             UserId = user.Id,
             FullName = user.FullName,
 
-            //  Primary role (UI convenience)
+            // Primary role (UI convenience) (UNCHANGED)
             Role = user.UserRoles
                 .Select(ur => ur.Role.Name)
                 .FirstOrDefault()
         };
     }
+    public async Task<bool> IsUserActiveAsync(Guid userId)
+    {
+        var user = await Users.GetByIdAsync(userId);
+        return user != null && user.IsActive;
+    }
 }
+
+
+    /*  public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
+      {
+          var user = await Users.GetByUsernameWithRolesAsync(request.Username)
+              ?? throw new UnauthorizedAccessException("Invalid credentials");
+
+          if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+              throw new UnauthorizedAccessException("Invalid credentials");
+
+          // Base claims
+          var claims = new List<Claim>
+          {
+              new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+              new Claim(ClaimTypes.Name, user.FullName)
+          };
+
+          // Add ONE role claim per role
+          foreach (var role in user.UserRoles.Select(ur => ur.Role.Name))
+          {
+              claims.Add(new Claim(ClaimTypes.Role, role));
+          }
+
+          var key = new SymmetricSecurityKey(
+              Encoding.UTF8.GetBytes(Config["JwtSettings:SecretKey"]!)
+          );
+
+          var token = new JwtSecurityToken(
+              issuer: Config["JwtSettings:Issuer"],
+              audience: Config["JwtSettings:Audience"],
+              claims: claims,
+              expires: DateTime.UtcNow.AddHours(24),
+              signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+          );
+
+          return new LoginResponseDto
+          {
+              Token = new JwtSecurityTokenHandler().WriteToken(token),
+              UserId = user.Id,
+              FullName = user.FullName,
+
+              //  Primary role (UI convenience)
+              Role = user.UserRoles
+                  .Select(ur => ur.Role.Name)
+                  .FirstOrDefault()
+          };*/
+
 
 
 

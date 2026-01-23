@@ -13,22 +13,19 @@ namespace ApartmentManagementSystem.API.Controllers;
 [Authorize(Roles = "SuperAdmin,Manager")]
 public class CommunityMembersApiController : ControllerBase
 {
-    private readonly ICommunityMemberService _communityService;
+    private readonly ICommunityMemberService CommunityService;
 
     public CommunityMembersApiController(ICommunityMemberService communityService)
     {
-        _communityService = communityService;
+        CommunityService = communityService;
     }
-
-    /// <summary>
     /// Get all community members (President, Secretary, Treasurer)
-    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAllCommunityMembers()
     {
         try
         {
-            var members = await _communityService.GetAllCommunityMembersAsync();
+            var members = await CommunityService.GetAllCommunityMembersAsync();
             return Ok(ApiResponse<List<CommunityMemberDto>>.SuccessResponse(
                 members,
                 "Community members retrieved successfully"
@@ -40,15 +37,13 @@ public class CommunityMembersApiController : ControllerBase
         }
     }
 
-    /// <summary>
     /// Get residents eligible for community roles (owners with flats assigned)
-    /// </summary>
     [HttpGet("eligible-residents")]
     public async Task<IActionResult> GetEligibleResidents()
     {
         try
         {
-            var residents = await _communityService.GetEligibleResidentsForCommunityRoleAsync();
+            var residents = await CommunityService.GetEligibleResidentsForCommunityRoleAsync();
             return Ok(ApiResponse<List<ResidentListDto>>.SuccessResponse(
                 residents,
                 "Eligible residents retrieved successfully"
@@ -59,17 +54,14 @@ public class CommunityMembersApiController : ControllerBase
             return BadRequest(ApiResponse<List<ResidentListDto>>.ErrorResponse(ex.Message));
         }
     }
-
-    /// <summary>
     /// Assign community role to a resident
-    /// </summary>
     [HttpPost("assign-role")]
     public async Task<IActionResult> AssignCommunityRole([FromBody] AssignCommunityRoleDto dto)
     {
         try
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _communityService.AssignCommunityRoleAsync(dto, userId);
+            var result = await CommunityService.AssignCommunityRoleAsync(dto, userId);
 
             return Ok(ApiResponse<CommunityMemberDto>.SuccessResponse(
                 result,
@@ -82,16 +74,14 @@ public class CommunityMembersApiController : ControllerBase
         }
     }
 
-    /// <summary>
     /// Remove community role from a member
-    /// </summary>
     [HttpPost("remove-role")]
     public async Task<IActionResult> RemoveCommunityRole([FromBody] RemoveCommunityRoleDto dto)
     {
         try
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _communityService.RemoveCommunityRoleAsync(dto, userId);
+            var result = await CommunityService.RemoveCommunityRoleAsync(dto, userId);
 
             return Ok(ApiResponse<bool>.SuccessResponse(
                 result,
@@ -103,16 +93,13 @@ public class CommunityMembersApiController : ControllerBase
             return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
         }
     }
-
-    /// <summary>
     /// Get specific community member details
-    /// </summary>
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetCommunityMember(Guid userId)
     {
         try
         {
-            var member = await _communityService.GetCommunityMemberByUserIdAsync(userId);
+            var member = await CommunityService.GetCommunityMemberByUserIdAsync(userId);
 
             if (member == null)
             {

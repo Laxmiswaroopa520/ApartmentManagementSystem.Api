@@ -12,16 +12,13 @@ namespace ApartmentManagementSystem.API.Controllers;
 [Authorize]
 public class EnhancedDashboardApiController : ControllerBase
 {
-    private readonly IEnhancedDashboardService _dashboardService;
+    private readonly IEnhancedDashboardService DashboardService;
 
     public EnhancedDashboardApiController(IEnhancedDashboardService dashboardService)
     {
-        _dashboardService = dashboardService;
+        DashboardService = dashboardService;
     }
-
-    /// <summary>
     /// Get enhanced admin dashboard with all features
-    /// </summary>
     [HttpGet("admin")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetEnhancedAdminDashboard()
@@ -29,7 +26,7 @@ public class EnhancedDashboardApiController : ControllerBase
         try
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var dashboard = await _dashboardService.GetEnhancedAdminDashboardAsync(userId);
+            var dashboard = await DashboardService.GetEnhancedAdminDashboardAsync(userId);
 
             return Ok(ApiResponse<EnhancedAdminDashboardDto>.SuccessResponse(
                 dashboard,
@@ -41,10 +38,7 @@ public class EnhancedDashboardApiController : ControllerBase
             return BadRequest(ApiResponse<EnhancedAdminDashboardDto>.ErrorResponse(ex.Message));
         }
     }
-
-    /// <summary>
     /// Get staff member dashboard (minimal)
-    /// </summary>
     [HttpGet("staff")]
     [Authorize(Roles = "Security,Plumber,Electrician,Carpenter,Sweeper,Gardener,MaintenanceStaff")]
     public async Task<IActionResult> GetStaffDashboard()
@@ -52,7 +46,7 @@ public class EnhancedDashboardApiController : ControllerBase
         try
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var dashboard = await _dashboardService.GetStaffDashboardAsync(userId);
+            var dashboard = await DashboardService.GetStaffDashboardAsync(userId);
 
             return Ok(ApiResponse<StaffDashboardDto>.SuccessResponse(
                 dashboard,
@@ -65,16 +59,14 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
-    /// <summary>
     /// Get advanced statistics for admin dashboard
-    /// </summary>
     [HttpGet("advanced-stats")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetAdvancedDashboardStats()
     {
         try
         {
-            var stats = await _dashboardService.GetAdvancedDashboardStatsAsync();
+            var stats = await DashboardService.GetAdvancedDashboardStatsAsync();
 
             return Ok(ApiResponse<AdvancedDashboardStatsDto>.SuccessResponse(
                 stats,
@@ -87,16 +79,14 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
-    /// <summary>
     /// Get financial summary (for Treasurer and SuperAdmin)
-    /// </summary>
     [HttpGet("financial-summary")]
     [Authorize(Roles = "SuperAdmin,Treasurer")]
     public async Task<IActionResult> GetFinancialSummary()
     {
         try
         {
-            var summary = await _dashboardService.GetFinancialSummaryAsync();
+            var summary = await DashboardService.GetFinancialSummaryAsync();
 
             return Ok(ApiResponse<FinancialSummaryDto>.SuccessResponse(
                 summary,
@@ -108,17 +98,14 @@ public class EnhancedDashboardApiController : ControllerBase
             return BadRequest(ApiResponse<FinancialSummaryDto>.ErrorResponse(ex.Message));
         }
     }
-
-    /// <summary>
     /// Get quick actions based on user role
-    /// </summary>
-    [HttpGet("quick-actions")]
+     [HttpGet("quick-actions")]
     public async Task<IActionResult> GetQuickActions()
     {
         try
         {
             var role = User.FindFirstValue(ClaimTypes.Role) ?? "";
-            var actions = await _dashboardService.GetQuickActionsForRoleAsync(role);
+            var actions = await DashboardService.GetQuickActionsForRoleAsync(role);
 
             return Ok(ApiResponse<List<QuickActionDto>>.SuccessResponse(
                 actions,

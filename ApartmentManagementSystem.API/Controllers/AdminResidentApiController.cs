@@ -2,7 +2,6 @@
 using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Services;
-using ApartmentManagementSystem.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,11 +12,11 @@ namespace ApartmentManagementSystem.API.Controllers;
 [Authorize(Roles = "SuperAdmin,Manager")]
 public class AdminResidentApiController : ControllerBase
 {
-    private readonly IAdminResidentService _adminResidentService;
+    private readonly IAdminResidentService AdminResidentService;
 
     public AdminResidentApiController(IAdminResidentService adminResidentService)
     {
-        _adminResidentService = adminResidentService;
+        AdminResidentService = adminResidentService;
     }
 
     [HttpGet("pending")]
@@ -25,7 +24,7 @@ public class AdminResidentApiController : ControllerBase
     {
         try
         {
-            var residents = await _adminResidentService.GetPendingResidentsAsync();
+            var residents = await AdminResidentService.GetPendingResidentsAsync();
             return Ok(ApiResponse<List<PendingResidentDto>>.SuccessResponse(residents));
         }
         catch (Exception ex)
@@ -39,7 +38,7 @@ public class AdminResidentApiController : ControllerBase
     {
         try
         {
-            var result = await _adminResidentService.AssignFlatToResidentAsync(dto);
+            var result = await AdminResidentService.AssignFlatToResidentAsync(dto);
             return Ok(ApiResponse<AssignFlatResponseDto>.SuccessResponse(result));
         }
         catch (Exception ex)
@@ -52,7 +51,7 @@ public class AdminResidentApiController : ControllerBase
     {
         try
         {
-            var floors = await _adminResidentService.GetAllFloorsAsync();
+            var floors = await AdminResidentService.GetAllFloorsAsync();
             return Ok(ApiResponse<List<FloorDto>>.SuccessResponse(floors));
         }
         catch (Exception ex)
@@ -66,7 +65,7 @@ public class AdminResidentApiController : ControllerBase
     {
         try
         {
-            var flats = await _adminResidentService.GetVacantFlatsByFloorAsync(floorId);
+            var flats = await AdminResidentService.GetVacantFlatsByFloorAsync(floorId);
             return Ok(ApiResponse<List<FlatDto>>.SuccessResponse(flats));
         }
         catch (Exception ex)

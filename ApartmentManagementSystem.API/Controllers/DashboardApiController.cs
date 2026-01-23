@@ -7,8 +7,6 @@ using System.Security.Claims;
 
 namespace ApartmentManagementSystem.API.Controllers
 {
-
-
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]

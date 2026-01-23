@@ -4,17 +4,17 @@
 
     public class RequestLoggingMiddleware
     {
-        private readonly RequestDelegate _next;
+        private readonly RequestDelegate Next;
 
         public RequestLoggingMiddleware(RequestDelegate next)
         {
-            _next = next;
+            Next = next;
         }
 
         public async Task Invoke(HttpContext context)
         {
             Console.WriteLine($"[{DateTime.UtcNow}] {context.Request.Method} {context.Request.Path}");
-            await _next(context);
+            await Next(context);
         }
     }
 }

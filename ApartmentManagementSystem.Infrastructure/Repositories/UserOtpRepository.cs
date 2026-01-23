@@ -4,12 +4,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
     using ApartmentManagementSystem.Application.Interfaces.Repositories;
     using ApartmentManagementSystem.Domain.Entities;
     using ApartmentManagementSystem.Infrastructure.Persistence;
-   // using global::ApartmentManagementSystem.Application.Interfaces.Repositories;
-   // using global::ApartmentManagementSystem.Domain.Entities;
-   // using global::ApartmentManagementSystem.Infrastructure.Persistence;
     using Microsoft.EntityFrameworkCore;
-
-   // namespace ApartmentManagementSystem.Infrastructure.Repositories;
 
     public class UserOtpRepository : IUserOtpRepository
     {

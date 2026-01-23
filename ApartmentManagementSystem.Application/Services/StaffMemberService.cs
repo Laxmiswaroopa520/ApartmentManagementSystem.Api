@@ -7,26 +7,26 @@ namespace ApartmentManagementSystem.Application.Services
 {
     public class StaffMemberService : IStaffMemberService
     {
-        private readonly IStaffMemberRepository _repository;
+        private readonly IStaffMemberRepository StaffMemberRepository;
 
         public StaffMemberService(IStaffMemberRepository repository)
         {
-            _repository = repository;
+            StaffMemberRepository = repository;
         }
 
         public async Task<List<StaffMemberDto>> GetAllStaffMembersAsync()
         {
-            return await _repository.GetAllAsync();
+            return await StaffMemberRepository.GetAllAsync();
         }
 
         public async Task<List<StaffMemberDto>> GetStaffMembersByTypeAsync(string staffType)
         {
-            return await _repository.GetByTypeAsync(staffType);
+            return await StaffMemberRepository.GetByTypeAsync(staffType);
         }
 
         public async Task<StaffMemberDto?> GetStaffMemberByIdAsync(Guid staffId)
         {
-            return await _repository.GetByIdAsync(staffId);
+            return await StaffMemberRepository.GetByIdAsync(staffId);
         }
 
         public async Task<StaffMemberDto> CreateStaffMemberAsync(
@@ -35,33 +35,33 @@ namespace ApartmentManagementSystem.Application.Services
             if (!RoleNames.GetStaffRoles().Contains(dto.StaffType))
                 throw new Exception($"Invalid staff type: {dto.StaffType}");
 
-            var phoneExists = await _repository.PhoneExistsAsync(dto.Phone);
+            var phoneExists = await StaffMemberRepository.PhoneExistsAsync(dto.Phone);
             if (phoneExists)
                 throw new Exception("Staff member with this phone number already exists");
 
-            await _repository.CreateAsync(dto, createdBy);
+            await StaffMemberRepository.CreateAsync(dto, createdBy);
 
-            var staff = await _repository.GetByTypeAsync(dto.StaffType);
+            var staff = await StaffMemberRepository.GetByTypeAsync(dto.StaffType);
             return staff.First(s => s.Phone == dto.Phone);
         }
 
         public async Task<StaffMemberDto> UpdateStaffMemberAsync(
             UpdateStaffMemberDto dto, Guid updatedBy)
         {
-            await _repository.UpdateAsync(dto, updatedBy);
+            await StaffMemberRepository.UpdateAsync(dto, updatedBy);
 
-            return (await _repository.GetByIdAsync(dto.StaffId))!;
+            return (await StaffMemberRepository.GetByIdAsync(dto.StaffId))!;
         }
 
         public async Task<bool> DeactivateStaffMemberAsync(Guid staffId, Guid deactivatedBy)
         {
-            await _repository.SetActiveStatusAsync(staffId, false, deactivatedBy);
+            await StaffMemberRepository.SetActiveStatusAsync(staffId, false, deactivatedBy);
             return true;
         }
 
         public async Task<bool> ActivateStaffMemberAsync(Guid staffId, Guid activatedBy)
         {
-            await _repository.SetActiveStatusAsync(staffId, true, activatedBy);
+            await StaffMemberRepository.SetActiveStatusAsync(staffId, true, activatedBy);
             return true;
         }
     }

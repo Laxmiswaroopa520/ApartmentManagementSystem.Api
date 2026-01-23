@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ApartmentManagementSystem.Domain.Enums
 {
   public  enum ResidentType
     {
-       Owner = 1,
+        [Display(Name = "Resident Owner")]
+        Owner = 1,
         Tenant = 2,
         Staff = 3
     }

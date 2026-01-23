@@ -1,26 +1,25 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Dashboard;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
-using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Domain.Enums;
 
 namespace ApartmentManagementSystem.Application.Services;
 
 public class EnhancedDashboardService : IEnhancedDashboardService
 {
-    private readonly IUserRepository _userRepo;
-    private readonly IEnhancedDashboardRepository _dashboardRepo;
+    private readonly IUserRepository UserRepo;
+    private readonly IEnhancedDashboardRepository DashboardRepo;
 
     public EnhancedDashboardService(
         IUserRepository userRepo,
         IEnhancedDashboardRepository dashboardRepo)
     {
-        _userRepo = userRepo;
-        _dashboardRepo = dashboardRepo;
+        UserRepo = userRepo;
+        DashboardRepo = dashboardRepo;
     }
     public async Task<EnhancedAdminDashboardDto> GetEnhancedAdminDashboardAsync(Guid userId)
     {
-        var user = await _userRepo.GetByIdAsync(userId)
+        var user = await UserRepo.GetByIdAsync(userId)
             ?? throw new Exception("User not found");
 
         // Get all role names
@@ -30,15 +29,15 @@ public class EnhancedDashboardService : IEnhancedDashboardService
 
         var primaryRole = roles.FirstOrDefault() ?? "User";
 
-        var stats = await _dashboardRepo.GetAdvancedDashboardStatsAsync();
-        var recentActivities = await _dashboardRepo.GetRecentActivitiesAsync();
+        var stats = await DashboardRepo.GetAdvancedDashboardStatsAsync();
+        var recentActivities = await DashboardRepo.GetRecentActivitiesAsync();
         var quickActions = await GetQuickActionsForRolesAsync(roles);
 
         FinancialSummaryDto? financialSummary = null;
 
         if (roles.Contains(RoleNames.SuperAdmin) || roles.Contains(RoleNames.Treasurer))
         {
-            financialSummary = await _dashboardRepo.GetFinancialSummaryAsync();
+            financialSummary = await DashboardRepo.GetFinancialSummaryAsync();
         }
 
         return new EnhancedAdminDashboardDto
@@ -90,17 +89,17 @@ public class EnhancedDashboardService : IEnhancedDashboardService
         */
     public async Task<StaffDashboardDto> GetStaffDashboardAsync(Guid userId)
     {
-        return await _dashboardRepo.GetStaffDashboardAsync(userId);
+        return await DashboardRepo.GetStaffDashboardAsync(userId);
     }
 
     public async Task<AdvancedDashboardStatsDto> GetAdvancedDashboardStatsAsync()
     {
-        return await _dashboardRepo.GetAdvancedDashboardStatsAsync();
+        return await DashboardRepo.GetAdvancedDashboardStatsAsync();
     }
 
     public async Task<FinancialSummaryDto> GetFinancialSummaryAsync()
     {
-        return await _dashboardRepo.GetFinancialSummaryAsync();
+        return await DashboardRepo.GetFinancialSummaryAsync();
     }
 
     // THIS NOW IMPLEMENTS THE INTERFACE

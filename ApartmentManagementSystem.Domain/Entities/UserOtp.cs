@@ -1,5 +1,4 @@
-﻿
-namespace ApartmentManagementSystem.Domain.Entities;
+﻿namespace ApartmentManagementSystem.Domain.Entities;
 
 public class UserOtp
 {

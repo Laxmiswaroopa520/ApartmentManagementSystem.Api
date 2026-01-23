@@ -2,9 +2,6 @@
 using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-
-
-
 namespace ApartmentManagementSystem.Infrastructure.Persistence
 {
     public class AppDbContext : DbContext
@@ -12,9 +9,8 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { }
 
-        // =========================
-        // PHASE 1 DB SETS
-        // =========================
+        
+        // DB SETS
         public DbSet<Floor> Floors { get; set; }
         public DbSet<User> Users => Set<User>();
         public DbSet<Role> Roles => Set<Role>();
@@ -23,9 +19,6 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
         public DbSet<StaffMember> StaffMembers { get; set; }
         public DbSet<UserRole> UserRoles => Set<UserRole>();//for many users can have many roles..
 
-        // =========================
-        // PHASE 2 DB SETS
-        // =========================
         public DbSet<Apartment> Apartments => Set<Apartment>();
         public DbSet<Flat> Flats => Set<Flat>();
         public DbSet<UserFlatMapping> UserFlatMappings => Set<UserFlatMapping>();
@@ -52,9 +45,9 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
             // Apply Fluent configs from IEntityTypeConfiguration<>
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-            // =========================
+
             // STAFF MEMBER CONFIG
-            // =========================
+            
             modelBuilder.Entity<StaffMember>(entity =>
             {
                 entity.HasKey(e => e.Id);
@@ -86,9 +79,9 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
                 entity.HasIndex(e => e.StaffType);
             });
 
-            // =========================
+       
             // MASTER DATA SEEDING
-            // =========================
+  
             SeedRoles(modelBuilder);
             SeedSuperAdmin(modelBuilder);
             SeedDemoApartment(modelBuilder);
@@ -96,9 +89,9 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
             SeedFlats(modelBuilder);
         }
 
-        // =========================
+      
         // DEMO APARTMENT SEEDING
-        // =========================
+       
         private static void SeedDemoApartment(ModelBuilder modelBuilder)
         {
             var apartmentId = Guid.Parse("30000000-0000-0000-0000-000000000001");
@@ -113,9 +106,7 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
             });
         }
 
-        // =========================
         // FLOOR SEEDING
-        // =========================
         private static void SeedFloors(ModelBuilder modelBuilder)
         {
             var apartmentId = Guid.Parse("30000000-0000-0000-0000-000000000001");
@@ -135,9 +126,8 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
             modelBuilder.Entity<Floor>().HasData(floors);
         }
 
-        // =========================
+      
         // FLAT SEEDING
-        // =========================
         private static void SeedFlats(ModelBuilder modelBuilder)
         {
             var apartmentId = Guid.Parse("30000000-0000-0000-0000-000000000001");
@@ -171,9 +161,9 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
             modelBuilder.Entity<Flat>().HasData(flats);
         }
 
-        // =========================
+        
         // ROLE SEEDING
-        // =========================
+
         private static void SeedRoles(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Role>().HasData(
@@ -188,9 +178,7 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
             );
         }
 
-        // =========================
         // SUPER ADMIN SEEDING
-        // =========================
         private static void SeedSuperAdmin(ModelBuilder modelBuilder)
         {
             var adminUserId = Guid.Parse("20000000-0000-0000-0000-000000000001");

@@ -12,6 +12,7 @@ public class ApiResponse<T>
     public string Message { get; set; } = string.Empty;
     public T? Data { get; set; }
     public List<string> Errors { get; set; } = new();
+    public string? ErrorCode { get; set; }      //this is added while login via inactive user
 
     public static ApiResponse<T> SuccessResponse(T data, string message = "Success")
     {
@@ -22,8 +23,20 @@ public class ApiResponse<T>
             Data = data
         };
     }
-
-    public static ApiResponse<T> ErrorResponse(string message, List<string>? errors = null)
+    public static ApiResponse<T> ErrorResponse(
+     string message,
+     string? errorCode = null,
+     List<string>? errors = null)
+    {
+        return new ApiResponse<T>
+        {
+            Success = false,
+            Message = message,
+            ErrorCode = errorCode,
+            Errors = errors ?? new List<string> { message }
+        };
+    }
+   /* public static ApiResponse<T> ErrorResponse(string message, List<string>? errors = null)
     {
         return new ApiResponse<T>
         {
@@ -31,5 +44,5 @@ public class ApiResponse<T>
             Message = message,
             Errors = errors ?? new List<string> { message }
         };
-    }
+    }*/
 }

@@ -8,22 +8,22 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext DBContext;
 
     public UserRepository(AppDbContext context)
     {
-        _context = context;
+        DBContext = context;
     }
 
     public async Task<User?> GetByUsernameAsync(string username)
     {
-        return await _context.Users
+        return await DBContext.Users
             .FirstOrDefaultAsync(u => u.Username == username);
     }
 
     public async Task<User?> GetByUsernameWithRolesAsync(string username)
     {
-        return await _context.Users
+        return await DBContext.Users
             .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
             .FirstOrDefaultAsync(u => u.Username == username);
@@ -31,7 +31,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByIdAsync(Guid id)
     {
-        return await _context.Users
+        return await DBContext.Users
             .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
             .FirstOrDefaultAsync(u => u.Id == id);
@@ -39,7 +39,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByPhoneAsync(string phone)
     {
-        return await _context.Users
+        return await DBContext.Users
             .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
             .FirstOrDefaultAsync(u => u.PrimaryPhone == phone);
@@ -47,33 +47,33 @@ public class UserRepository : IUserRepository
 
     public async Task AddAsync(User user)
     {
-        await _context.Users.AddAsync(user);
+        await DBContext.Users.AddAsync(user);
     }
 
     public async Task UpdateAsync(User user)
     {
-        _context.Users.Update(user);
-        await _context.SaveChangesAsync();
+        DBContext.Users.Update(user);
+        await DBContext.SaveChangesAsync();
     }
 
     public Task SaveChangesAsync()
-        => _context.SaveChangesAsync();
+        => DBContext.SaveChangesAsync();
 
     public async Task<bool> PhoneExistsAsync(string phone)
-        => await _context.Users.AnyAsync(u => u.PrimaryPhone == phone);
+        => await DBContext.Users.AnyAsync(u => u.PrimaryPhone == phone);
 
     public async Task<bool> UsernameExistsAsync(string username)
-        => await _context.Users.AnyAsync(u => u.Username == username);
+        => await DBContext.Users.AnyAsync(u => u.Username == username);
 
     public async Task<User?> GetByEmailAsync(string email)
     {
-        return await _context.Users
+        return await DBContext.Users
             .FirstOrDefaultAsync(u => u.Email == email);
     }
 
     public async Task<List<User>> GetPendingResidentsAsync()
     {
-        return await _context.Users
+        return await DBContext.Users
             .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
             .Where(u => u.Status == ResidentStatus.PendingFlatAllocation)

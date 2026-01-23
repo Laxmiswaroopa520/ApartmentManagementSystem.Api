@@ -4,13 +4,13 @@
 
     public class ExceptionHandlingMiddleware
     {
-        private readonly RequestDelegate _next;
+        private readonly RequestDelegate Next;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next) => _next = next;
+        public ExceptionHandlingMiddleware(RequestDelegate next) => Next = next;
 
         public async Task Invoke(HttpContext context)
         {
-            try { await _next(context); }
+            try { await Next(context); }
             catch (Exception ex)
             {
                 context.Response.StatusCode = 500;

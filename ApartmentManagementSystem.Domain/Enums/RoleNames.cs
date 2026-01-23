@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-// these are constant role names not stored in database..
+﻿// these are constant role names not stored in database..
 namespace ApartmentManagementSystem.Domain.Enums
 {
 
@@ -12,6 +7,7 @@ namespace ApartmentManagementSystem.Domain.Enums
         // SYSTEM ROLES (Platform level)
         public const string SuperAdmin = "SuperAdmin";
         public const string Manager = "Manager";
+        public const string Staff = "Staff";
 
         // COMMUNITY ROLES (Assigned by Admin/Manager - NOT during onboarding)
         public const string President = "President";

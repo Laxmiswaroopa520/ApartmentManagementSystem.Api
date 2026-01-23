@@ -1,5 +1,4 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Common;
-using ApartmentManagementSystem.Application.DTOs.Community;
 using ApartmentManagementSystem.Application.DTOs.Community.Resident_Management;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -13,23 +12,23 @@ namespace ApartmentManagementSystem.API.Controllers;
 [Authorize]
 public class ResidentManagementApiController : ControllerBase
 {
-    private readonly IResidentManagementService _residentService;
+    private readonly IResidentManagementService ResidentService;
 
     public ResidentManagementApiController(IResidentManagementService residentService)
     {
-        _residentService = residentService;
+        ResidentService = residentService;
     }
 
-    /// <summary>
+    
     /// Get all residents (Admin, President, Secretary, Treasurer can view)
-    /// </summary>
+ 
     [HttpGet]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetAllResidents()
     {
         try
         {
-            var residents = await _residentService.GetAllResidentsAsync();
+            var residents = await ResidentService.GetAllResidentsAsync();
             return Ok(ApiResponse<List<ResidentListDto>>.SuccessResponse(
                 residents,
                 "Residents retrieved successfully"
@@ -41,16 +40,14 @@ public class ResidentManagementApiController : ControllerBase
         }
     }
 
-    /// <summary>
     /// Get residents by type (Owner/Tenant)
-    /// </summary>
     [HttpGet("by-type/{residentType}")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetResidentsByType(string residentType)
     {
         try
         {
-            var residents = await _residentService.GetResidentsByTypeAsync(residentType);
+            var residents = await ResidentService.GetResidentsByTypeAsync(residentType);
             return Ok(ApiResponse<List<ResidentListDto>>.SuccessResponse(
                 residents,
                 $"{residentType} residents retrieved successfully"
@@ -62,16 +59,14 @@ public class ResidentManagementApiController : ControllerBase
         }
     }
 
-    /// <summary>
     /// Get detailed resident information
-    /// </summary>
     [HttpGet("{userId}")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetResidentDetail(Guid userId)
     {
         try
         {
-            var resident = await _residentService.GetResidentDetailAsync(userId);
+            var resident = await ResidentService.GetResidentDetailAsync(userId);
 
             if (resident == null)
             {
@@ -89,9 +84,7 @@ public class ResidentManagementApiController : ControllerBase
         }
     }
 
-    /// <summary>
     /// Deactivate resident account
-    /// </summary>
     [HttpPost("{userId}/deactivate")]
     [Authorize(Roles = "SuperAdmin,Manager")]
     public async Task<IActionResult> DeactivateResident(Guid userId)
@@ -99,7 +92,7 @@ public class ResidentManagementApiController : ControllerBase
         try
         {
             var currentUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _residentService.DeactivateResidentAsync(userId, currentUserId);
+            var result = await ResidentService.DeactivateResidentAsync(userId, currentUserId);
 
             return Ok(ApiResponse<bool>.SuccessResponse(
                 result,
@@ -112,9 +105,7 @@ public class ResidentManagementApiController : ControllerBase
         }
     }
 
-    /// <summary>
     /// Activate resident account
-    /// </summary>
     [HttpPost("{userId}/activate")]
     [Authorize(Roles = "SuperAdmin,Manager")]
     public async Task<IActionResult> ActivateResident(Guid userId)
@@ -122,7 +113,7 @@ public class ResidentManagementApiController : ControllerBase
         try
         {
             var currentUserId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _residentService.ActivateResidentAsync(userId, currentUserId);
+            var result = await ResidentService.ActivateResidentAsync(userId, currentUserId);
 
             return Ok(ApiResponse<bool>.SuccessResponse(
                 result,

@@ -7,16 +7,16 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
     public class UserFlatMappingRepository : IUserFlatMappingRepository
     {
-        private readonly AppDbContext _dbContext;
+        private readonly AppDbContext DbContext;
 
         public UserFlatMappingRepository(AppDbContext context)
         {
-            _dbContext = context;
+            DbContext = context;
         }
 
         public async Task<List<UserFlatMapping>> GetByUserIdAsync(Guid userId)
         {
-            return await _dbContext.UserFlatMappings
+            return await DbContext.UserFlatMappings
                 .Include(m => m.Flat)
                     .ThenInclude(f => f.Apartment)
                 .Where(m => m.UserId == userId && m.IsActive)
@@ -25,7 +25,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<List<UserFlatMapping>> GetByFlatIdAsync(Guid flatId)
         {
-            return await _dbContext.UserFlatMappings
+            return await DbContext.UserFlatMappings
                 .Include(m => m.User)
                     .ThenInclude(u => u.UserRoles)
                         .ThenInclude(ur => ur.Role)
@@ -35,7 +35,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task AddAsync(UserFlatMapping mapping)
         {
-            await _dbContext.UserFlatMappings.AddAsync(mapping);
+            await DbContext.UserFlatMappings.AddAsync(mapping);
         }
 
         public async Task<UserFlatMapping> CreateAsync(UserFlatMapping mapping)
@@ -47,7 +47,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task SaveChangesAsync()
         {
-            await _dbContext.SaveChangesAsync();
+            await DbContext.SaveChangesAsync();
         }
     }
 }

@@ -141,7 +141,7 @@ public class OnboardingService : IOnboardingService
         var invite = await InviteRepo.GetByPhoneAsync(request.PrimaryPhone);
         if (invite != null)
         {
-            await InviteRepo.UpdateStatusAsync(invite.Id, InviteStatus.OtpVerified); // ✅ FIXED
+            await InviteRepo.UpdateStatusAsync(invite.Id, InviteStatus.OtpVerified); 
         }
 
         return new VerifyOtpResponseDto
@@ -149,43 +149,10 @@ public class OnboardingService : IOnboardingService
             UserId = user.Id,
             FullName = user.FullName,
             Message = SuccessMessages.OtpVerified,
-            Success = true // ✅ ADDED
+            Success = true 
         };
     }
-    /*
-    public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto request)
-    {
-        var user = await _userRepository.GetByPhoneAsync(request.PrimaryPhone);
-        if (user == null)
-            throw new Exception(ErrorMessages.UserNotFound);
-
-        var isValid = await _otpService.ValidateOtpAsync(user.Id, request.OtpCode);
-        if (!isValid)
-            throw new Exception(ErrorMessages.InvalidOtp);
-
-        // Update status
-        user.IsOtpVerified = true;
-        user.Status = ResidentStatus.PendingRegistrationCompletion;
-
-        // Use YOUR pattern: UpdateAsync (which internally saves)
-        await _userRepository.UpdateAsync(user);
-
-        // Update invite
-        var invite = await _inviteRepository.GetByPhoneAsync(request.PrimaryPhone);
-        if (invite != null)
-        {
-            await _inviteRepository.UpdateStatusAsync(invite.Id, InviteStatus.OtpVerified);
-        }
-
-        return new VerifyOtpResponseDto
-        {
-            UserId = user.Id,
-            FullName = user.FullName,
-            Message = SuccessMessages.OtpVerified,
-            Success = true
-        };
-    }
-    */
+  
     public async Task<CompleteRegistrationResponseDto> CompleteRegistrationAsync(CompleteRegistrationDto request)
     {
         var user = await UserRepo.GetByPhoneAsync(request.PrimaryPhone);
@@ -233,7 +200,7 @@ public class OnboardingService : IOnboardingService
             Message = SuccessMessages.RegistrationCompleted
         };
     }
-
+    //staff   check here..
     private async Task<Role?> GetRoleForResidentType(ResidentType residentType)
     {
         var roleName = residentType switch
@@ -242,7 +209,8 @@ public class OnboardingService : IOnboardingService
             //  ResidentType.Owner => UserRole.Owner,
 
             ResidentType.Tenant => RoleNames.Tenant,
-            ResidentType.Staff => RoleNames.Security,
+            // ResidentType.Staff => RoleNames.Security,
+            ResidentType.Staff => RoleNames.Staff,
             _ => null
         };
 

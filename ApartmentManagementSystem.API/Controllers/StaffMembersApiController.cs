@@ -12,22 +12,20 @@ namespace ApartmentManagementSystem.API.Controllers;
 [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
 public class StaffMembersApiController : ControllerBase
 {
-    private readonly IStaffMemberService _staffService;
+    private readonly IStaffMemberService StaffService;
 
     public StaffMembersApiController(IStaffMemberService staffService)
     {
-        _staffService = staffService;
+        StaffService = staffService;
     }
 
-    /// <summary>
     /// Get all staff members
-    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAllStaffMembers()
     {
         try
         {
-            var staff = await _staffService.GetAllStaffMembersAsync();
+            var staff = await StaffService.GetAllStaffMembersAsync();
             return Ok(ApiResponse<List<StaffMemberDto>>.SuccessResponse(
                 staff,
                 "Staff members retrieved successfully"
@@ -39,15 +37,13 @@ public class StaffMembersApiController : ControllerBase
         }
     }
 
-    /// <summary>
     /// Get staff members by type (Plumber, Security, etc.)
-    /// </summary>
     [HttpGet("by-type/{staffType}")]
     public async Task<IActionResult> GetStaffMembersByType(string staffType)
     {
         try
         {
-            var staff = await _staffService.GetStaffMembersByTypeAsync(staffType);
+            var staff = await StaffService.GetStaffMembersByTypeAsync(staffType);
             return Ok(ApiResponse<List<StaffMemberDto>>.SuccessResponse(
                 staff,
                 $"{staffType} staff members retrieved successfully"
@@ -59,16 +55,14 @@ public class StaffMembersApiController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Create new staff member
-    /// </summary>
+      /// Create new staff member
     [HttpPost]
     public async Task<IActionResult> CreateStaffMember([FromBody] CreateStaffMemberDto dto)
     {
         try
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _staffService.CreateStaffMemberAsync(dto, userId);
+            var result = await StaffService.CreateStaffMemberAsync(dto, userId);
 
             return Ok(ApiResponse<StaffMemberDto>.SuccessResponse(
                 result,
@@ -80,17 +74,14 @@ public class StaffMembersApiController : ControllerBase
             return BadRequest(ApiResponse<StaffMemberDto>.ErrorResponse(ex.Message));
         }
     }
-
-    /// <summary>
     /// Update staff member details
-    /// </summary>
     [HttpPut]
     public async Task<IActionResult> UpdateStaffMember([FromBody] UpdateStaffMemberDto dto)
     {
         try
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _staffService.UpdateStaffMemberAsync(dto, userId);
+            var result = await StaffService.UpdateStaffMemberAsync(dto, userId);
 
             return Ok(ApiResponse<StaffMemberDto>.SuccessResponse(
                 result,
@@ -103,16 +94,14 @@ public class StaffMembersApiController : ControllerBase
         }
     }
 
-    /// <summary>
     /// Deactivate staff member
-    /// </summary>
     [HttpPost("{staffId}/deactivate")]
     public async Task<IActionResult> DeactivateStaffMember(Guid staffId)
     {
         try
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _staffService.DeactivateStaffMemberAsync(staffId, userId);
+            var result = await StaffService.DeactivateStaffMemberAsync(staffId, userId);
 
             return Ok(ApiResponse<bool>.SuccessResponse(
                 result,
@@ -125,16 +114,16 @@ public class StaffMembersApiController : ControllerBase
         }
     }
 
-    /// <summary>
+   
     /// Activate staff member
-    /// </summary>
+   
     [HttpPost("{staffId}/activate")]
     public async Task<IActionResult> ActivateStaffMember(Guid staffId)
     {
         try
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _staffService.ActivateStaffMemberAsync(staffId, userId);
+            var result = await StaffService.ActivateStaffMemberAsync(staffId, userId);
 
             return Ok(ApiResponse<bool>.SuccessResponse(
                 result,
@@ -146,16 +135,13 @@ public class StaffMembersApiController : ControllerBase
             return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
         }
     }
-
-    /// <summary>
     /// Get staff member by ID
-    /// </summary>
     [HttpGet("{staffId}")]
     public async Task<IActionResult> GetStaffMember(Guid staffId)
     {
         try
         {
-            var staff = await _staffService.GetStaffMemberByIdAsync(staffId);
+            var staff = await StaffService.GetStaffMemberByIdAsync(staffId);
 
             if (staff == null)
             {

@@ -8,21 +8,21 @@ namespace ApartmentManagementSystem.Application.Services
 {
     public class CommunityMemberService : ICommunityMemberService
     {
-        private readonly ICommunityMemberRepository _repository;
+        private readonly ICommunityMemberRepository Communityrepository;
 
         public CommunityMemberService(ICommunityMemberRepository repository)
         {
-            _repository = repository;
+            Communityrepository = repository;
         }
 
         public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync()
         {
-            return await _repository.GetAllCommunityMembersAsync();
+            return await Communityrepository.GetAllCommunityMembersAsync();
         }
 
         public async Task<List<ResidentListDto>> GetEligibleResidentsForCommunityRoleAsync()
         {
-            return await _repository.GetEligibleResidentsAsync();
+            return await Communityrepository.GetEligibleResidentsAsync();
         }
 
         public async Task<CommunityMemberDto> AssignCommunityRoleAsync(
@@ -31,26 +31,26 @@ namespace ApartmentManagementSystem.Application.Services
             if (!RoleNames.GetCommunityRoles().Contains(dto.CommunityRole))
                 throw new Exception("Invalid community role");
 
-            var exists = await _repository.CommunityRoleExistsAsync(dto.CommunityRole);
+            var exists = await Communityrepository.CommunityRoleExistsAsync(dto.CommunityRole);
             if (exists)
                 throw new Exception($"{dto.CommunityRole} role already assigned");
 
-            await _repository.AssignCommunityRoleAsync(dto.UserId, dto.CommunityRole);
+            await Communityrepository.AssignCommunityRoleAsync(dto.UserId, dto.CommunityRole);
 
-            var member = await _repository.GetCommunityMemberByUserIdAsync(dto.UserId);
+            var member = await Communityrepository.GetCommunityMemberByUserIdAsync(dto.UserId);
             return member!;
         }
 
         public async Task<bool> RemoveCommunityRoleAsync(
             RemoveCommunityRoleDto dto, Guid removedBy)
         {
-            await _repository.RemoveCommunityRoleAsync(dto.UserId);
+            await Communityrepository.RemoveCommunityRoleAsync(dto.UserId);
             return true;
         }
 
         public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
         {
-            return await _repository.GetCommunityMemberByUserIdAsync(userId);
+            return await Communityrepository.GetCommunityMemberByUserIdAsync(userId);
         }
     }
 }

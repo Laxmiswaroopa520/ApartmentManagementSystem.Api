@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ApartmentManagementSystem.Domain.Entities
+﻿namespace ApartmentManagementSystem.Domain.Entities
 {
     //this is actually used for user and role mapping like 1 user can have multiple roles like that ..
     public class UserRole

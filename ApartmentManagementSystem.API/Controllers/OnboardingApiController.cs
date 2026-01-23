@@ -3,6 +3,7 @@ using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -68,10 +69,7 @@ public class OnboardingApiController : ControllerBase
 
 
     }
-
-    // -------------------------
     // COMPLETE REGISTRATION
-    // -------------------------
     [HttpPost("complete-registration")]
     [AllowAnonymous]
     public async Task<IActionResult> CompleteRegistration([FromBody] CompleteRegistrationDto request)
@@ -88,10 +86,7 @@ public class OnboardingApiController : ControllerBase
                 .ErrorResponse(ex.Message));
         }
     }
-
-    // -------------------------
     // GET ROLES (USED BY WEB)
-    // -------------------------
     [HttpGet("roles")]
     public async Task<IActionResult> GetRoles()
     {
@@ -103,6 +98,25 @@ public class OnboardingApiController : ControllerBase
             Name = r.Name
         }));
     }
+
+    [HttpGet("resident-types")]
+    [Authorize(Roles = "SuperAdmin,Manager")]
+    public IActionResult GetResidentTypes()
+    {
+        var residentTypes = Enum.GetValues(typeof(ResidentType))
+            .Cast<ResidentType>()
+            .Select(rt => new ResidentTypeDto
+            {
+                Id = (int)rt,
+                Name = rt.ToString()
+            })
+            .ToList();
+
+        return Ok(ApiResponse<List<ResidentTypeDto>>
+            .SuccessResponse(residentTypes));
+    }
+
+
 
     /*
 

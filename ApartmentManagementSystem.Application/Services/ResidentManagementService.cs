@@ -7,37 +7,37 @@ namespace ApartmentManagementSystem.Application.Services
 {
     public class ResidentManagementService : IResidentManagementService
     {
-        private readonly IResidentManagementRepository _repository;
+        private readonly IResidentManagementRepository ResidentManagementRepo;
 
         public ResidentManagementService(IResidentManagementRepository repository)
         {
-            _repository = repository;
+            ResidentManagementRepo = repository;
         }
 
         public async Task<List<ResidentListDto>> GetAllResidentsAsync()
         {
-            return await _repository.GetAllResidentsAsync();
+            return await ResidentManagementRepo.GetAllResidentsAsync();
         }
 
         public async Task<List<ResidentListDto>> GetResidentsByTypeAsync(string residentType)
         {
-            return await _repository.GetResidentsByTypeAsync(residentType);
+            return await ResidentManagementRepo.GetResidentsByTypeAsync(residentType);
         }
 
         public async Task<ResidentDetailDto?> GetResidentDetailAsync(Guid userId)
         {
-            return await _repository.GetResidentDetailAsync(userId);
+            return await ResidentManagementRepo.GetResidentDetailAsync(userId);
         }
 
         public async Task<bool> DeactivateResidentAsync(Guid userId, Guid deactivatedBy)
         {
-            await _repository.SetResidentActiveStatusAsync(userId, false, deactivatedBy);
+            await ResidentManagementRepo.SetResidentActiveStatusAsync(userId, false, deactivatedBy);
             return true;
         }
 
         public async Task<bool> ActivateResidentAsync(Guid userId, Guid activatedBy)
         {
-            await _repository.SetResidentActiveStatusAsync(userId, true, activatedBy);
+            await ResidentManagementRepo.SetResidentActiveStatusAsync(userId, true, activatedBy);
             return true;
         }
     }

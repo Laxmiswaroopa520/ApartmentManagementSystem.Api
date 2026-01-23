@@ -13,7 +13,7 @@ namespace ApartmentManagementSystem.Domain.Constants
         public const string President = "President";
         public const string Secretary = "Secretary";
         public const string Treasurer = "Treasurer";
-
+        public const string Staff = "Staff";//optional
         public const string ResidentOwner = "Resident Owner";
         public const string Tenant = "Tenant";
         public const string Security = "Security";

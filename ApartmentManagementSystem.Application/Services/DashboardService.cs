@@ -24,22 +24,6 @@ namespace ApartmentManagementSystem.Application.Services
             UserFlatMappingRepo = userFlatMappingRepository;
         }
 
-        /*     public async Task<AdminDashboardDto> GetAdminDashboardAsync(Guid userId)
-             {
-                 var user = await _userRepository.GetByIdAsync(userId);
-                 var stats = await GetDashboardStatsAsync();
-
-                 return new AdminDashboardDto
-                 {
-                     FullName = user?.FullName ?? "Admin",
-                     Role = user?.Role.Name ?? "SuperAdmin",
-                     Stats = stats,
-                     RecentActivities = new List<RecentActivityDto>
-                 {
-                     new RecentActivityDto { Activity = "System initialized", Timestamp = DateTime.UtcNow, Type = "System" }
-                 }
-                 };
-             }*/
         public async Task<AdminDashboardDto> GetAdminDashboardAsync(Guid userId)
         {
             var user = await UserRepo.GetByIdAsync(userId)
@@ -95,32 +79,6 @@ namespace ApartmentManagementSystem.Application.Services
           }
         */
 
-        /*     public async Task<OwnerDashboardDto> GetOwnerDashboardAsync(Guid userId)
-             {
-                 var user = await _userRepository.GetByIdAsync(userId);
-                 var flats = await _flatRepository.GetByUserIdAsync(userId);
-                 var mappings = await _userFlatMappingRepository.GetByUserIdAsync(userId);
-
-                 var myFlats = flats.Select(f => new FlatSummaryDto
-                 {
-                     FlatId = f.Id,
-                     FlatNumber = f.FlatNumber,
-                     ApartmentName = f.Apartment.Name,
-                     OwnerName = f.OwnerUser?.FullName ?? "",
-                     TenantName = f.TenantUser?.FullName                 //changed from Owner to OwnerUser
-                 }).ToList();
-
-                 return new OwnerDashboardDto
-                 {
-                     FullName = user?.FullName ?? "Owner",
-                     UserId = userId,
-                     MyFlats = myFlats,
-                     PendingComplaints = 0, // Phase 5
-                     PendingBills = 0, // Phase 6
-                     TotalOutstanding = 0 // Phase 6
-                 };
-             }
-        */
         public async Task<OwnerDashboardDto> GetOwnerDashboardAsync(Guid userId)
         {
             var user = await UserRepo.GetByIdAsync(userId);
@@ -153,36 +111,7 @@ namespace ApartmentManagementSystem.Application.Services
             };
         }
 
-        /*  public async Task<TenantDashboardDto> GetTenantDashboardAsync(Guid userId)
-          {
-              var user = await _userRepository.GetByIdAsync(userId);
-              var flats = await _flatRepository.GetByUserIdAsync(userId);
-              var flat = flats.FirstOrDefault();
-
-              FlatSummaryDto? flatSummary = null;
-              if (flat != null)
-              {
-                  flatSummary = new FlatSummaryDto
-                  {
-                      FlatId = flat.Id,
-                      FlatNumber = flat.FlatNumber,
-                      ApartmentName = flat.Apartment.Name,
-                      OwnerName = flat.OwnerUser?.FullName ?? "",
-                      TenantName = flat.TenantUser?.FullName
-                  };
-              }
-
-              return new TenantDashboardDto
-              {
-                  FullName = user?.FullName ?? "Tenant",
-                  UserId = userId,
-                  MyFlat = flatSummary,
-                  PendingComplaints = 0, // Phase 5
-                  PendingRent = 0 // Phase 6
-              };
-          }
-        */
-        public async Task<TenantDashboardDto> GetTenantDashboardAsync(Guid userId)
+             public async Task<TenantDashboardDto> GetTenantDashboardAsync(Guid userId)
         {
             var user = await UserRepo.GetByIdAsync(userId);
 

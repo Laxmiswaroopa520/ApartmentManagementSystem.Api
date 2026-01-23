@@ -9,10 +9,10 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories;
 
 public class StaffMemberRepository : IStaffMemberRepository
 {
-    private readonly AppDbContext _context;
-    private readonly IUserRepository _userRepo;
-    private readonly IRoleRepository _roleRepo;
-    private readonly IPasswordHasher _passwordHasher;
+    private readonly AppDbContext DBContext;
+    private readonly IUserRepository UserRepo;
+    private readonly IRoleRepository RoleRepo;
+    private readonly IPasswordHasher PasswordHasher;
 
     public StaffMemberRepository(
         AppDbContext context,
@@ -20,15 +20,15 @@ public class StaffMemberRepository : IStaffMemberRepository
         IRoleRepository roleRepo,
         IPasswordHasher passwordHasher)
     {
-        _context = context;
-        _userRepo = userRepo;
-        _roleRepo = roleRepo;
-        _passwordHasher = passwordHasher;
+        DBContext = context;
+        UserRepo = userRepo;
+        RoleRepo = roleRepo;
+        PasswordHasher = passwordHasher;
     }
 
     public async Task<List<StaffMemberDto>> GetAllAsync()
     {
-        return await _context.StaffMembers
+        return await DBContext.StaffMembers
             .AsNoTracking()
             .OrderByDescending(s => s.JoinedOn)
             .Select(s => new StaffMemberDto
@@ -49,7 +49,7 @@ public class StaffMemberRepository : IStaffMemberRepository
 
     public async Task<List<StaffMemberDto>> GetByTypeAsync(string staffType)
     {
-        return await _context.StaffMembers
+        return await DBContext.StaffMembers
             .AsNoTracking()
             .Where(s => s.StaffType == staffType)
             .OrderByDescending(s => s.JoinedOn)
@@ -71,7 +71,7 @@ public class StaffMemberRepository : IStaffMemberRepository
 
     public async Task<StaffMemberDto?> GetByIdAsync(Guid staffId)
     {
-        return await _context.StaffMembers
+        return await DBContext.StaffMembers
             .AsNoTracking()
             .Where(s => s.Id == staffId)
             .Select(s => new StaffMemberDto
@@ -92,7 +92,7 @@ public class StaffMemberRepository : IStaffMemberRepository
 
     public async Task<bool> PhoneExistsAsync(string phone)
     {
-        return await _context.StaffMembers
+        return await DBContext.StaffMembers
             .AsNoTracking()
             .AnyAsync(s => s.Phone == phone);
     }
@@ -103,7 +103,7 @@ public class StaffMemberRepository : IStaffMemberRepository
 
         if (!string.IsNullOrWhiteSpace(dto.Password))
         {
-            var role = await _roleRepo.GetByNameAsync(dto.StaffType)
+            var role = await RoleRepo.GetByNameAsync(dto.StaffType)
                 ?? throw new Exception("Invalid staff role");
 
             user = new User
@@ -112,7 +112,7 @@ public class StaffMemberRepository : IStaffMemberRepository
                 FullName = dto.FullName,
                 Email = dto.Email!,
                 PrimaryPhone = dto.Phone,
-                PasswordHash = _passwordHasher.HashPassword(dto.Password),
+                PasswordHash = PasswordHasher.HashPassword(dto.Password),
                 CreatedAt = DateTime.UtcNow,
                 UserRoles = new List<UserRole>
                 {
@@ -120,8 +120,8 @@ public class StaffMemberRepository : IStaffMemberRepository
                 }
             };
 
-            await _userRepo.AddAsync(user);
-            await _userRepo.SaveChangesAsync();
+            await UserRepo.AddAsync(user);
+            await UserRepo.SaveChangesAsync();
         }
 
         var staff = new StaffMember
@@ -141,13 +141,13 @@ public class StaffMemberRepository : IStaffMemberRepository
             CreatedAt = DateTime.UtcNow
         };
 
-        _context.StaffMembers.Add(staff);
-        await _context.SaveChangesAsync();
+        DBContext.StaffMembers.Add(staff);
+        await DBContext.SaveChangesAsync();
     }
 
     public async Task UpdateAsync(UpdateStaffMemberDto dto, Guid updatedBy)
     {
-        var staff = await _context.StaffMembers
+        var staff = await DBContext.StaffMembers
             .Include(s => s.User)
             .FirstAsync(s => s.Id == dto.StaffId);
 
@@ -168,18 +168,18 @@ public class StaffMemberRepository : IStaffMemberRepository
             staff.User.Email = dto.Email;
         }
 
-        await _context.SaveChangesAsync();
+        await DBContext.SaveChangesAsync();
     }
 
     public async Task SetActiveStatusAsync(Guid staffId, bool isActive, Guid updatedBy)
     {
-        var staff = await _context.StaffMembers.FirstAsync(s => s.Id == staffId);
+        var staff = await DBContext.StaffMembers.FirstAsync(s => s.Id == staffId);
 
         staff.IsActive = isActive;
         staff.UpdatedBy = updatedBy;
         staff.UpdatedAt = DateTime.UtcNow;
 
-        await _context.SaveChangesAsync();
+        await DBContext.SaveChangesAsync();
     }
 }
 

@@ -1,5 +1,4 @@
-﻿// Infrastructure/Email/EmailService.cs
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
@@ -9,22 +8,22 @@ namespace ApartmentManagementSystem.Infrastructure.Email;
 
 public class EmailService : IEmailService
 {
-    private readonly IConfiguration _configuration;
-    private readonly ILogger<EmailService> _logger;
+    private readonly IConfiguration Configuration;
+    private readonly ILogger<EmailService> EmailLogger;
 
     public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
     {
-        _configuration = configuration;
-        _logger = logger;
+        this.Configuration = configuration;
+        EmailLogger = logger;
     }
 
     public async Task SendEmailAsync(string to, string subject, string body)
     {
-        var smtpHost = _configuration["EmailSettings:SmtpHost"] ?? "smtp.gmail.com";
-        var smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"] ?? "587");
-        var smtpUser = _configuration["EmailSettings:SmtpUser"] ?? "";
-        var smtpPass = _configuration["EmailSettings:SmtpPassword"] ?? "";
-        var fromEmail = _configuration["EmailSettings:FromEmail"] ?? smtpUser;
+        var smtpHost = Configuration["EmailSettings:SmtpHost"] ?? "smtp.gmail.com";
+        var smtpPort = int.Parse(Configuration["EmailSettings:SmtpPort"] ?? "587");
+        var smtpUser = Configuration["EmailSettings:SmtpUser"] ?? "";
+        var smtpPass = Configuration["EmailSettings:SmtpPassword"] ?? "";
+        var fromEmail = Configuration["EmailSettings:FromEmail"] ?? smtpUser;
 
         using var client = new SmtpClient(smtpHost, smtpPort)
         {
@@ -45,17 +44,17 @@ public class EmailService : IEmailService
         try
         {
             await client.SendMailAsync(message); // Fixed: was SendAsync(message)
-            _logger.LogInformation($"Email sent to {to}");
+            EmailLogger.LogInformation($"Email sent to {to}");
         }
         catch (Exception ex)
         {
-            _logger.LogError($"Email failed: {ex.Message}");
+            EmailLogger.LogError($"Email failed: {ex.Message}");
         }
     }
 
     public async Task SendRegistrationCompletedToAdminAsync(string residentName, string phone, string residentType)
     {
-        var adminEmail = _configuration["EmailSettings:AdminEmail"] ?? "admin@apartment.com";
+        var adminEmail = Configuration["EmailSettings:AdminEmail"] ?? "admin@apartment.com";
         var subject = "New Resident Registration - Flat Assignment Required";
         var body = $@"
             <h2>New Resident Registered</h2>

@@ -1,7 +1,4 @@
-﻿
-// ApartmentManagementSystem.Domain/Entities/User.cs
-using ApartmentManagementSystem.Domain.Enums;
-
+﻿using ApartmentManagementSystem.Domain.Enums;
 namespace ApartmentManagementSystem.Domain.Entities;
 public class User
 {
