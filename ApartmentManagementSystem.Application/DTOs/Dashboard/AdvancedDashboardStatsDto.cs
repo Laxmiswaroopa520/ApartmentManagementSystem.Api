@@ -22,5 +22,12 @@ namespace ApartmentManagementSystem.Application.DTOs.Dashboard
         public decimal CollectionThisMonth { get; set; }
         public int TodaysVisitors { get; set; }
         public int ActiveSecurityPersonnel { get; set; }
+        public int TotalApartments { get; set; }
+        public int ActiveApartments { get; set; }
+        public int ApartmentsUnderConstruction { get; set; }
+        public int TotalFloors { get; set; }
+        public int TotalManagers { get; set; }
+
+
     }
 }

@@ -66,7 +66,8 @@ builder.Services.AddScoped<ICommunityMemberRepository, CommunityMemberRepository
 builder.Services.AddScoped<IStaffMemberRepository, StaffMemberRepository>();
 builder.Services.AddScoped<IResidentManagementRepository, ResidentManagementRepository>();
 builder.Services.AddScoped<IResidentManagementService, ResidentManagementService>();
-
+//Newly added for apartment management service;;
+builder.Services.AddScoped<IApartmentManagementService, ApartmentManagementService>();
 // JWT AUTHENTICATION
 // Moved to extension (internally same logic as your previous code)
 builder.Services.AddJwtAuthentication(builder.Configuration);
@@ -134,9 +135,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
-
-
-
 
 
 

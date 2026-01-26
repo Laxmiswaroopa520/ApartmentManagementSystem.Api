@@ -6,21 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-    /* public interface IFlatRepository
-     {
-         Task<Flat?> GetByIdAsync(Guid id);
-         Task<List<Flat>> GetByUserIdAsync(Guid userId);
-         Task<int> GetTotalCountAsync();
-         Task<int> GetOccupiedCountAsync();
 
-
-
-         Task<List<Flat>> GetFlatsWithMappingsByOwnerIdAsync(Guid ownerUserId);
-
-     }
-
-     */
-
+/*
     namespace ApartmentManagementSystem.Application.Interfaces.Repositories
     {
         public interface IFlatRepository
@@ -46,5 +33,22 @@ using System.Threading.Tasks;
         Task SaveChangesAsync();
         }
     }
+*/
+namespace ApartmentManagementSystem.Application.Interfaces.Repositories
+{
+    public interface IFlatRepository
+    {
+        Task<Flat?> GetByIdAsync(Guid id);
+        Task<List<Flat>> GetByFloorIdAsync(Guid floorId);
+        Task<List<Flat>> GetVacantFlatsByFloorAsync(Guid floorId);
+        Task<List<Flat>> GetFlatsWithMappingsByOwnerIdAsync(Guid ownerId);
+        Task<List<Floor>> GetAllFloorsAsync();
+        Task<int> GetTotalCountAsync();
+        Task<int> GetOccupiedCountAsync();
+        Task AddAsync(Flat flat);
+        Task UpdateAsync(Flat flat);
+        Task SaveChangesAsync();
+    }
+}
 
 

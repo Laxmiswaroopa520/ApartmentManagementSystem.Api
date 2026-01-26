@@ -4,6 +4,7 @@ using ApartmentManagementSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApartmentManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260124140858_ApartmentMigration")]
+    partial class ApartmentMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -246,55 +249,55 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 24, 18, 24, 59, 591, DateTimeKind.Utc).AddTicks(2187),
+                            CreatedAt = new DateTime(2026, 1, 24, 14, 8, 57, 252, DateTimeKind.Utc).AddTicks(675),
                             Name = "SuperAdmin"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 1, 24, 18, 24, 59, 591, DateTimeKind.Utc).AddTicks(2193),
+                            CreatedAt = new DateTime(2026, 1, 24, 14, 8, 57, 252, DateTimeKind.Utc).AddTicks(680),
                             Name = "Manager"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 1, 24, 18, 24, 59, 591, DateTimeKind.Utc).AddTicks(2195),
+                            CreatedAt = new DateTime(2026, 1, 24, 14, 8, 57, 252, DateTimeKind.Utc).AddTicks(681),
                             Name = "President"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000004"),
-                            CreatedAt = new DateTime(2026, 1, 24, 18, 24, 59, 591, DateTimeKind.Utc).AddTicks(2196),
+                            CreatedAt = new DateTime(2026, 1, 24, 14, 8, 57, 252, DateTimeKind.Utc).AddTicks(682),
                             Name = "Secretary"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 1, 24, 18, 24, 59, 591, DateTimeKind.Utc).AddTicks(2197),
+                            CreatedAt = new DateTime(2026, 1, 24, 14, 8, 57, 252, DateTimeKind.Utc).AddTicks(683),
                             Name = "Treasurer"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 1, 24, 18, 24, 59, 591, DateTimeKind.Utc).AddTicks(2198),
+                            CreatedAt = new DateTime(2026, 1, 24, 14, 8, 57, 252, DateTimeKind.Utc).AddTicks(685),
                             Name = "ResidentOwner"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 1, 24, 18, 24, 59, 591, DateTimeKind.Utc).AddTicks(2200),
+                            CreatedAt = new DateTime(2026, 1, 24, 14, 8, 57, 252, DateTimeKind.Utc).AddTicks(686),
                             Name = "Tenant"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 1, 24, 18, 24, 59, 591, DateTimeKind.Utc).AddTicks(2201),
+                            CreatedAt = new DateTime(2026, 1, 24, 14, 8, 57, 252, DateTimeKind.Utc).AddTicks(687),
                             Name = "Security"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000009"),
-                            CreatedAt = new DateTime(2026, 1, 24, 18, 24, 59, 591, DateTimeKind.Utc).AddTicks(2202),
+                            CreatedAt = new DateTime(2026, 1, 24, 14, 8, 57, 252, DateTimeKind.Utc).AddTicks(688),
                             Name = "Maintenance"
                         });
                 });
@@ -428,13 +431,13 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("20000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 1, 24, 18, 24, 59, 765, DateTimeKind.Utc).AddTicks(179),
+                            CreatedAt = new DateTime(2026, 1, 24, 14, 8, 57, 419, DateTimeKind.Utc).AddTicks(3054),
                             Email = "admin@apartment.com",
                             FullName = "System Administrator",
                             IsActive = true,
                             IsOtpVerified = true,
                             IsRegistrationCompleted = true,
-                            PasswordHash = "$2a$11$SBkm.P4rRFCzCsBEQx8zneUe2pnnd0x4j/6PAqan.jCXwyq1s2iy6",
+                            PasswordHash = "$2a$11$qK9TmTu09xhz42s6U.yDSevJl905PKzFThepgIF9CWDP8wzKeiSfC",
                             PrimaryPhone = "9999999999",
                             Status = 1,
                             Username = "admin"

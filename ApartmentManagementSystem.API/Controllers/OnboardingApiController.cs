@@ -7,16 +7,13 @@ using ApartmentManagementSystem.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
 namespace ApartmentManagementSystem.API.Controllers;
-
 [ApiController]
 [Route("api/[controller]")]
 public class OnboardingApiController : ControllerBase
 {
     private readonly IOnboardingService OnboardingService;
     private readonly IRoleRepository RoleRepository;
-
     public OnboardingApiController(
         IOnboardingService onboardingService,
         IRoleRepository roleRepository)
@@ -66,8 +63,6 @@ public class OnboardingApiController : ControllerBase
             return BadRequest(ApiResponse<VerifyOtpResponseDto>
                 .ErrorResponse(ex.Message));
         }
-
-
     }
     // COMPLETE REGISTRATION
     [HttpPost("complete-registration")]
@@ -115,23 +110,4 @@ public class OnboardingApiController : ControllerBase
         return Ok(ApiResponse<List<ResidentTypeDto>>
             .SuccessResponse(residentTypes));
     }
-
-
-
-    /*
-
-    [HttpGet("floors")]
-    public async Task<IActionResult> GetFloors()
-    {
-        var floors = await _onboardingService.GetFloorsAsync();
-        return Ok(floors);
-    }
-
-    [HttpGet("available-flats")]
-    public async Task<IActionResult> GetAvailableFlats(Guid floorId)
-    {
-        var flats = await _onboardingService.GetAvailableFlatsByFloorAsync(floorId);
-        return Ok(flats);
-    }
-    */
 }

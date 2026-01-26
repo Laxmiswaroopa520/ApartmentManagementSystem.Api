@@ -146,4 +146,19 @@ public class EnhancedDashboardRepository : IEnhancedDashboardRepository
             MyTasks = new List<TaskDto>()
         };
     }
+    public async Task PopulateApartmentStatsAsync(AdvancedDashboardStatsDto stats)
+    {
+        var apartments = await DBContext.Apartments.ToListAsync();
+
+        stats.TotalApartments = apartments.Count;
+        stats.ActiveApartments = apartments.Count(a => a.Status == ApartmentStatus.Active);
+        stats.ApartmentsUnderConstruction =
+            apartments.Count(a => a.Status == ApartmentStatus.UnderConstruction);
+
+        stats.TotalFloors = await DBContext.Apartments
+            .SumAsync(a => a.TotalFloors);
+
+        stats.TotalManagers = await DBContext.ApartmentManagers
+            .CountAsync(m => m.IsActive);
+    }
 }
