@@ -30,6 +30,7 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
             Task<bool> UsernameExistsAsync(string username);
             Task UpdateAsync(User user);
         Task<User?> GetByUsernameWithRolesAsync(string username);//added new method
+        Task<List<User>> GetUsersByRoleAsync(string roleName);      //added this method for assingning manager..
     }
 
     }

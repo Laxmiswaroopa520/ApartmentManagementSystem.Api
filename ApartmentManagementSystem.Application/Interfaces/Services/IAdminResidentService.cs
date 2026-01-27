@@ -1,10 +1,5 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Admin;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 /*
 namespace ApartmentManagementSystem.Application.Interfaces.Services
 {
@@ -18,10 +13,7 @@ namespace ApartmentManagementSystem.Application.Interfaces.Services
     }
 }
 */
-using ApartmentManagementSystem.Application.DTOs.Admin;
 using ApartmentManagementSystem.Application.DTOs.Apartment;
-using ApartmentManagementSystem.Application.DTOs.Onboarding;
-
 namespace ApartmentManagementSystem.Application.Interfaces.Services
 {
     public interface IAdminResidentService

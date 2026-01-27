@@ -1,4 +1,4 @@
-﻿using ApartmentManagementSystem.Application.DTOs.Community.Resident_Management;
+﻿using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Domain.Enums;
 using ApartmentManagementSystem.Infrastructure.Persistence;

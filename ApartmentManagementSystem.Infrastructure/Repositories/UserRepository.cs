@@ -80,6 +80,19 @@ public class UserRepository : IUserRepository
             .OrderBy(u => u.CreatedAt)
             .ToListAsync();
     }
+    // This method is for assigning manager..
+    public async Task<List<User>> GetUsersByRoleAsync(string roleName)
+    {
+        return await DBContext.Users
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .Include(u => u.UserFlatMappings)
+                .ThenInclude(ufm => ufm.Flat)
+            .Where(u => u.UserRoles.Any(ur => ur.Role.Name == roleName))
+            .OrderBy(u => u.FullName)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 }
 
 

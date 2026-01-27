@@ -35,11 +35,11 @@ builder.Services.AddScoped<IUserOtpRepository, UserOtpRepository>();
 builder.Services.AddScoped<IUserInviteRepository, UserInviteRepository>();
 
 // Phase 2
+builder.Services.AddScoped<IManagerService, ManagerService>();
 builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
 builder.Services.AddScoped<IFlatRepository, FlatRepository>();
 builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
 builder.Services.AddScoped<IFlatRepository, FlatRepository>();
-builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
 builder.Services.AddScoped<IFloorRepository, FloorRepository>();
 builder.Services.AddScoped<IEnhancedDashboardRepository, EnhancedDashboardRepository>();
 // Register AdminResidentService
@@ -48,6 +48,7 @@ builder.Services.AddScoped<IAdminResidentService, AdminResidentService>();
 
 // SERVICES
 // Phase 1
+builder.Services.AddScoped<ICommunityMemberService, CommunityMemberService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOnboardingService, OnboardingService>();
 builder.Services.AddScoped<IOtpService, OtpService>();

@@ -1,5 +1,5 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Community;
-using ApartmentManagementSystem.Application.DTOs.Community.Resident_Management;
+using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 
 namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 {

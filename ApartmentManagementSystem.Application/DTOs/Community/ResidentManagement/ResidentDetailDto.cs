@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ApartmentManagementSystem.Application.DTOs.Community.Resident_Management
+namespace ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement
 {
 
     public class ResidentDetailDto

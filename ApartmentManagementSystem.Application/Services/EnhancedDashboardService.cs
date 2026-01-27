@@ -1,7 +1,6 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Dashboard;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
-using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Domain.Enums;
 
 namespace ApartmentManagementSystem.Application.Services;
