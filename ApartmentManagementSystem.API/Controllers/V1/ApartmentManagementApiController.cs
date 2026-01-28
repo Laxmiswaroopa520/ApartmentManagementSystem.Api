@@ -1,14 +1,14 @@
-﻿    // API/Controllers/ApartmentManagementApiController.cs
-    using ApartmentManagementSystem.Application.DTOs.Apartment;
-    using ApartmentManagementSystem.Application.DTOs.Common;
-    using ApartmentManagementSystem.Application.Interfaces.Services;
-    using Microsoft.AspNetCore.Authorization;
+﻿// API/Controllers/ApartmentManagementApiController.cs
+using ApartmentManagementSystem.Application.DTOs.Apartment;
+using ApartmentManagementSystem.Application.DTOs.Common;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-    using System.Security.Claims;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 
-    namespace ApartmentManagementSystem.API.Controllers
+namespace ApartmentManagementSystem.API.Controllers.V1
     {
         [ApiController]
        // [Route("api/[controller]")]

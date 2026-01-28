@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace ApartmentManagementSystem.API.Controllers;
+namespace ApartmentManagementSystem.API.Controllers.V1;
 
 [ApiController]             //automatic model validation no need to check again and again for model validation..automatically returns 400 bad request..
 [Route("api/[controller]")]     //controller name without controller ..

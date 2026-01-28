@@ -1,6 +1,7 @@
 ﻿
 
 
+using ApartmentManagementSystem.API.Configuration;
 using ApartmentManagementSystem.API.Extensions;
 using ApartmentManagementSystem.API.Filters;
 using ApartmentManagementSystem.API.Middlewares;
@@ -73,9 +74,7 @@ builder.Services.AddScoped<IApartmentManagementService, ApartmentManagementServi
 // Moved to extension (internally same logic as your previous code)
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
-// =======================
 // AUTHORIZATION (POLICIES – PHASE 2)
-// =======================
 builder.Services.AddAuthorization(options =>
 {
     AuthorizationPolicies.AddPolicies(options);
@@ -102,7 +101,8 @@ builder.Services.AddControllers(options =>
 
 // SWAGGER
 builder.Services.AddSwaggerDocumentation();
-
+//add api version configuration file
+builder.Services.AddApiVersioningConfiguration();
 // HTTP CONTEXT
 builder.Services.AddHttpContextAccessor();
 

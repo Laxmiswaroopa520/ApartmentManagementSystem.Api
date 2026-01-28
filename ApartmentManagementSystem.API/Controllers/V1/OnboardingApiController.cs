@@ -7,7 +7,7 @@ using ApartmentManagementSystem.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-namespace ApartmentManagementSystem.API.Controllers;
+namespace ApartmentManagementSystem.API.Controllers.V1;
 [ApiController]
 [Route("api/[controller]")]
 public class OnboardingApiController : ControllerBase

@@ -1,7 +1,7 @@
 ﻿using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ApartmentManagementSystem.API.Controllers
+namespace ApartmentManagementSystem.API.Controllers.V1
 {
     [ApiController]
     [Route("api/roles")]
