@@ -9,7 +9,10 @@ using System.Security.Claims;
 namespace ApartmentManagementSystem.API.Controllers.V1;
 
 [ApiController]             //automatic model validation no need to check again and again for model validation..automatically returns 400 bad request..
-[Route("api/[controller]")]     //controller name without controller ..
+//[Route("api/[controller]")]     //controller name without controller ..
+[ApiVersion("1.0")]  
+[Route("api/v{version:apiVersion}/[controller]")]
+
 [Authorize(Roles = "SuperAdmin,Manager")]
 public class CommunityMembersApiController : ControllerBase
 {

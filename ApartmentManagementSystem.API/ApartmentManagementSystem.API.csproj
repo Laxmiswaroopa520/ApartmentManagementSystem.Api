@@ -23,4 +23,8 @@
     <ProjectReference Include="..\ApartmentManagementSystem.Infrastructure\ApartmentManagementSystem.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Endpoints\V1\Onboarding\" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,5 @@
 ﻿
 
-
 using ApartmentManagementSystem.API.Configuration;
 using ApartmentManagementSystem.API.Extensions;
 using ApartmentManagementSystem.API.Filters;
@@ -56,6 +55,11 @@ builder.Services.AddScoped<IOtpService, OtpService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+
+
+
+
 
 //Register new services in your API project
 builder.Services.AddScoped<ICommunityMemberService, CommunityMemberService>();
