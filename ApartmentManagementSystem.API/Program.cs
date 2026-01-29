@@ -1,5 +1,5 @@
-﻿
-
+﻿using FastEndpoints;
+using FastEndpoints.Swagger;
 using ApartmentManagementSystem.API.Configuration;
 using ApartmentManagementSystem.API.Extensions;
 using ApartmentManagementSystem.API.Filters;
@@ -19,10 +19,445 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// ========================================
+// CONTROLLERS (Keep for backward compatibility)
+// ========================================
+builder.Services.AddControllers();
+
+// DATABASE
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// REPOSITORIES - Phase 1
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IUserOtpRepository, UserOtpRepository>();
+builder.Services.AddScoped<IUserInviteRepository, UserInviteRepository>();
+
+// REPOSITORIES - Phase 2
+builder.Services.AddScoped<IManagerService, ManagerService>();
+builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
+builder.Services.AddScoped<IFlatRepository, FlatRepository>();
+builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
+builder.Services.AddScoped<IFloorRepository, FloorRepository>();
+builder.Services.AddScoped<IEnhancedDashboardRepository, EnhancedDashboardRepository>();
+builder.Services.AddScoped<IAdminResidentService, AdminResidentService>();
+builder.Services.AddScoped<ICommunityMemberRepository, CommunityMemberRepository>();
+builder.Services.AddScoped<IStaffMemberRepository, StaffMemberRepository>();
+builder.Services.AddScoped<IResidentManagementRepository, ResidentManagementRepository>();
+
+// SERVICES - Phase 1
+builder.Services.AddScoped<ICommunityMemberService, CommunityMemberService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IOnboardingService, OnboardingService>();
+builder.Services.AddScoped<IOtpService, OtpService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ISmsService, SmsService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+// SERVICES - Phase 2
+builder.Services.AddScoped<IStaffMemberService, StaffMemberService>();
+builder.Services.AddScoped<IResidentManagementService, ResidentManagementService>();
+builder.Services.AddScoped<IEnhancedDashboardService, EnhancedDashboardService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IApartmentManagementService, ApartmentManagementService>();
+
+// JWT AUTHENTICATION
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+// ========================================
+// FASTENDPOINTS + SWAGGER (PROPERLY CONFIGURED!)
+// ========================================
+
+// Add FastEndpoints
+builder.Services.AddFastEndpoints();
+
+// Add endpoint explorer for Controllers (needed for Swagger)
+builder.Services.AddEndpointsApiExplorer();
+
+// Configure Swagger to show BOTH Controllers AND FastEndpoints
+builder.Services.SwaggerDocument(o =>
+{
+    o.DocumentSettings = s =>
+    {
+        s.DocumentName = "v1";
+        s.Title = "Apartment Management System API";
+        s.Version = "v1";
+        s.Description = "Complete API Documentation - Controllers and FastEndpoints";
+    };
+
+    // Enable JWT Authentication in Swagger
+    o.EnableJWTBearerAuth = true;
+
+    // Use short schema names for cleaner display
+    o.ShortSchemaNames = true;
+
+    // Organize endpoints by tags
+    o.AutoTagPathSegmentIndex = 0;
+
+    // Remove servers section for cleaner UI
+    o.RemoveEmptyRequestSchema = true;
+});
+
+// AUTHORIZATION POLICIES
+builder.Services.AddAuthorization(options =>
+{
+    AuthorizationPolicies.AddPolicies(options);
+});
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWebApp", policy =>
+    {
+        policy
+            .WithOrigins(builder.Configuration["WebAppUrl"] ?? "http://localhost:5002")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
+// CONTROLLERS + FILTERS
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+});
+
+// API VERSIONING
+builder.Services.AddApiVersioningConfiguration();
+
+// HTTP CONTEXT
+builder.Services.AddHttpContextAccessor();
+
+// ========================================
+// BUILD APP
+// ========================================
+var app = builder.Build();
+
+// ========================================
+// MIDDLEWARE PIPELINE
+// ========================================
+
+// Custom middlewares
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
+
+app.UseHttpsRedirection();
+app.UseCors("AllowWebApp");
+
+// ========================================
+// SWAGGER - PROPERLY CONFIGURED FOR BOTH!
+// ========================================
+if (app.Environment.IsDevelopment())
+{
+    // Use FastEndpoints' OpenApi middleware
+    app.UseOpenApi();  // Generates /swagger/v1/swagger.json
+
+    // Use Swagger UI with proper configuration
+    app.UseSwaggerUi(c =>
+    {
+        c.ConfigureDefaults();
+        c.Path = "/swagger";
+    });
+}
+
+// ========================================
+// AUTHENTICATION & AUTHORIZATION
+// CRITICAL: Must be before FastEndpoints!
+// ========================================
+app.UseAuthentication();
+app.UseAuthorization();
+
+// ========================================
+// FASTENDPOINTS - CONFIGURED WITH "API" PREFIX
+// ========================================
+app.UseFastEndpoints(c =>
+{
+    // Add "api" prefix to all FastEndpoint routes
+    // Your endpoints define routes like "/v1/fast/..." 
+    // This will make them accessible at "api/v1/fast/..."
+   // c.Endpoints.RoutePrefix = "api";
+
+    // Configure versioning (optional, not actively used since you define versions in routes)
+    c.Versioning.Prefix = "v";
+    c.Versioning.PrependToRoute = false;
+});
+
+// ========================================
+// CONTROLLERS (For backward compatibility)
+// ========================================
+app.MapControllers();
+
+// AUTO MIGRATIONS (DEV ONLY)
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
+
+app.Run();
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+using FastEndpoints;
+using FastEndpoints.Swagger;
+using ApartmentManagementSystem.API.Configuration;
+using ApartmentManagementSystem.API.Extensions;
+using ApartmentManagementSystem.API.Filters;
+using ApartmentManagementSystem.API.Middlewares;
+using ApartmentManagementSystem.API.Policies;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Application.Services;
+using ApartmentManagementSystem.Infrastructure.Email;
+using ApartmentManagementSystem.Infrastructure.OTP;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using ApartmentManagementSystem.Infrastructure.Repositories;
+using ApartmentManagementSystem.Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// ========================================
+// CONTROLLERS (Keep for backward compatibility)
+// ========================================
+builder.Services.AddControllers();
+
+// DATABASE
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// REPOSITORIES - Phase 1
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IUserOtpRepository, UserOtpRepository>();
+builder.Services.AddScoped<IUserInviteRepository, UserInviteRepository>();
+
+// REPOSITORIES - Phase 2
+builder.Services.AddScoped<IManagerService, ManagerService>();
+builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
+builder.Services.AddScoped<IFlatRepository, FlatRepository>();
+builder.Services.AddScoped<IUserFlatMappingRepository, UserFlatMappingRepository>();
+builder.Services.AddScoped<IFloorRepository, FloorRepository>();
+builder.Services.AddScoped<IEnhancedDashboardRepository, EnhancedDashboardRepository>();
+builder.Services.AddScoped<IAdminResidentService, AdminResidentService>();
+builder.Services.AddScoped<ICommunityMemberRepository, CommunityMemberRepository>();
+builder.Services.AddScoped<IStaffMemberRepository, StaffMemberRepository>();
+builder.Services.AddScoped<IResidentManagementRepository, ResidentManagementRepository>();
+
+// SERVICES - Phase 1
+builder.Services.AddScoped<ICommunityMemberService, CommunityMemberService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IOnboardingService, OnboardingService>();
+builder.Services.AddScoped<IOtpService, OtpService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ISmsService, SmsService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+// SERVICES - Phase 2
+builder.Services.AddScoped<IStaffMemberService, StaffMemberService>();
+builder.Services.AddScoped<IResidentManagementService, ResidentManagementService>();
+builder.Services.AddScoped<IEnhancedDashboardService, EnhancedDashboardService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IApartmentManagementService, ApartmentManagementService>();
+
+// JWT AUTHENTICATION
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
+// ========================================
+// FASTENDPOINTS + SWAGGER (CRITICAL SECTION!)
+// ========================================
+
+builder.Services.AddFastEndpoints();
+
+builder.Services.SwaggerDocument(o =>
+{
+    o.DocumentSettings = s =>
+    {
+        s.DocumentName = "v1";
+        s.Title = "Apartment Management System API";
+        s.Version = "v1";
+    };
+
+    o.EnableJWTBearerAuth = true;
+});
+
+
+/*
+builder.Services.AddFastEndpoints();
+
+// IMPORTANT: Use FastEndpoints' Swagger ONLY
+// Remove any calls to AddSwaggerGen() or AddSwaggerDocumentation()
+builder.Services.SwaggerDocument(o =>
+{
+    o.DocumentSettings = s =>
+    {
+        s.DocumentName = "v1";
+        s.Title = "Apartment Management System API";
+        s.Version = "v1";
+        s.Description = "Complete API - Both Controllers and FastEndpoints";
+    };
+
+    // Enable JWT Authentication in Swagger
+    o.EnableJWTBearerAuth = true;
+
+    // This helps organize endpoints by tags
+    o.AutoTagPathSegmentIndex = 0;
+
+    // Include XML comments if you have them
+    // o.IncludeXmlComments = true;
+});
+------
+// AUTHORIZATION POLICIES
+builder.Services.AddAuthorization(options =>
+{
+    AuthorizationPolicies.AddPolicies(options);
+});
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWebApp", policy =>
+    {
+        policy
+            .WithOrigins(builder.Configuration["WebAppUrl"] ?? "http://localhost:5002")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
+// CONTROLLERS + FILTERS
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+});
+
+// API VERSIONING
+builder.Services.AddApiVersioningConfiguration();
+
+// HTTP CONTEXT
+builder.Services.AddHttpContextAccessor();
+
+// ========================================
+// BUILD APP
+// ========================================
+var app = builder.Build();
+
+// ========================================
+// MIDDLEWARE PIPELINE
+// ========================================
+
+// Custom middlewares
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RequestLoggingMiddleware>();
+
+app.UseHttpsRedirection();
+app.UseCors("AllowWebApp");
+
+// ========================================
+// SWAGGER - USE FASTENDPOINTS' SWAGGER ONLY!
+// ========================================
+if (app.Environment.IsDevelopment())
+{
+    // DO NOT USE: app.UseSwaggerDocumentation()
+    // DO NOT USE: app.UseSwaggerGen()
+
+    // Use FastEndpoints' OpenApi
+    app.UseOpenApi();           //generates /swagger/v1/swagger.json
+    app.UseSwaggerUi(c =>
+    {
+        c.ConfigureDefaults();
+        c.Path = "/swagger";
+    });
+}
+
+// ========================================
+// AUTHENTICATION & AUTHORIZATION
+// CRITICAL: Must be before FastEndpoints!
+// ========================================
+app.UseAuthentication();
+app.UseAuthorization();
+
+// ========================================
+// FASTENDPOINTS
+// ========================================
+app.UseFastEndpoints(c =>
+{
+    c.Endpoints.RoutePrefix = "api";
+    c.Versioning.Prefix = "v";
+    c.Versioning.PrependToRoute = false;
+});
+
+// ========================================
+// CONTROLLERS (For backward compatibility)
+// ========================================
+app.MapControllers();
+
+// AUTO MIGRATIONS (DEV ONLY)
+if (app.Environment.IsDevelopment())
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
+
+app.Run();
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+/*
+using FastEndpoints;
+using ApartmentManagementSystem.API.Configuration;
+using ApartmentManagementSystem.API.Extensions;
+using ApartmentManagementSystem.API.Filters;
+using ApartmentManagementSystem.API.Middlewares;
+using ApartmentManagementSystem.API.Policies;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Application.Services;
+using ApartmentManagementSystem.Infrastructure.Email;
+using ApartmentManagementSystem.Infrastructure.OTP;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using ApartmentManagementSystem.Infrastructure.Repositories;
+using ApartmentManagementSystem.Infrastructure.Services;
+using FastEndpoints.Swagger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
+var builder = WebApplication.CreateBuilder(args);
 //Add services to the container
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
 // DATABASE
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -78,6 +513,23 @@ builder.Services.AddScoped<IApartmentManagementService, ApartmentManagementServi
 // Moved to extension (internally same logic as your previous code)
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
+//Add Fast End Points
+builder.Services.AddFastEndpoints();            // Add this
+builder.Services.SwaggerDocument(o =>           // Add this
+{
+    o.DocumentSettings = s =>
+    {
+        s.Title = "Apartment Management API";
+        s.Version = "v1";
+    };
+    o.EnableJWTBearerAuth = true;
+});
+
+
+
+
+
+
 // AUTHORIZATION (POLICIES – PHASE 2)
 builder.Services.AddAuthorization(options =>
 {
@@ -104,7 +556,7 @@ builder.Services.AddControllers(options =>
 });
 
 // SWAGGER
-builder.Services.AddSwaggerDocumentation();
+//builder.Services.AddSwaggerDocumentation();
 //add api version configuration file
 builder.Services.AddApiVersioningConfiguration();
 // HTTP CONTEXT
@@ -115,7 +567,10 @@ var app = builder.Build();
 // MIDDLEWARE PIPELINE
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerDocumentation();
+    // app.UseSwaggerDocumentation();
+    app.UseSwaggerGen();
+
+
 }
 
 // Custom middlewares (Phase 1 – preserved)
@@ -128,6 +583,12 @@ app.UseCors("AllowWebApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+//adding fast end points here.,
+app.UseFastEndpoints(c =>       // Add this
+{
+    c.Endpoints.RoutePrefix = "api"; // Optional: sets /api prefix
+});
 
 app.MapControllers();
 
@@ -142,223 +603,25 @@ if (app.Environment.IsDevelopment())
 app.Run();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*using ApartmentManagementSystem.API.Middlewares;
-using ApartmentManagementSystem.Application.Interfaces.Repositories;
-using ApartmentManagementSystem.Application.Interfaces.Services;
-using ApartmentManagementSystem.Application.Services;
-using ApartmentManagementSystem.Infrastructure.OTP;
-using ApartmentManagementSystem.Infrastructure.Persistence;
-using ApartmentManagementSystem.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
-
-var builder = WebApplication.CreateBuilder(args);
-
-// DATABASE
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// REPOSITORIES
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<IUserOtpRepository, UserOtpRepository>();
-builder.Services.AddScoped<IUserInviteRepository, UserInviteRepository>();
-
-// =======================
-// SERVICES
-// =======================
-builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IOnboardingService, OnboardingService>();
-builder.Services.AddScoped<IOtpService, OtpService>();
-
-// =======================
-// JWT AUTHENTICATION
-// =======================
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"]
-    ?? throw new Exception("JWT SecretKey not configured");
-
-//temporarily added
-
-Console.WriteLine("JWT SECRET FROM CONFIG:");
-Console.WriteLine(secretKey);
-//---
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-
-            ValidIssuer = jwtSettings["Issuer"],
-            ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(secretKey)),
-
-            ClockSkew = TimeSpan.Zero
-        };
-
-        // 🔥 THIS IS THE KEY
-        options.Events = new JwtBearerEvents
-        {
-            OnAuthenticationFailed = context =>
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("JWT AUTH FAILED:");
-                Console.WriteLine(context.Exception.Message);
-                Console.ResetColor();
-                return Task.CompletedTask;
-            },
-            OnChallenge = context =>
-            {
-                context.HandleResponse();
-                context.Response.StatusCode = 401;
-                context.Response.ContentType = "application/json";
-
-                var result = System.Text.Json.JsonSerializer.Serialize(new
-                {
-                    error = "Unauthorized",
-                    reason = context.ErrorDescription
-                });
-
-                return context.Response.WriteAsync(result);
-            }
-        };
-    });
-
-//temporary lines
-Console.WriteLine("VALIDATION KEY:");
-Console.WriteLine(secretKey);
-
-builder.Services.AddAuthorization();
-
-// =======================
-// CORS
-// =======================
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowWebApp", policy =>
-    {
-        policy
-            .WithOrigins(builder.Configuration["WebAppUrl"] ?? "http://localhost:5002")
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
-    });
-});
-
-// =======================
-// CONTROLLERS
-// =======================
-builder.Services.AddControllers();
-
-// =======================
-// SWAGGER + JWT (CORRECT WAY)
-// =======================
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Apartment Management API",
-        Version = "v1"
-    });
-
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Enter JWT token WITHOUT the word Bearer"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
-});
-
-var app = builder.Build();
-
-// =======================
-// MIDDLEWARE PIPELINE
-// =======================
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Apartment Management API v1");
-    });
-}
-
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.UseMiddleware<RequestLoggingMiddleware>();
-
-app.UseHttpsRedirection();
-
-app.UseCors("AllowWebApp");
-
-// ⚠️ ORDER IS CRITICAL
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapControllers();
-
-// =======================
-// AUTO MIGRATIONS (DEV ONLY)
-// =======================
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate();
-}
-
-app.Run();
-
-
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
