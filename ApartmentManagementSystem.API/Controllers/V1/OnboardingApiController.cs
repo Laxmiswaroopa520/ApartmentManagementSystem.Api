@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 namespace ApartmentManagementSystem.API.Controllers.V1;
 [ApiController]
-[ApiVersion("1.0")]  // ← ADDED
+[ApiVersion("1.0")] 
 [Route("api/v{version:apiVersion}/[controller]")]
 //[Route("api/[controller]")]
 public class OnboardingApiController : ControllerBase
@@ -83,7 +83,7 @@ public class OnboardingApiController : ControllerBase
                 .ErrorResponse(ex.Message));
         }
     }
-    // GET ROLES (USED BY WEB)
+   // GET ROLES(USED BY WEB)
     [HttpGet("roles")]
     public async Task<IActionResult> GetRoles()
     {
@@ -95,7 +95,7 @@ public class OnboardingApiController : ControllerBase
             Name = r.Name
         }));
     }
-
+   
     [HttpGet("resident-types")]
     [Authorize(Roles = "SuperAdmin,Manager")]
     public IActionResult GetResidentTypes()
