@@ -20,9 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ========================================
 // CONTROLLERS (Keep for backward compatibility)
-// ========================================
 builder.Services.AddControllers();
 
 // DATABASE
@@ -66,9 +64,7 @@ builder.Services.AddScoped<IApartmentManagementService, ApartmentManagementServi
 // JWT AUTHENTICATION
 builder.Services.AddJwtAuthentication(builder.Configuration);
 
-// ========================================
 // FASTENDPOINTS + SWAGGER (PROPERLY CONFIGURED!)
-// ========================================
 
 // Add FastEndpoints
 builder.Services.AddFastEndpoints();
@@ -86,7 +82,6 @@ builder.Services.SwaggerDocument(o =>
         s.Version = "v1";
         s.Description = "Complete API Documentation - Controllers and FastEndpoints";
     };
-
     // Enable JWT Authentication in Swagger
     o.EnableJWTBearerAuth = true;
 
@@ -131,14 +126,10 @@ builder.Services.AddApiVersioningConfiguration();
 // HTTP CONTEXT
 builder.Services.AddHttpContextAccessor();
 
-// ========================================
 // BUILD APP
-// ========================================
 var app = builder.Build();
 
-// ========================================
 // MIDDLEWARE PIPELINE
-// ========================================
 
 // Custom middlewares
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -147,9 +138,7 @@ app.UseMiddleware<RequestLoggingMiddleware>();
 app.UseHttpsRedirection();
 app.UseCors("AllowWebApp");
 
-// ========================================
 // SWAGGER - PROPERLY CONFIGURED FOR BOTH!
-// ========================================
 if (app.Environment.IsDevelopment())
 {
     // Use FastEndpoints' OpenApi middleware
@@ -163,31 +152,26 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// ========================================
 // AUTHENTICATION & AUTHORIZATION
 // CRITICAL: Must be before FastEndpoints!
-// ========================================
 app.UseAuthentication();
 app.UseAuthorization();
 
-// ========================================
 // FASTENDPOINTS - CONFIGURED WITH "API" PREFIX
-// ========================================
+
 app.UseFastEndpoints(c =>
 {
     // Add "api" prefix to all FastEndpoint routes
     // Your endpoints define routes like "/v1/fast/..." 
     // This will make them accessible at "api/v1/fast/..."
-   // c.Endpoints.RoutePrefix = "api";
+    c.Endpoints.RoutePrefix = "api";
 
     // Configure versioning (optional, not actively used since you define versions in routes)
-    c.Versioning.Prefix = "v";
+    c.Versioning.Prefix = "v{version}";
     c.Versioning.PrependToRoute = false;
 });
 
-// ========================================
 // CONTROLLERS (For backward compatibility)
-// ========================================
 app.MapControllers();
 
 // AUTO MIGRATIONS (DEV ONLY)
@@ -199,9 +183,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.Run();
-
-
-
 
 
 

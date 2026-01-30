@@ -1,4 +1,7 @@
-﻿using FastEndpoints;
+﻿
+
+
+using FastEndpoints;
 using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Services;
@@ -17,7 +20,7 @@ public class CompleteRegistrationEndpoint
 
     public override void Configure()
     {
-        Post("/v1/fast/onboarding/complete-registration");
+        Post("/v1/fast/onboarding/complete-registration");     // /v1
         AllowAnonymous();
 
         Description(b => b
