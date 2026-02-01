@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace ApartmentManagementSystem.API.Controllers.V1;
 
 [ApiController]
-//[Route("api/[controller]")]
-[ApiVersion("1.0")]  
-[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/[controller]")]
+//[ApiVersion("1.0")]  
+//[Route("api/v{version:apiVersion}/[controller]")]
 public class AuthApiController : ControllerBase
 {
     private readonly IAuthService AuthService;

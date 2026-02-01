@@ -1,4 +1,108 @@
 ﻿// Application/Services/CommunityMemberService.cs
+
+
+// Application/Services/CommunityMemberService.cs
+// COMPLETE REPLACEMENT
+
+using ApartmentManagementSystem.Application.DTOs.Community;
+using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+
+namespace ApartmentManagementSystem.Application.Services
+{
+    public class CommunityMemberService : ICommunityMemberService
+    {
+        private readonly ICommunityMemberRepository _repo;
+
+        public CommunityMemberService(ICommunityMemberRepository communityMemberRepository)
+        {
+            _repo = communityMemberRepository;
+        }
+
+        /// <summary>
+        /// ⭐ If apartmentId is provided, filter to that apartment only.
+        /// Otherwise return all (backward-compatible).
+        /// </summary>
+        public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync(Guid? apartmentId = null)
+        {
+            var all = await _repo.GetAllCommunityMembersAsync();
+
+            if (apartmentId.HasValue)
+            {
+                // Filter: only members whose flat belongs to this apartment
+                // Note: CommunityMember has ApartmentId directly, so filter on that
+                all = all.Where(m => m.ApartmentId == apartmentId.Value).ToList();
+            }
+
+            return all;
+        }
+
+        /// <summary>
+        /// ⭐ NEW: Returns resident owners who:
+        ///   1) Have an active flat in THIS apartment
+        ///   2) Do NOT already have a community role in THIS apartment
+        /// </summary>
+        public async Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId)
+        {
+            return await _repo.GetEligibleResidentsForApartmentAsync(apartmentId);
+        }
+
+        public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
+        {
+            return await _repo.GetCommunityMemberByUserIdAsync(userId);
+        }
+
+        /// <summary>
+        /// ⭐ Validates that the user is a resident owner in the given apartment before assigning.
+        /// </summary>
+        public async Task<CommunityMemberDto> AssignCommunityRoleAsync(
+            Guid userId, string roleName, Guid apartmentId, Guid assignedBy)
+        {
+            // Check if this role already exists in this apartment
+            var roleExists = await _repo.CommunityRoleExistsForApartmentAsync(roleName, apartmentId);
+            if (roleExists)
+                throw new Exception($"The {roleName} role is already assigned in this apartment. Remove the existing one first.");
+
+            // Assign the role (repository handles creating the CommunityMember record)
+            await _repo.AssignCommunityRoleAsync(userId, roleName, apartmentId, assignedBy);
+
+            // Return the newly created member DTO
+            var member = await _repo.GetCommunityMemberByUserIdAsync(userId);
+            if (member == null)
+                throw new Exception("Failed to retrieve the assigned community member.");
+
+            return member;
+        }
+
+        public async Task RemoveCommunityRoleAsync(Guid userId)
+        {
+            await _repo.RemoveCommunityRoleAsync(userId);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 using ApartmentManagementSystem.Application.DTOs.Community;
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
@@ -119,71 +223,14 @@ namespace ApartmentManagementSystem.Application.Services
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-/*using ApartmentManagementSystem.Application.DTOs.Community;
-using ApartmentManagementSystem.Application.DTOs.Community.Resident_Management;
-using ApartmentManagementSystem.Application.Interfaces.Services;
-using ApartmentManagementSystem.Application.Interfaces.Repositories;
-using ApartmentManagementSystem.Domain.Enums;
-
-namespace ApartmentManagementSystem.Application.Services
-{
-    public class CommunityMemberService : ICommunityMemberService
-    {
-        private readonly ICommunityMemberRepository Communityrepository;
-
-        public CommunityMemberService(ICommunityMemberRepository repository)
-        {
-            Communityrepository = repository;
-        }
-
-        public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync()
-        {
-            return await Communityrepository.GetAllCommunityMembersAsync();
-        }
-
-        public async Task<List<ResidentListDto>> GetEligibleResidentsForCommunityRoleAsync()
-        {
-            return await Communityrepository.GetEligibleResidentsAsync();
-        }
-
-        public async Task<CommunityMemberDto> AssignCommunityRoleAsync(
-            AssignCommunityRoleDto dto, Guid assignedBy)
-        {
-            if (!RoleNames.GetCommunityRoles().Contains(dto.CommunityRole))
-                throw new Exception("Invalid community role");
-
-            var exists = await Communityrepository.CommunityRoleExistsAsync(dto.CommunityRole);
-            if (exists)
-                throw new Exception($"{dto.CommunityRole} role already assigned");
-
-            await Communityrepository.AssignCommunityRoleAsync(dto.UserId, dto.CommunityRole);
-
-            var member = await Communityrepository.GetCommunityMemberByUserIdAsync(dto.UserId);
-            return member!;
-        }
-
-        public async Task<bool> RemoveCommunityRoleAsync(
-            RemoveCommunityRoleDto dto, Guid removedBy)
-        {
-            await Communityrepository.RemoveCommunityRoleAsync(dto.UserId);
-            return true;
-        }
-
-        public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
-        {
-            return await Communityrepository.GetCommunityMemberByUserIdAsync(userId);
-        }
-    }
-}
 */
+
+
+
+
+
+
+
+
+
+

@@ -11,12 +11,11 @@ using System.Text.Json;
 namespace ApartmentManagementSystem.API.Controllers.V1
     {
       [ApiController]
-    [ApiVersion("1.0")] 
-   // [Route("api/v{version:apiVersion}/[controller]")]
+   // [ApiVersion("1.0")] 
 
-    [Route("api/v{version:apiVersion}/ApartmentManagement")]
+   // [Route("api/v{version:apiVersion}/ApartmentManagement")]
     // [Route("api/[controller]")]
-    //[Route("api/ApartmentManagement")]
+    [Route("api/ApartmentManagement")]
     [Authorize(Roles = "SuperAdmin")]
         public class ApartmentManagementApiController : ControllerBase
         {

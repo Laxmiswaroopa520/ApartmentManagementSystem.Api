@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 namespace ApartmentManagementSystem.API.Controllers.V1;
 [ApiController]
-[ApiVersion("1.0")] 
-[Route("api/v{version:apiVersion}/[controller]")]
-//[Route("api/[controller]")]
+//[ApiVersion("1.0")] 
+//[Route("api/v{version:apiVersion}/[controller]")]
+[Route("api/[controller]")]
 public class OnboardingApiController : ControllerBase
 {
     private readonly IOnboardingService OnboardingService;

@@ -1,4 +1,29 @@
 ﻿// Infrastructure/Repositories/CommunityMemberRepository.cs
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
 using ApartmentManagementSystem.Application.DTOs.Community;
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
@@ -152,152 +177,6 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-/*using ApartmentManagementSystem.Application.DTOs.Community;
-using ApartmentManagementSystem.Application.DTOs.Community.Resident_Management;
-using ApartmentManagementSystem.Application.Interfaces.Repositories;
-using ApartmentManagementSystem.Domain.Entities;
-using ApartmentManagementSystem.Domain.Enums;
-using ApartmentManagementSystem.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
-
-namespace ApartmentManagementSystem.Infrastructure.Repositories
-{
-    public class CommunityMemberRepository : ICommunityMemberRepository
-    {
-        private readonly AppDbContext _context;
-
-        public CommunityMemberRepository(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync()
-        {
-            return await _context.Users
-                .Where(u => u.UserRoles.Any(ur =>
-                    RoleNames.GetCommunityRoles().Contains(ur.Role.Name)))
-                .Select(u => new CommunityMemberDto
-                {
-                    UserId = u.Id,
-                    FullName = u.FullName,
-                    Email = u.Email,
-                    Phone = u.PrimaryPhone,
-                    FlatNumber = u.UserFlatMappings
-                        .Select(f => f.Flat.FlatNumber)
-                        .FirstOrDefault() ?? "N/A",
-                    Role = u.UserRoles
-                        .Where(ur => RoleNames.GetCommunityRoles().Contains(ur.Role.Name))
-                        .Select(ur => ur.Role.Name)
-                        .First(),
-                    AssignedOn = u.CreatedAt,
-                    IsActive = true
-                })
-                .AsNoTracking()
-                .ToListAsync();
-        }
-
-        public async Task<List<ResidentListDto>> GetEligibleResidentsAsync()
-        {
-            return await _context.Users
-                .Where(u =>
-                    u.UserRoles.Any(ur => ur.Role.Name == RoleNames.ResidentOwner) &&
-                    u.UserFlatMappings.Any())
-                .Select(u => new ResidentListDto
-                {
-                    UserId = u.Id,
-                    FullName = u.FullName,
-                    Email = u.Email,
-                    Phone = u.PrimaryPhone,
-                    ResidentType = "Owner",
-                    FlatNumber = u.UserFlatMappings
-                        .Select(f => f.Flat.FlatNumber)
-                        .First(),
-                    Status = u.UserRoles.Any(ur =>
-                        RoleNames.GetCommunityRoles().Contains(ur.Role.Name))
-                        ? "Has Community Role"
-                        : "Eligible",
-                    RegisteredOn = u.CreatedAt
-                })
-                .AsNoTracking()
-                .ToListAsync();
-        }
-
-        public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
-        {
-            return await _context.Users
-                .Where(u => u.Id == userId)
-                .Select(u => new CommunityMemberDto
-                {
-                    UserId = u.Id,
-                    FullName = u.FullName,
-                    Email = u.Email,
-                    Phone = u.PrimaryPhone,
-                    FlatNumber = u.UserFlatMappings
-                        .Select(f => f.Flat.FlatNumber)
-                        .FirstOrDefault() ?? "N/A",
-                    Role = u.UserRoles
-                        .Where(ur => RoleNames.GetCommunityRoles().Contains(ur.Role.Name))
-                        .Select(ur => ur.Role.Name)
-                        .FirstOrDefault(),
-                    AssignedOn = u.CreatedAt,
-                    IsActive = true
-                })
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<bool> CommunityRoleExistsAsync(string roleName)
-        {
-            return await _context.Users
-                .AnyAsync(u => u.UserRoles.Any(ur => ur.Role.Name == roleName));
-        }
-
-        public async Task AssignCommunityRoleAsync(Guid userId, string roleName)
-        {
-            var user = await _context.Users
-                .Include(u => u.UserRoles)
-                .FirstAsync(u => u.Id == userId);
-
-            var role = await _context.Roles
-                .FirstAsync(r => r.Name == roleName);
-
-            user.UserRoles.Add(new UserRole
-            {
-                UserId = userId,
-                RoleId = role.Id
-            });
-
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task RemoveCommunityRoleAsync(Guid userId)
-        {
-            var user = await _context.Users
-                .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-                .FirstAsync(u => u.Id == userId);
-
-            var userRole = user.UserRoles
-                .First(ur => RoleNames.GetCommunityRoles().Contains(ur.Role.Name));
-
-            user.UserRoles.Remove(userRole);
-
-            await _context.SaveChangesAsync();
-        }
-    }
-}
-
 */
 
 
@@ -307,17 +186,11 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
 
 
+       
 
-
-
-
-
-
-
-/*using ApartmentManagementSystem.Application.DTOs.Community;
-using ApartmentManagementSystem.Application.DTOs.Community.Resident_Management;
+using ApartmentManagementSystem.Application.DTOs.Community;
+using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
-using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Domain.Enums;
 using ApartmentManagementSystem.Infrastructure.Persistence;
@@ -334,127 +207,173 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
             _context = context;
         }
 
+        // ─── GET ALL (no filter) ──────────────────────────────────────────────
         public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync()
         {
-            return await _context.Users
-                // .Where(u => u.Roles.Any(r => RoleNames.GetCommunityRoles().Contains(r.Name)))
-                .Where(u => u.UserRoles.Any(ur =>
-    RoleNames.GetCommunityRoles().Contains(ur.Role.Name)))
-
-                .Select(u => new CommunityMemberDto
+            return await _context.Set<CommunityMember>()
+                .Include(cm => cm.User)
+                    .ThenInclude(u => u.UserFlatMappings)
+                        .ThenInclude(ufm => ufm.Flat)
+                .Where(cm => cm.IsActive)
+                .Select(cm => new CommunityMemberDto
                 {
-                    UserId = u.Id,
-                    FullName = u.FullName,
-                    Email = u.Email,
-                    Phone = u.PrimaryPhone,
-                    FlatNumber = u.UserFlatMappings
-                        .Select(f => f.Flat.FlatNumber)
+                    UserId = cm.UserId,
+                    FullName = cm.User.FullName,
+                    Email = cm.User.Email ?? "",
+                    Phone = cm.User.PrimaryPhone,
+                    ApartmentId = cm.ApartmentId,   // ⭐ include for filtering in service
+                    FlatNumber = cm.User.UserFlatMappings
+                        .Where(ufm => ufm.IsActive)
+                        .Select(ufm => ufm.Flat.FlatNumber)
                         .FirstOrDefault() ?? "N/A",
-                    //  Role = u.Roles
-                    //    .Where(r => RoleNames.GetCommunityRoles().Contains(r.Name))
-                    //  .Select(r => r.Name)
-                    //.First(),
-                    Role = u.UserRoles
-    .Where(ur => RoleNames.GetCommunityRoles().Contains(ur.Role.Name))
-    .Select(ur => ur.Role.Name)
-    .First(),
-
-                    AssignedOn = u.CreatedAt,
-                    IsActive = true
+                    Role = cm.CommunityRole,
+                    AssignedOn = cm.AssignedAt,
+                    IsActive = cm.IsActive
                 })
                 .AsNoTracking()
                 .ToListAsync();
         }
 
+        // ─── ELIGIBLE RESIDENTS (legacy, no apartment filter) ────────────────
         public async Task<List<ResidentListDto>> GetEligibleResidentsAsync()
         {
-            return await _context.Users
-                .Where(u => u.UserRoles.Any(ur => ur.Role.Name == RoleNames.ResidentOwner)
-                         && u.UserFlatMappings.Any())
-                .Select(u => new ResidentListDto
-                {
-                    UserId = u.Id,
-                    FullName = u.FullName,
-                    Email = u.Email,
-                    Phone = u.PrimaryPhone,
-                    ResidentType = "Owner",
-                    FlatNumber = u.UserFlatMappings
-                        .Select(f => f.Flat.FlatNumber)
-                        .First(),
-                    Status = u.UserRoles.Any(ur => RoleNames.GetCommunityRoles().Contains(ur.Role.Name))
-                        ? "Has Community Role"
-                        : "Eligible",
-                    RegisteredOn = u.CreatedAt
-                })
-                .AsNoTracking()
+            var usersWithRoles = await _context.Set<CommunityMember>()
+                .Where(cm => cm.IsActive)
+                .Select(cm => cm.UserId)
                 .ToListAsync();
-        }
 
-        public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
-        {
             return await _context.Users
-                .Where(u => u.Id == userId)
-                .Select(u => new CommunityMemberDto
-                {
-                    UserId = u.Id,
-                    FullName = u.FullName,
-                    Email = u.Email,
-                    Phone = u.PrimaryPhone,
-                    FlatNumber = u.UserFlatMappings
-                        .Select(f => f.Flat.FlatNumber)
-                        .FirstOrDefault() ?? "N/A",
-                    Role = u.UserRoles
-                        .Where(r => RoleNames.GetCommunityRoles().Contains(r.Role.Name))
-                        .Select(r => r.Role.Name)
-                        .FirstOrDefault()!,
-                    AssignedOn = u.CreatedAt,
-                    IsActive = true
-                })
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<bool> CommunityRoleExistsAsync(string roleName)
-        {
-            return await _context.Users
-                .AnyAsync(u => u.UserRoles.Any(r => r.Role.Name == roleName));
-        }
-
-        public async Task AssignCommunityRoleAsync(Guid userId, string roleName)
-        {
-            var user = await _context.Users
                 .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
-                .FirstAsync(u => u.Id == userId);
+                .Include(u => u.UserFlatMappings).ThenInclude(ufm => ufm.Flat)
+                .Where(u =>
+                    u.UserRoles.Any(ur => ur.Role.Name == "ResidentOwner") &&
+                    u.UserFlatMappings.Any(ufm => ufm.IsActive) &&
+                    !usersWithRoles.Contains(u.Id))
+                .Select(u => new ResidentListDto
+                {
+                    UserId = u.Id,
+                    FullName = u.FullName,
+                    Email = u.Email ?? "",
+                    Phone = u.PrimaryPhone,
+                    ResidentType = "Owner",
+                    FlatNumber = u.UserFlatMappings
+                        .Where(ufm => ufm.IsActive)
+                        .Select(ufm => ufm.Flat.FlatNumber)
+                        .First(),
+                    Status = "Eligible",
+                    RegisteredOn = u.CreatedAt
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
 
-            var role = await _context.Roles.FirstAsync(r => r.Name == roleName);
-            // user.Roles.Add(role);//Updated One
-            user.UserRoles.Add(new UserRole
+        // ─── ⭐ ELIGIBLE RESIDENTS FOR A SPECIFIC APARTMENT ──────────────────
+        public async Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId)
+        {
+            // Get users who ALREADY have a community role in THIS apartment
+            var usersWithRolesInApartment = await _context.Set<CommunityMember>()
+                .Where(cm => cm.IsActive && cm.ApartmentId == apartmentId)
+                .Select(cm => cm.UserId)
+                .ToListAsync();
+
+            // Return resident owners who:
+            //   1) Have an active flat in THIS apartment
+            //   2) Don't already have a community role in THIS apartment
+            return await _context.Users
+                .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                .Include(u => u.UserFlatMappings).ThenInclude(ufm => ufm.Flat)
+                .Where(u =>
+                    u.UserRoles.Any(ur => ur.Role.Name == "ResidentOwner") &&
+                    u.UserFlatMappings.Any(ufm => ufm.IsActive && ufm.Flat.ApartmentId == apartmentId) &&
+                    !usersWithRolesInApartment.Contains(u.Id))
+                .Select(u => new ResidentListDto
+                {
+                    UserId = u.Id,
+                    FullName = u.FullName,
+                    Email = u.Email ?? "",
+                    Phone = u.PrimaryPhone,
+                    ResidentType = "Owner",
+                    FlatNumber = u.UserFlatMappings
+                        .Where(ufm => ufm.IsActive && ufm.Flat.ApartmentId == apartmentId)
+                        .Select(ufm => ufm.Flat.FlatNumber)
+                        .First(),
+                    Status = "Eligible",
+                    RegisteredOn = u.CreatedAt
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // ─── GET SINGLE MEMBER ────────────────────────────────────────────────
+        public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
+        {
+            return await _context.Set<CommunityMember>()
+                .Include(cm => cm.User)
+                    .ThenInclude(u => u.UserFlatMappings)
+                        .ThenInclude(ufm => ufm.Flat)
+                .Where(cm => cm.UserId == userId && cm.IsActive)
+                .Select(cm => new CommunityMemberDto
+                {
+                    UserId = cm.UserId,
+                    FullName = cm.User.FullName,
+                    Email = cm.User.Email ?? "",
+                    Phone = cm.User.PrimaryPhone,
+                    ApartmentId = cm.ApartmentId,
+                    FlatNumber = cm.User.UserFlatMappings
+                        .Where(ufm => ufm.IsActive)
+                        .Select(ufm => ufm.Flat.FlatNumber)
+                        .FirstOrDefault() ?? "N/A",
+                    Role = cm.CommunityRole,
+                    AssignedOn = cm.AssignedAt,
+                    IsActive = cm.IsActive
+                })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
+
+        // ─── ROLE EXISTS (global) ─────────────────────────────────────────────
+        public async Task<bool> CommunityRoleExistsAsync(string roleName)
+        {
+            return await _context.Set<CommunityMember>()
+                .AnyAsync(cm => cm.CommunityRole == roleName && cm.IsActive);
+        }
+
+        // ─── ⭐ ROLE EXISTS (scoped to apartment) ────────────────────────────
+        public async Task<bool> CommunityRoleExistsForApartmentAsync(string roleName, Guid apartmentId)
+        {
+            return await _context.Set<CommunityMember>()
+                .AnyAsync(cm => cm.CommunityRole == roleName && cm.ApartmentId == apartmentId && cm.IsActive);
+        }
+
+        // ─── ⭐ ASSIGN ROLE (updated signature) ──────────────────────────────
+        public async Task AssignCommunityRoleAsync(Guid userId, string roleName, Guid apartmentId, Guid assignedBy)
+        {
+            var communityMember = new CommunityMember
             {
-                RoleId = role.Id
-            });
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                ApartmentId = apartmentId,
+                CommunityRole = roleName,
+                AssignedBy = assignedBy,
+                AssignedAt = DateTime.UtcNow,
+                IsActive = true
+            };
 
-
+            await _context.Set<CommunityMember>().AddAsync(communityMember);
             await _context.SaveChangesAsync();
         }
 
+        // ─── REMOVE ROLE ──────────────────────────────────────────────────────
         public async Task RemoveCommunityRoleAsync(Guid userId)
         {
-            var user = await _context.Users
-                .Include(u => u.UserRoles)
-                .FirstAsync(u => u.Id == userId);
+            var communityMember = await _context.Set<CommunityMember>()
+                .FirstOrDefaultAsync(cm => cm.UserId == userId && cm.IsActive);
 
-            var role = user.UserRoles
-             //   .First(r => RoleNames.GetCommunityRoles().Contains(r.Name));
-             .First(ur => RoleNames.GetCommunityRoles().Contains(ur.Role.Name));
+            if (communityMember == null)
+                throw new Exception("Community member not found");
 
-            //  user.UserRoles.Remove(role); updated one..
-            var ur = user.UserRoles
-      .First(ur => RoleNames.GetCommunityRoles().Contains(ur.Role.Name));
-
-            user.UserRoles.Remove(ur);
-
+            communityMember.IsActive = false;
             await _context.SaveChangesAsync();
         }
     }
 }
-*/

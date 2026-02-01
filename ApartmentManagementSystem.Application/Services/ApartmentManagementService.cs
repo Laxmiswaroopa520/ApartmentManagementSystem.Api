@@ -338,6 +338,68 @@ namespace ApartmentManagementSystem.Application.Services
                 AssignedAt = cm.AssignedAt
             };
         }
+
+
+
+      /*  public async Task<ApartmentDiagramDto> GetApartmentDiagramAsync(Guid apartmentId)
+        {
+            // ⭐ KEY: This is the ONLY place that needs .Include().ThenInclude()
+            // Without it, apartment.Floors is null → the 3D view gets empty data.
+            var apartment = await _context.Apartments
+                .Include(a => a.Floors)
+                    .ThenInclude(f => f.Flats)
+                        .ThenInclude(flat => flat.UserFlatMappings)
+                            .ThenInclude(ufm => ufm.User)
+                .FirstOrDefaultAsync(a => a.Id == apartmentId);
+
+            if (apartment == null)
+                throw new Exception("Apartment not found");
+
+            // Build the DTO that gets serialized to JSON for the 3D view
+            var diagram = new ApartmentDiagramDto
+            {
+                ApartmentId = apartment.Id,
+                Name = apartment.Name,
+                TotalFloors = apartment.Floors?.Count ?? 0,
+                Floors = new List<FloorDiagramDto>()
+            };
+
+            if (apartment.Floors != null)
+            {
+                foreach (var floor in apartment.Floors.OrderBy(f => f.FloorNumber))
+                {
+                    var floorDto = new FloorDiagramDto
+                    {
+                        FloorId = floor.Id,
+                        FloorNumber = floor.FloorNumber,
+                        Flats = new List<FlatDiagramDto>()
+                    };
+
+                    if (floor.Flats != null)
+                    {
+                        foreach (var flat in floor.Flats.OrderBy(f => f.FlatNumber))
+                        {
+                            // Find the active occupant (if any)
+                            var activeMapping = flat.UserFlatMappings
+                                ?.FirstOrDefault(ufm => ufm.IsActive);
+
+                            floorDto.Flats.Add(new FlatDiagramDto
+                            {
+                                FlatId = flat.Id,
+                                FlatNumber = flat.FlatNumber,
+                                IsOccupied = activeMapping != null,
+                                Status = activeMapping != null ? "Occupied" : "Vacant",
+                                OccupantName = activeMapping?.User?.FullName
+                            });
+                        }
+                    }
+
+                    diagram.Floors.Add(floorDto);
+                }
+            }
+
+            return diagram;
+        }*/
     }
 }
 

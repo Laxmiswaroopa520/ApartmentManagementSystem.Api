@@ -31,6 +31,12 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
             Task UpdateAsync(User user);
         Task<User?> GetByUsernameWithRolesAsync(string username);//added new method
         Task<List<User>> GetUsersByRoleAsync(string roleName);      //added this method for assingning manager..
+        /// <summary>
+        /// ⭐ NEW: Creates a brand-new User record AND assigns them the specified role.
+        /// Used when SuperAdmin adds an external manager who doesn't exist in the system yet.
+        /// </summary>
+        Task CreateExternalManagerUserAsync(User user, string roleName);
+        Task AddRoleToUserAsync(Guid userId, string roleName);
     }
 
-    }
+}
