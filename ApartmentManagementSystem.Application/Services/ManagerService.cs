@@ -344,9 +344,7 @@ namespace ApartmentManagementSystem.Application.Services
             }
             else
             {
-                // ═══════════════════════════════════════════════════════════
                 // RESIDENT FROM APARTMENT - Just use their existing account
-                // ═══════════════════════════════════════════════════════════
 
                 if (!dto.UserId.HasValue || dto.UserId == Guid.Empty)
                     throw new Exception("Please select a resident");
@@ -357,9 +355,7 @@ namespace ApartmentManagementSystem.Application.Services
                 targetUserId = dto.UserId.Value;
             }
 
-            // ═══════════════════════════════════════════════════════════════
             // ASSIGN AS APARTMENT MANAGER
-            // ═══════════════════════════════════════════════════════════════
 
             var apartment = await _apartmentRepo.GetByIdAsync(dto.ApartmentId)
                 ?? throw new Exception("Apartment not found");
