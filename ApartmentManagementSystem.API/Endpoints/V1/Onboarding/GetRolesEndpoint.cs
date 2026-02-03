@@ -1,4 +1,4 @@
-﻿using FastEndpoints;
+﻿/*using FastEndpoints;
 using ApartmentManagementSystem.Application.DTOs;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 
@@ -16,12 +16,12 @@ public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
     public override void Configure()
     {
         // CORRECTED: Simple route, "api" prefix is added automatically
-        Get("v1/onboarding/roles");
+        Get("v1/onboarding/fast/roles");
 
         AllowAnonymous();
 
         Description(b => b
-            .WithTags("OnboardingApi") // Match your controller tag
+            .WithTags("Onboarding") // Match your controller tag
             .WithName("GetRoles")
             .WithSummary("Get all available system roles")
             .WithDescription("Returns a list of all roles available in the system. Used by web interface for role selection.")
@@ -44,12 +44,50 @@ public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
 }
 
 
+*/
+using FastEndpoints;
+using ApartmentManagementSystem.Application.DTOs;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
 
+namespace ApartmentManagementSystem.API.Endpoints.V1.Onboarding;
 
+public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
+{
+    private readonly IRoleRepository _roleRepository;
 
+    public GetRolesEndpoint(IRoleRepository roleRepository)
+    {
+        _roleRepository = roleRepository;
+    }
 
+    public override void Configure()
+    {
+        // Route WITHOUT leading slash (RoutePrefix "api" is added automatically)
+        Get("onboardingApi/roles");
+        AllowAnonymous();
+        
+        Description(b => b
+            .WithTags("Onboarding") // This creates the tag grouping in Swagger
+            .WithName("GetRoles")
+            .WithSummary("Get all available system roles")
+            .WithDescription("Returns a list of all roles available in the system. Used by web interface for role selection.")
+            .Produces<List<RoleDto>>(200, "application/json")
+        );
+    }
 
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var roles = await _roleRepository.GetAllAsync();
+        
+        var roleDtos = roles.Select(r => new RoleDto
+        {
+            Id = r.Id,
+            Name = r.Name
+        }).ToList();
 
+        await SendOkAsync(roleDtos, ct);
+    }
+}
 
 
 

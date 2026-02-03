@@ -1,4 +1,4 @@
-﻿using FastEndpoints;
+﻿/*using FastEndpoints;
 using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Services;
@@ -18,12 +18,12 @@ public class VerifyOtpEndpoint
     public override void Configure()
     {
         // CORRECTED: Simple route with version
-        Post("v1/onboarding/verify-otp");
+        Post("v1/onboarding/fast/verify-otp");
 
         AllowAnonymous();
 
         Description(b => b
-            .WithTags("OnboardingApi") // Match your controller tag
+            .WithTags("Onboarding") // Match your controller tag
             .WithName("VerifyOtp")
             .WithSummary("Verify OTP sent to resident's phone")
             .WithDescription(@"
@@ -58,19 +58,9 @@ public class VerifyOtpEndpoint
         }
     }
 }
+*/
 
-
-
-
-
-
-
-
-
-
-
-
-/*using FastEndpoints;
+using FastEndpoints;
 using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Services;
@@ -89,7 +79,7 @@ public class VerifyOtpEndpoint
 
     public override void Configure()
     {
-        Post("/v1/fast/onboarding/verify-otp");
+        Post("onboardingApi/verify-otp");
         AllowAnonymous();
 
         Description(b => b
@@ -106,16 +96,12 @@ public class VerifyOtpEndpoint
         );
     }
 
-    public override async Task HandleAsync(
-        VerifyOtpDto req,
-        CancellationToken ct)
+    public override async Task HandleAsync(VerifyOtpDto req, CancellationToken ct)
     {
         try
         {
-            // Call the service (unchanged from controller)
             var result = await _onboardingService.VerifyOtpAsync(req);
 
-            // Return success response
             await SendAsync(
                 ApiResponse<VerifyOtpResponseDto>
                     .SuccessResponse(result, "OTP verified successfully"),
@@ -124,7 +110,6 @@ public class VerifyOtpEndpoint
         }
         catch (Exception ex)
         {
-            // Handle errors (invalid OTP, expired OTP, user not found, etc.)
             await SendAsync(
                 ApiResponse<VerifyOtpResponseDto>
                     .ErrorResponse(ex.Message),
@@ -133,4 +118,3 @@ public class VerifyOtpEndpoint
         }
     }
 }
-*/

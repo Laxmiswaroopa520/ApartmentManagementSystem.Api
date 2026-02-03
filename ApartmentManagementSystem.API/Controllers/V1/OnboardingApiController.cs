@@ -1,4 +1,4 @@
-﻿using ApartmentManagementSystem.Application.DTOs;
+﻿/*using ApartmentManagementSystem.Application.DTOs;
 using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
@@ -113,3 +113,4 @@ public class OnboardingApiController : ControllerBase
             .SuccessResponse(residentTypes));
     }
 }
+*/
