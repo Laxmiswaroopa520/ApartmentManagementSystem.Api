@@ -30,8 +30,8 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("City")
                         .HasMaxLength(100)
@@ -51,8 +51,8 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PinCode")
                         .HasMaxLength(10)
@@ -83,6 +83,8 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
                     b.HasIndex("Name");
 
+                    b.HasIndex("Status");
+
                     b.ToTable("Apartments");
                 });
 
@@ -103,6 +105,9 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime>("RemovedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -179,7 +184,8 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<Guid?>("OwnerUserId")
                         .HasColumnType("uniqueidentifier");
@@ -190,6 +196,10 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FloorId");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("IsOccupied");
 
                     b.HasIndex("OwnerUserId");
 
@@ -213,11 +223,13 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApartmentId");
+                    b.HasIndex("ApartmentId", "FloorNumber")
+                        .IsUnique();
 
                     b.ToTable("Floors");
                 });
@@ -232,13 +244,17 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name");
 
                     b.ToTable("Roles");
 
@@ -246,55 +262,55 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 2, 1, 14, 14, 36, 370, DateTimeKind.Utc).AddTicks(1556),
+                            CreatedAt = new DateTime(2026, 2, 4, 3, 41, 45, 805, DateTimeKind.Utc).AddTicks(8972),
                             Name = "SuperAdmin"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 2, 1, 14, 14, 36, 370, DateTimeKind.Utc).AddTicks(1559),
+                            CreatedAt = new DateTime(2026, 2, 4, 3, 41, 45, 805, DateTimeKind.Utc).AddTicks(8977),
                             Name = "Manager"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 2, 1, 14, 14, 36, 370, DateTimeKind.Utc).AddTicks(1561),
+                            CreatedAt = new DateTime(2026, 2, 4, 3, 41, 45, 805, DateTimeKind.Utc).AddTicks(8979),
                             Name = "President"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000004"),
-                            CreatedAt = new DateTime(2026, 2, 1, 14, 14, 36, 370, DateTimeKind.Utc).AddTicks(1562),
+                            CreatedAt = new DateTime(2026, 2, 4, 3, 41, 45, 805, DateTimeKind.Utc).AddTicks(8981),
                             Name = "Secretary"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 2, 1, 14, 14, 36, 370, DateTimeKind.Utc).AddTicks(1564),
+                            CreatedAt = new DateTime(2026, 2, 4, 3, 41, 45, 805, DateTimeKind.Utc).AddTicks(8982),
                             Name = "Treasurer"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 2, 1, 14, 14, 36, 370, DateTimeKind.Utc).AddTicks(1618),
+                            CreatedAt = new DateTime(2026, 2, 4, 3, 41, 45, 805, DateTimeKind.Utc).AddTicks(8984),
                             Name = "ResidentOwner"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 2, 1, 14, 14, 36, 370, DateTimeKind.Utc).AddTicks(1619),
+                            CreatedAt = new DateTime(2026, 2, 4, 3, 41, 45, 805, DateTimeKind.Utc).AddTicks(8985),
                             Name = "Tenant"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 2, 1, 14, 14, 36, 370, DateTimeKind.Utc).AddTicks(1621),
+                            CreatedAt = new DateTime(2026, 2, 4, 3, 41, 45, 805, DateTimeKind.Utc).AddTicks(8987),
                             Name = "Security"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000009"),
-                            CreatedAt = new DateTime(2026, 2, 1, 14, 14, 36, 370, DateTimeKind.Utc).AddTicks(1622),
+                            CreatedAt = new DateTime(2026, 2, 4, 3, 41, 45, 805, DateTimeKind.Utc).AddTicks(8988),
                             Name = "Maintenance"
                         });
                 });
@@ -306,7 +322,8 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -324,6 +341,7 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<decimal?>("HourlyRate")
+                        .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<bool>("IsActive")
@@ -338,7 +356,8 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("Specialization")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("StaffType")
                         .IsRequired()
@@ -355,6 +374,8 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IsActive");
 
                     b.HasIndex("Phone");
 
@@ -375,14 +396,16 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<Guid?>("FlatId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -394,17 +417,20 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("PrimaryPhone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int?>("ResidentType")
                         .HasColumnType("int");
 
                     b.Property<string>("SecondaryPhone")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -416,11 +442,22 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Username")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email");
+
                     b.HasIndex("FlatId");
+
+                    b.HasIndex("IsActive");
+
+                    b.HasIndex("PrimaryPhone");
+
+                    b.HasIndex("Status");
+
+                    b.HasIndex("Username");
 
                     b.ToTable("Users");
 
@@ -428,13 +465,13 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("20000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 2, 1, 14, 14, 36, 532, DateTimeKind.Utc).AddTicks(2616),
+                            CreatedAt = new DateTime(2026, 2, 4, 3, 41, 45, 989, DateTimeKind.Utc).AddTicks(5755),
                             Email = "admin@apartment.com",
                             FullName = "System Administrator",
                             IsActive = true,
                             IsOtpVerified = true,
                             IsRegistrationCompleted = true,
-                            PasswordHash = "$2a$11$7ZxDGLC5D6m8ZI2o9r/04esEuHtSRmw80XzVio0VeTF9Cc5rZY2sa",
+                            PasswordHash = "$2a$11$qCvXbSTrgEgfZ/7LIPQqJOBBVXixgOYbRWDtHa7Qt8D6WmhQGwADu",
                             PrimaryPhone = "9999999999",
                             Status = 1,
                             Username = "admin"
@@ -493,15 +530,18 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("InviteStatus")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PrimaryPhone")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<int>("ResidentType")
                         .HasColumnType("int");
@@ -510,6 +550,8 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PrimaryPhone");
 
                     b.HasIndex("RoleId");
 
@@ -533,18 +575,26 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
 
                     b.Property<string>("OtpCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ExpiresAt");
+
+                    b.HasIndex("PhoneNumber");
+
                     b.HasIndex("UserId");
+
+                    b.HasIndex("PhoneNumber", "OtpCode");
 
                     b.ToTable("UserOtps");
                 });
@@ -557,9 +607,17 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("AssignedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
 
@@ -567,7 +625,9 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                         new
                         {
                             UserId = new Guid("20000000-0000-0000-0000-000000000001"),
-                            RoleId = new Guid("10000000-0000-0000-0000-000000000001")
+                            RoleId = new Guid("10000000-0000-0000-0000-000000000001"),
+                            AssignedAt = new DateTime(2026, 2, 4, 3, 41, 45, 989, DateTimeKind.Utc).AddTicks(6471),
+                            Id = new Guid("14602889-5ee5-444b-aaf4-f78139a5e75f")
                         });
                 });
 
@@ -660,7 +720,8 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                 {
                     b.HasOne("ApartmentManagementSystem.Domain.Entities.Flat", "Flat")
                         .WithMany()
-                        .HasForeignKey("FlatId");
+                        .HasForeignKey("FlatId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Flat");
                 });

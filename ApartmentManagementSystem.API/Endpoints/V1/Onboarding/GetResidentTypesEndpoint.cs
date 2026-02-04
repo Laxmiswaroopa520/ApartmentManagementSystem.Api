@@ -1,4 +1,4 @@
-﻿using ApartmentManagementSystem.Application.DTOs;
+﻿/*using ApartmentManagementSystem.Application.DTOs;
 using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Domain.Enums;
@@ -12,12 +12,12 @@ public class GetResidentTypesEndpoint
     public override void Configure()
     {
         // CORRECTED: Simple route with version
-        Get("v1/onboarding/resident-types");
+        Get("v1/onboarding/fast/resident-types");
 
         Roles("SuperAdmin", "Manager");
 
         Description(b => b
-            .WithTags("OnboardingApi") // Match your controller tag
+            .WithTags("Onboarding") // Match your controller tag
             .WithName("GetResidentTypes")
             .WithSummary("Get all resident types")
             .WithDescription(@"
@@ -49,21 +49,13 @@ public class GetResidentTypesEndpoint
             ct);
     }
 }
+*/
 
-
-
-
-
-
-
-
-
-/*
+using FastEndpoints;
 using ApartmentManagementSystem.Application.DTOs;
 using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Domain.Enums;
-using FastEndpoints;
 
 namespace ApartmentManagementSystem.API.Endpoints.V1.Onboarding;
 
@@ -72,11 +64,9 @@ public class GetResidentTypesEndpoint
 {
     public override void Configure()
     {
-        Get("/v1/fast/onboarding/resident-types");
-       // Get("fast/onboarding/resident-types");
-
+        Get("onboardingApi/resident-types");
         Roles("SuperAdmin", "Manager");
-       // Version(1);
+
         Description(b => b
             .WithTags("Onboarding")
             .WithName("GetResidentTypes")
@@ -95,7 +85,6 @@ public class GetResidentTypesEndpoint
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        // Get all enum values
         var residentTypes = Enum.GetValues(typeof(ResidentType))
             .Cast<ResidentType>()
             .Select(rt => new ResidentTypeDto
@@ -105,11 +94,14 @@ public class GetResidentTypesEndpoint
             })
             .ToList();
 
-        // Return wrapped in ApiResponse
         await SendAsync(
             ApiResponse<List<ResidentTypeDto>>.SuccessResponse(residentTypes),
             200,
             ct);
     }
 }
-*/
+
+
+
+
+

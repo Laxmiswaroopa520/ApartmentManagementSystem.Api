@@ -1,4 +1,4 @@
-﻿using FastEndpoints;
+﻿/*using FastEndpoints;
 using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Services;
@@ -18,12 +18,12 @@ public class CompleteRegistrationEndpoint
     public override void Configure()
     {
         // CORRECTED: Simple route with version
-        Post("v1/onboarding/complete-registration");
+        Post("v1/onboarding/fast/complete-registration");
 
         AllowAnonymous();
 
         Description(b => b
-            .WithTags("OnboardingApi") // Match your controller tag
+            .WithTags("Onboarding") // Match your controller tag
             .WithName("CompleteRegistration")
             .WithSummary("Complete resident registration")
             .WithDescription(@"
@@ -59,11 +59,13 @@ public class CompleteRegistrationEndpoint
         }
     }
 }
-/*
-using FastEndpoints;
+*/
+using ApartmentManagementSystem.Application.DTOs;
 using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
+using FastEndpoints;
 
 namespace ApartmentManagementSystem.API.Endpoints.V1.Onboarding;
 
@@ -79,8 +81,7 @@ public class CompleteRegistrationEndpoint
 
     public override void Configure()
     {
-        Post("/fast/onboarding/complete-registration");
-        Version(1);
+        Post("onboardingApi/complete-registration");
         AllowAnonymous();
 
         Description(b => b
@@ -98,36 +99,12 @@ public class CompleteRegistrationEndpoint
         );
     }
 
-  /*  public override void Configure()
-    {
-        Post("/v1/fast/onboarding/complete-registration");     // /v1
-        AllowAnonymous();
-
-        Description(b => b
-            .WithTags("Onboarding")
-            .WithName("CompleteRegistration")
-            .WithSummary("Complete resident registration")
-            .WithDescription(@"
-                Completes the registration process after OTP verification.
-                Creates user credentials (username/password) and profile information.
-                User status will be set to 'PendingFlatAllocation' after successful registration.
-                Admin must assign a flat before the user can fully access the system.
-            ")
-            .Produces<ApiResponse<CompleteRegistrationResponseDto>>(200, "application/json")
-            .Produces<ApiResponse<CompleteRegistrationResponseDto>>(400, "application/json")
-        );
-    }
-  
-    public override async Task HandleAsync(
-        CompleteRegistrationDto req,
-        CancellationToken ct)
+    public override async Task HandleAsync(CompleteRegistrationDto req, CancellationToken ct)
     {
         try
         {
-            // Call the service (unchanged from controller)
             var result = await _onboardingService.CompleteRegistrationAsync(req);
 
-            // Return success response
             await SendAsync(
                 ApiResponse<CompleteRegistrationResponseDto>
                     .SuccessResponse(result, "Registration completed successfully"),
@@ -136,7 +113,6 @@ public class CompleteRegistrationEndpoint
         }
         catch (Exception ex)
         {
-            // Handle errors (username exists, OTP not verified, etc.)
             await SendAsync(
                 ApiResponse<CompleteRegistrationResponseDto>
                     .ErrorResponse(ex.Message),
@@ -145,4 +121,4 @@ public class CompleteRegistrationEndpoint
         }
     }
 }
-*/
+

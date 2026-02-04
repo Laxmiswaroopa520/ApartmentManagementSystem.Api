@@ -1,5 +1,5 @@
 ﻿//API versioning config
-using Microsoft.AspNetCore.Mvc;
+/*using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace ApartmentManagementSystem.API.Configuration
@@ -37,3 +37,4 @@ namespace ApartmentManagementSystem.API.Configuration
         }
     }
 }
+*/

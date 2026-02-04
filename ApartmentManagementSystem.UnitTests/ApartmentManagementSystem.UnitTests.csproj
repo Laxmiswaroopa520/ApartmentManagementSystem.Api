@@ -10,13 +10,31 @@
   </PropertyGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+=======
+    <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="FluentAssertions" Version="5.10.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+>>>>>>> cd0a7d446336f8d84ef0c538997300aa72bf1cef
     <PackageReference Include="xunit" Version="2.5.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
+=======
+    <ProjectReference Include="..\ApartmentManagementSystem.Application\ApartmentManagementSystem.Application.csproj" />
+    <ProjectReference Include="..\ApartmentManagementSystem.Domain\ApartmentManagementSystem.Domain.csproj" />
+    <ProjectReference Include="..\ApartmentManagementSystem.Tests.Common\ApartmentManagementSystem.Tests.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+>>>>>>> cd0a7d446336f8d84ef0c538997300aa72bf1cef
     <Using Include="Xunit" />
   </ItemGroup>
 

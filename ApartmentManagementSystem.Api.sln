@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11312.210 d18.3
+VisualStudioVersion = 18.3.11312.210
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApartmentManagementSystem.Domain", "ApartmentManagementSystem.Domain\ApartmentManagementSystem.Domain.csproj", "{C4E46C54-ECF4-4852-8F15-B6E18D8F6F9F}"
 EndProject
@@ -11,13 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApartmentManagementSystem.I
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApartmentManagementSystem.API", "ApartmentManagementSystem.API\ApartmentManagementSystem.API.csproj", "{C75727FC-5085-407F-BA3F-FA761C88E73A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6ED1AD36-734D-4316-9D9B-286ADD4020A9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApartmentManagementSystem.UnitTests", "ApartmentManagementSystem.UnitTests\ApartmentManagementSystem.UnitTests.csproj", "{A86771FA-EC6D-4E6A-BB77-260EA4D45736}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApartmentManagementSystem.IntegrationTests", "ApartmentManagementSystem.IntegrationTests\ApartmentManagementSystem.IntegrationTests.csproj", "{F2329D5C-F203-4F09-81DE-CAC12B47D98D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApartmentManagementSystem.Tests.Common", "ApartmentManagementSystem.Tests.Common\ApartmentManagementSystem.Tests.Common.csproj", "{D662E133-388F-4A53-871D-EC00DBEC9286}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApartmentManagementSystem.Tests", "ApartmentManagementSystem.Tests\ApartmentManagementSystem.Tests.csproj", "{71F7BC56-02A4-4F55-AB2C-4BC2BE7A2B8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,26 +35,13 @@ Global
 		{C75727FC-5085-407F-BA3F-FA761C88E73A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C75727FC-5085-407F-BA3F-FA761C88E73A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C75727FC-5085-407F-BA3F-FA761C88E73A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A86771FA-EC6D-4E6A-BB77-260EA4D45736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A86771FA-EC6D-4E6A-BB77-260EA4D45736}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A86771FA-EC6D-4E6A-BB77-260EA4D45736}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A86771FA-EC6D-4E6A-BB77-260EA4D45736}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F2329D5C-F203-4F09-81DE-CAC12B47D98D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F2329D5C-F203-4F09-81DE-CAC12B47D98D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F2329D5C-F203-4F09-81DE-CAC12B47D98D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F2329D5C-F203-4F09-81DE-CAC12B47D98D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D662E133-388F-4A53-871D-EC00DBEC9286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D662E133-388F-4A53-871D-EC00DBEC9286}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D662E133-388F-4A53-871D-EC00DBEC9286}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D662E133-388F-4A53-871D-EC00DBEC9286}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71F7BC56-02A4-4F55-AB2C-4BC2BE7A2B8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71F7BC56-02A4-4F55-AB2C-4BC2BE7A2B8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71F7BC56-02A4-4F55-AB2C-4BC2BE7A2B8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71F7BC56-02A4-4F55-AB2C-4BC2BE7A2B8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{A86771FA-EC6D-4E6A-BB77-260EA4D45736} = {6ED1AD36-734D-4316-9D9B-286ADD4020A9}
-		{F2329D5C-F203-4F09-81DE-CAC12B47D98D} = {6ED1AD36-734D-4316-9D9B-286ADD4020A9}
-		{D662E133-388F-4A53-871D-EC00DBEC9286} = {6ED1AD36-734D-4316-9D9B-286ADD4020A9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B7E046A3-0C7F-4CC5-AFF7-2E5DD9E634E0}
