@@ -64,11 +64,11 @@ public class GetResidentTypesEndpoint
 {
     public override void Configure()
     {
-        Get("onboardingApi/resident-types");
+        Get("OnboardingApi/resident-types");
         Roles("SuperAdmin", "Manager");
 
         Description(b => b
-            .WithTags("Onboarding")
+            .WithTags("OnboardingApi")
             .WithName("GetResidentTypes")
             .WithSummary("Get all resident types")
             .WithDescription(@"

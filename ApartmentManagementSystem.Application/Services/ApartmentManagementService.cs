@@ -1,7 +1,6 @@
 ﻿// Application/Services/ApartmentManagementService.cs
 
 // Application/Services/ApartmentManagementService.cs
-// CORRECTED VERSION - Fixed GetApartmentDiagramAsync method
 using ApartmentManagementSystem.Application.DTOs.Apartment;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
@@ -12,10 +11,10 @@ namespace ApartmentManagementSystem.Application.Services
 {
     public class ApartmentManagementService : IApartmentManagementService
     {
-        private readonly IApartmentRepository _apartmentRepo;
-        private readonly IFloorRepository _floorRepo;
-        private readonly IFlatRepository _flatRepo;
-        private readonly IUserRepository _userRepo;
+        private readonly IApartmentRepository ApartmentRepo;
+        private readonly IFloorRepository FloorRepo;
+        private readonly IFlatRepository FlatRepo;
+        private readonly IUserRepository UserRepo;
 
         public ApartmentManagementService(
             IApartmentRepository apartmentRepo,
@@ -23,10 +22,10 @@ namespace ApartmentManagementSystem.Application.Services
             IFlatRepository flatRepo,
             IUserRepository userRepo)
         {
-            _apartmentRepo = apartmentRepo;
-            _floorRepo = floorRepo;
-            _flatRepo = flatRepo;
-            _userRepo = userRepo;
+            ApartmentRepo = apartmentRepo;
+            FloorRepo = floorRepo;
+            FlatRepo = flatRepo;
+            UserRepo = userRepo;
         }
 
         public async Task<CreateApartmentResponseDto> CreateApartmentAsync(CreateApartmentDto dto, Guid createdBy)
@@ -48,7 +47,7 @@ namespace ApartmentManagementSystem.Application.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _apartmentRepo.AddAsync(apartment);
+            await ApartmentRepo.AddAsync(apartment);
 
             var response = new CreateApartmentResponseDto
             {
@@ -69,7 +68,7 @@ namespace ApartmentManagementSystem.Application.Services
                     ApartmentId = apartment.Id
                 };
 
-                await _floorRepo.AddAsync(floor);
+                await FloorRepo.AddAsync(floor);
 
                 var floorCreated = new FloorCreatedDto
                 {
@@ -94,7 +93,7 @@ namespace ApartmentManagementSystem.Application.Services
                         CreatedAt = DateTime.UtcNow
                     };
 
-                    await _flatRepo.AddAsync(flat);
+                    await FlatRepo.AddAsync(flat);
                     floorCreated.FlatNumbers.Add(flatNumber);
                 }
 
@@ -106,7 +105,7 @@ namespace ApartmentManagementSystem.Application.Services
 
         public async Task<List<ApartmentListDto>> GetAllApartmentsAsync()
         {
-            var apartments = await _apartmentRepo.GetAllWithDetailsAsync();
+            var apartments = await ApartmentRepo.GetAllWithDetailsAsync();
             return apartments.Select(a => new ApartmentListDto
             {
                 Id = a.Id,
@@ -123,7 +122,7 @@ namespace ApartmentManagementSystem.Application.Services
 
         public async Task<ApartmentDetailDto?> GetApartmentDetailAsync(Guid apartmentId)
         {
-            var apartment = await _apartmentRepo.GetByIdWithFullDetailsAsync(apartmentId);
+            var apartment = await ApartmentRepo.GetByIdWithFullDetailsAsync(apartmentId);
             if (apartment == null) return null;
 
             var manager = apartment.Managers.FirstOrDefault(m => m.IsActive);
@@ -161,14 +160,14 @@ namespace ApartmentManagementSystem.Application.Services
             };
         }
 
-        // ✅ CORRECTED METHOD - This is the key fix!
+        
         public async Task<ApartmentDiagramDto> GetApartmentDiagramAsync(Guid apartmentId)
         {
             Console.WriteLine($"=== GetApartmentDiagramAsync Called ===");
             Console.WriteLine($"Apartment ID: {apartmentId}");
 
             // Load apartment with floors and flats
-            var apartment = await _apartmentRepo.GetByIdWithFloorsAndFlatsAsync(apartmentId);
+            var apartment = await ApartmentRepo.GetByIdWithFloorsAndFlatsAsync(apartmentId);
 
             if (apartment == null)
             {
@@ -194,7 +193,7 @@ namespace ApartmentManagementSystem.Application.Services
                 Floors = new List<FloorDiagramDto>()
             };
 
-            // ✅ FIXED: Order floors ascending (1, 2, 3...) instead of descending
+            //  Order floors ascending (1, 2, 3...) instead of descending
             // The JavaScript will reverse them for display
             foreach (var floor in apartment.Floors.OrderBy(f => f.FloorNumber))
             {
@@ -208,7 +207,7 @@ namespace ApartmentManagementSystem.Application.Services
                     Flats = new List<FlatDiagramDto>()
                 };
 
-                // ⚠️ CRITICAL FIX: Check if Flats collection exists
+                // Check if Flats collection exists
                 if (floor.Flats != null && floor.Flats.Any())
                 {
                     foreach (var flat in floor.Flats.OrderBy(f => f.FlatNumber))
@@ -239,7 +238,7 @@ namespace ApartmentManagementSystem.Application.Services
             Console.WriteLine($"Total Floors in Diagram: {diagram.Floors.Count}");
             Console.WriteLine($"First Floor Flats: {diagram.Floors.FirstOrDefault()?.Flats.Count ?? 0}");
 
-            // ⚠️ FINAL VALIDATION: Ensure we have valid data
+            // Ensure we have valid data
             if (!diagram.Floors.Any())
             {
                 Console.WriteLine("ERROR: Diagram has no floors!");
@@ -257,17 +256,17 @@ namespace ApartmentManagementSystem.Application.Services
 
         public async Task<bool> AssignManagerAsync(AssignManagerDto dto, Guid assignedBy)
         {
-            var user = await _userRepo.GetByIdAsync(dto.UserId);
+            var user = await UserRepo.GetByIdAsync(dto.UserId);
             if (user == null) throw new Exception("User not found");
 
             var hasManagerRole = user.UserRoles?.Any(ur => ur.Role.Name == "Manager") ?? false;
             if (!hasManagerRole) throw new Exception("User must have Manager role");
 
-            var existingManager = await _apartmentRepo.GetActiveManagerAsync(dto.ApartmentId);
+            var existingManager = await ApartmentRepo.GetActiveManagerAsync(dto.ApartmentId);
             if (existingManager != null)
             {
                 existingManager.IsActive = false;
-                await _apartmentRepo.UpdateManagerAsync(existingManager);
+                await ApartmentRepo.UpdateManagerAsync(existingManager);
             }
 
             var newManager = new ApartmentManager
@@ -280,13 +279,13 @@ namespace ApartmentManagementSystem.Application.Services
                 IsActive = true
             };
 
-            await _apartmentRepo.AddManagerAsync(newManager);
+            await ApartmentRepo.AddManagerAsync(newManager);
             return true;
         }
 
         public async Task<bool> UpdateApartmentAsync(Guid apartmentId, UpdateApartmentDto dto, Guid updatedBy)
         {
-            var apartment = await _apartmentRepo.GetByIdAsync(apartmentId);
+            var apartment = await ApartmentRepo.GetByIdAsync(apartmentId);
             if (apartment == null) throw new Exception("Apartment not found");
 
             apartment.Name = dto.Name;
@@ -298,31 +297,31 @@ namespace ApartmentManagementSystem.Application.Services
             apartment.UpdatedAt = DateTime.UtcNow;
             apartment.UpdatedBy = updatedBy;
 
-            await _apartmentRepo.UpdateAsync(apartment);
+            await ApartmentRepo.UpdateAsync(apartment);
             return true;
         }
 
         public async Task<bool> DeactivateApartmentAsync(Guid apartmentId, Guid deactivatedBy)
         {
-            var apartment = await _apartmentRepo.GetByIdAsync(apartmentId);
+            var apartment = await ApartmentRepo.GetByIdAsync(apartmentId);
             if (apartment == null) throw new Exception("Apartment not found");
 
             apartment.IsActive = false;
             apartment.UpdatedAt = DateTime.UtcNow;
             apartment.UpdatedBy = deactivatedBy;
 
-            await _apartmentRepo.UpdateAsync(apartment);
+            await ApartmentRepo.UpdateAsync(apartment);
             return true;
         }
 
         public async Task<bool> RemoveManagerAsync(Guid apartmentId, Guid userId, Guid removedBy)
         {
-            var manager = await _apartmentRepo.GetActiveManagerAsync(apartmentId);
+            var manager = await ApartmentRepo.GetActiveManagerAsync(apartmentId);
             if (manager == null || manager.UserId != userId)
                 throw new Exception("Manager not found");
 
             manager.IsActive = false;
-            await _apartmentRepo.UpdateManagerAsync(manager);
+            await ApartmentRepo.UpdateManagerAsync(manager);
             return true;
         }
 

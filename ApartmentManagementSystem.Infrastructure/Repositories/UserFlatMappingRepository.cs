@@ -12,16 +12,16 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
     using Microsoft.EntityFrameworkCore;
   public class UserFlatMappingRepository : IUserFlatMappingRepository
         {
-            private readonly AppDbContext _context;
+            private readonly AppDbContext DBContext;
 
             public UserFlatMappingRepository(AppDbContext context)
             {
-                _context = context;
+                DBContext = context;
             }
 
             public async Task<UserFlatMapping?> GetByIdAsync(Guid id)
             {
-                return await _context.UserFlatMappings
+                return await DBContext.UserFlatMappings
                     .Include(ufm => ufm.User)
                     .Include(ufm => ufm.Flat)
                         .ThenInclude(f => f.Apartment)
@@ -30,7 +30,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
             public async Task<List<UserFlatMapping>> GetByUserIdAsync(Guid userId)
             {
-                return await _context.UserFlatMappings
+                return await DBContext.UserFlatMappings
                     .Include(ufm => ufm.User)
                     .Include(ufm => ufm.Flat)
                         .ThenInclude(f => f.Apartment)
@@ -43,7 +43,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
             public async Task<List<UserFlatMapping>> GetByFlatIdAsync(Guid flatId)
             {
-                return await _context.UserFlatMappings
+                return await DBContext.UserFlatMappings
                     .Include(ufm => ufm.User)
                     .Include(ufm => ufm.Flat)
                     .Where(ufm => ufm.FlatId == flatId)
@@ -53,7 +53,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
             public async Task<UserFlatMapping?> GetActiveMappingByUserIdAsync(Guid userId)
             {
-                return await _context.UserFlatMappings
+                return await DBContext.UserFlatMappings
                     .Include(ufm => ufm.User)
                     .Include(ufm => ufm.Flat)
                         .ThenInclude(f => f.Apartment)
@@ -64,7 +64,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
             public async Task<UserFlatMapping?> GetActiveMappingByFlatIdAsync(Guid flatId)
             {
-                return await _context.UserFlatMappings
+                return await DBContext.UserFlatMappings
                     .Include(ufm => ufm.User)
                     .Include(ufm => ufm.Flat)
                     .FirstOrDefaultAsync(ufm => ufm.FlatId == flatId && ufm.IsActive);
@@ -72,19 +72,19 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
             public async Task AddAsync(UserFlatMapping mapping)
             {
-                await _context.UserFlatMappings.AddAsync(mapping);
+                await DBContext.UserFlatMappings.AddAsync(mapping);
                 // Don't save here
             }
 
             public async Task UpdateAsync(UserFlatMapping mapping)
             {
-                _context.UserFlatMappings.Update(mapping);
+                DBContext.UserFlatMappings.Update(mapping);
                 // Don't save here
             }
 
             public async Task SaveChangesAsync()
             {
-                await _context.SaveChangesAsync();
+                await DBContext.SaveChangesAsync();
             }
         }
     }

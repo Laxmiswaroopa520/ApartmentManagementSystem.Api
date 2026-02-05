@@ -1,15 +1,4 @@
-﻿/*
-namespace ApartmentManagementSystem.Application.Interfaces.Repositories
-{
-    public interface IFloorRepository
-    {
-        Task<Floor?> GetByIdAsync(Guid id);
-        Task<List<Floor>> GetByApartmentIdAsync(Guid apartmentId);
-        Task AddAsync(Floor floor);
-        Task UpdateAsync(Floor floor);
-    }
-}
-*/
+﻿
 using ApartmentManagementSystem.Domain.Entities;
 
 namespace ApartmentManagementSystem.Application.Interfaces.Repositories

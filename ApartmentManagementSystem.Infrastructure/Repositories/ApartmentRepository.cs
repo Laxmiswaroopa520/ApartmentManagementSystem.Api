@@ -116,21 +116,21 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
     public class ApartmentRepository : IApartmentRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext DBContext;
 
         public ApartmentRepository(AppDbContext context)
         {
-            _context = context;
+            DBContext = context;
         }
 
         public async Task<Apartment?> GetByIdAsync(Guid id)
         {
-            return await _context.Apartments.FindAsync(id);
+            return await DBContext.Apartments.FindAsync(id);
         }
 
         public async Task<Apartment?> GetByIdWithFloorsAndFlatsAsync(Guid id)
         {
-            return await _context.Apartments
+            return await DBContext.Apartments
                 .Include(a => a.Floors)
                     .ThenInclude(f => f.Flats)
                         .ThenInclude(flat => flat.UserFlatMappings!)
@@ -140,7 +140,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<Apartment?> GetByIdWithFullDetailsAsync(Guid id)
         {
-            return await _context.Apartments
+            return await DBContext.Apartments
                 .Include(a => a.Floors)
                 .Include(a => a.Flats)
                 .Include(a => a.Managers.Where(m => m.IsActive))
@@ -154,7 +154,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<List<Apartment>> GetAllWithDetailsAsync()
         {
-            return await _context.Apartments
+            return await DBContext.Apartments
                 .Include(a => a.Flats)
                 .Include(a => a.Managers.Where(m => m.IsActive))
                 .Where(a => a.IsActive)
@@ -163,7 +163,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<List<Apartment>> GetAllAsync()
         {
-            return await _context.Apartments
+            return await DBContext.Apartments
                 .Where(a => a.IsActive)
                 .OrderBy(a => a.Name)
                 .ToListAsync();
@@ -171,12 +171,12 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<int> GetTotalCountAsync()
         {
-            return await _context.Apartments.CountAsync(a => a.IsActive);
+            return await DBContext.Apartments.CountAsync(a => a.IsActive);
         }
 
         public async Task<ApartmentManager?> GetActiveManagerAsync(Guid apartmentId)
         {
-            return await _context.Set<ApartmentManager>()
+            return await DBContext.Set<ApartmentManager>()
                 .Include(m => m.User)
                 .Include(m => m.Apartment)
                 .FirstOrDefaultAsync(m => m.ApartmentId == apartmentId && m.IsActive);
@@ -185,38 +185,38 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         // ⭐ NEW: Get manager by user ID
         public async Task<ApartmentManager?> GetActiveManagerByUserIdAsync(Guid userId)
         {
-            return await _context.Set<ApartmentManager>()
+            return await DBContext.Set<ApartmentManager>()
                 .Include(m => m.Apartment)
                 .FirstOrDefaultAsync(m => m.UserId == userId && m.IsActive);
         }
 
         public async Task AddAsync(Apartment apartment)
         {
-            await _context.Apartments.AddAsync(apartment);
-            await _context.SaveChangesAsync();
+            await DBContext.Apartments.AddAsync(apartment);
+            await DBContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Apartment apartment)
         {
-            _context.Apartments.Update(apartment);
-            await _context.SaveChangesAsync();
+            DBContext.Apartments.Update(apartment);
+            await DBContext.SaveChangesAsync();
         }
 
         public async Task AddManagerAsync(ApartmentManager manager)
         {
-            await _context.Set<ApartmentManager>().AddAsync(manager);
-            await _context.SaveChangesAsync();
+            await DBContext.Set<ApartmentManager>().AddAsync(manager);
+            await DBContext.SaveChangesAsync();
         }
 
         public async Task UpdateManagerAsync(ApartmentManager manager)
         {
-            _context.Set<ApartmentManager>().Update(manager);
-            await _context.SaveChangesAsync();
+            DBContext.Set<ApartmentManager>().Update(manager);
+            await DBContext.SaveChangesAsync();
         }
 
         public async Task SaveChangesAsync()
         {
-            await _context.SaveChangesAsync();
+            await DBContext.SaveChangesAsync();
         }
     }
 }

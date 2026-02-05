@@ -19,11 +19,11 @@ namespace ApartmentManagementSystem.API.Controllers.V1
     [Authorize(Roles = "SuperAdmin")]
         public class ApartmentManagementApiController : ControllerBase
         {
-            private readonly IApartmentManagementService _apartmentService;
+            private readonly IApartmentManagementService ApartmentService;
 
             public ApartmentManagementApiController(IApartmentManagementService apartmentService)
             {
-                _apartmentService = apartmentService;
+                ApartmentService = apartmentService;
             }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
              try
              {
                  var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-                 var result = await _apartmentService.CreateApartmentAsync(dto, userId);
+                 var result = await ApartmentService.CreateApartmentAsync(dto, userId);
 
                  return Ok(ApiResponse<CreateApartmentResponseDto>.SuccessResponse(
                      result,
@@ -57,7 +57,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
             {
                 try
                 {
-                    var apartments = await _apartmentService.GetAllApartmentsAsync();
+                    var apartments = await ApartmentService.GetAllApartmentsAsync();
                     return Ok(ApiResponse<List<ApartmentListDto>>.SuccessResponse(
                         apartments,
                         "Apartments retrieved successfully"
@@ -77,7 +77,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
             {
                 try
                 {
-                    var apartment = await _apartmentService.GetApartmentDetailAsync(apartmentId);
+                    var apartment = await ApartmentService.GetApartmentDetailAsync(apartmentId);
 
                     if (apartment == null)
                     {
@@ -103,7 +103,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
             {
                 try
                 {
-                    var diagram = await _apartmentService.GetApartmentDiagramAsync(apartmentId);
+                    var diagram = await ApartmentService.GetApartmentDiagramAsync(apartmentId);
                     return Ok(ApiResponse<ApartmentDiagramDto>.SuccessResponse(
                     diagram,
                     "Apartment diagram generated successfully"
@@ -123,7 +123,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
                 try
                 {
                     var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-                    var result = await _apartmentService.AssignManagerAsync(dto, userId);
+                    var result = await ApartmentService.AssignManagerAsync(dto, userId);
 
                     return Ok(ApiResponse<bool>.SuccessResponse(
                         result,

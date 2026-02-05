@@ -80,6 +80,18 @@ public class UserRepository : IUserRepository
             .OrderBy(u => u.CreatedAt)
             .ToListAsync();
     }
+    //added this part for flat dropdown for manager
+    public async Task<List<User>> GetUsersByRoleWithFlatsAsync(string roleName)
+    {
+        return await DBContext.Users
+            .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+            .Include(u => u.UserFlatMappings!)
+                .ThenInclude(ufm => ufm.Flat)
+            .Where(u => u.UserRoles.Any(ur => ur.Role.Name == roleName))
+            .ToListAsync();
+    }
+
     // This method is for assigning manager..
     /* public async Task<List<User>> GetUsersByRoleAsync(string roleName)
      {

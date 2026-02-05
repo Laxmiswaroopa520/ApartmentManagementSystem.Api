@@ -207,7 +207,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
             _context = context;
         }
 
-        // ─── GET ALL (no filter) ──────────────────────────────────────────────
+        // ─── GET ALL (no filter)
         public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync()
         {
             return await _context.Set<CommunityMember>()
@@ -221,7 +221,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                     FullName = cm.User.FullName,
                     Email = cm.User.Email ?? "",
                     Phone = cm.User.PrimaryPhone,
-                    ApartmentId = cm.ApartmentId,   // ⭐ include for filtering in service
+                    ApartmentId = cm.ApartmentId,   //  include for filtering in service
                     FlatNumber = cm.User.UserFlatMappings
                         .Where(ufm => ufm.IsActive)
                         .Select(ufm => ufm.Flat.FlatNumber)
@@ -234,7 +234,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        // ─── ELIGIBLE RESIDENTS (legacy, no apartment filter) ────────────────
+        // ─── ELIGIBLE RESIDENTS 
         public async Task<List<ResidentListDto>> GetEligibleResidentsAsync()
         {
             var usersWithRoles = await _context.Set<CommunityMember>()
@@ -267,7 +267,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        // ─── ⭐ ELIGIBLE RESIDENTS FOR A SPECIFIC APARTMENT ──────────────────
+        // ELIGIBLE RESIDENTS FOR A SPECIFIC APARTMENT 
         public async Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId)
         {
             // Get users who ALREADY have a community role in THIS apartment
@@ -304,7 +304,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        // ─── GET SINGLE MEMBER ────────────────────────────────────────────────
+        // ─── GET SINGLE MEMBER 
         public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
         {
             return await _context.Set<CommunityMember>()
@@ -331,21 +331,21 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        // ─── ROLE EXISTS (global) ─────────────────────────────────────────────
+        //  ROLE EXISTS (global)
         public async Task<bool> CommunityRoleExistsAsync(string roleName)
         {
             return await _context.Set<CommunityMember>()
                 .AnyAsync(cm => cm.CommunityRole == roleName && cm.IsActive);
         }
 
-        // ─── ⭐ ROLE EXISTS (scoped to apartment) ────────────────────────────
+        //ROLE EXISTS (scoped to apartment) 
         public async Task<bool> CommunityRoleExistsForApartmentAsync(string roleName, Guid apartmentId)
         {
             return await _context.Set<CommunityMember>()
                 .AnyAsync(cm => cm.CommunityRole == roleName && cm.ApartmentId == apartmentId && cm.IsActive);
         }
 
-        // ─── ⭐ ASSIGN ROLE (updated signature) ──────────────────────────────
+        //  ASSIGN ROLE (updated signature)
         public async Task AssignCommunityRoleAsync(Guid userId, string roleName, Guid apartmentId, Guid assignedBy)
         {
             var communityMember = new CommunityMember
@@ -363,7 +363,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        // ─── REMOVE ROLE ──────────────────────────────────────────────────────
+        // REMOVE ROLE 
         public async Task RemoveCommunityRoleAsync(Guid userId)
         {
             var communityMember = await _context.Set<CommunityMember>()

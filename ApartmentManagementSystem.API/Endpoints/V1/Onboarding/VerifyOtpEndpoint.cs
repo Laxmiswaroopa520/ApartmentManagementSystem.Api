@@ -70,20 +70,20 @@ namespace ApartmentManagementSystem.API.Endpoints.V1.Onboarding;
 public class VerifyOtpEndpoint
     : Endpoint<VerifyOtpDto, ApiResponse<VerifyOtpResponseDto>>
 {
-    private readonly IOnboardingService _onboardingService;
+    private readonly IOnboardingService OnboardingService;
 
     public VerifyOtpEndpoint(IOnboardingService onboardingService)
     {
-        _onboardingService = onboardingService;
+        OnboardingService = onboardingService;
     }
 
     public override void Configure()
     {
-        Post("onboardingApi/verify-otp");
+        Post("OnboardingApi/verify-otp");
         AllowAnonymous();
 
         Description(b => b
-            .WithTags("Onboarding")
+            .WithTags("OnboardingApi")
             .WithName("VerifyOtp")
             .WithSummary("Verify OTP sent to resident's phone")
             .WithDescription(@"
@@ -100,7 +100,7 @@ public class VerifyOtpEndpoint
     {
         try
         {
-            var result = await _onboardingService.VerifyOtpAsync(req);
+            var result = await OnboardingService.VerifyOtpAsync(req);
 
             await SendAsync(
                 ApiResponse<VerifyOtpResponseDto>

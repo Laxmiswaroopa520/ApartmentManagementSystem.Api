@@ -16,11 +16,11 @@ namespace ApartmentManagementSystem.API.Controllers.V1
     [Authorize(Roles = "SuperAdmin,Manager")]
     public class AdminResidentApiController : ControllerBase
     {
-        private readonly IAdminResidentService _adminResidentService;
+        private readonly IAdminResidentService AdminResidentService;
 
         public AdminResidentApiController(IAdminResidentService adminResidentService)
         {
-            _adminResidentService = adminResidentService;
+            AdminResidentService = adminResidentService;
         }
 
         [HttpGet("pending")]
@@ -28,7 +28,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         {
             try
             {
-                var residents = await _adminResidentService.GetPendingResidentsAsync();
+                var residents = await AdminResidentService.GetPendingResidentsAsync();
                 return Ok(ApiResponse<List<PendingResidentDto>>.SuccessResponse(residents));
             }
             catch (Exception ex)
@@ -46,7 +46,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
                 var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
                 var role = User.FindFirstValue(ClaimTypes.Role) ?? "";
 
-                var apartments = await _adminResidentService.GetApartmentsForUserAsync(userId, role);
+                var apartments = await AdminResidentService.GetApartmentsForUserAsync(userId, role);
                 return Ok(ApiResponse<List<ApartmentDropdownDto>>.SuccessResponse(apartments));
             }
             catch (Exception ex)
@@ -55,13 +55,13 @@ namespace ApartmentManagementSystem.API.Controllers.V1
             }
         }
 
-        // ⭐ NEW: Get floors by apartment
+        // Get floors by apartment
         [HttpGet("apartments/{apartmentId}/floors")]
         public async Task<IActionResult> GetFloorsByApartment(Guid apartmentId)
         {
             try
             {
-                var floors = await _adminResidentService.GetFloorsByApartmentAsync(apartmentId);
+                var floors = await AdminResidentService.GetFloorsByApartmentAsync(apartmentId);
                 return Ok(ApiResponse<List<FloorDto>>.SuccessResponse(floors));
             }
             catch (Exception ex)
@@ -75,7 +75,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         {
             try
             {
-                var flats = await _adminResidentService.GetVacantFlatsByFloorAsync(floorId);
+                var flats = await AdminResidentService.GetVacantFlatsByFloorAsync(floorId);
                 return Ok(ApiResponse<List<FlatDto>>.SuccessResponse(flats));
             }
             catch (Exception ex)
@@ -89,7 +89,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         {
             try
             {
-                var result = await _adminResidentService.AssignFlatToResidentAsync(dto);
+                var result = await AdminResidentService.AssignFlatToResidentAsync(dto);
                 return Ok(ApiResponse<AssignFlatResponseDto>.SuccessResponse(result));
             }
             catch (Exception ex)

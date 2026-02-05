@@ -13,21 +13,21 @@ namespace ApartmentManagementSystem.Tests.Services;
 /// </summary>
 public class AuthServiceEdgeCaseTests
 {
-    private readonly Mock<IUserRepository> _mockUserRepo;
-    private readonly Mock<IConfiguration> _mockConfig;
-    private readonly AuthService _authService;
+    private readonly Mock<IUserRepository> MockUserRepo;
+    private readonly Mock<IConfiguration> MockConfig;
+    private readonly AuthService AuthService;
 
     public AuthServiceEdgeCaseTests()
     {
-        _mockUserRepo = new Mock<IUserRepository>();
-        _mockConfig = new Mock<IConfiguration>();
+        MockUserRepo = new Mock<IUserRepository>();
+        MockConfig = new Mock<IConfiguration>();
 
-        _mockConfig.Setup(x => x["JwtSettings:SecretKey"])
+        MockConfig.Setup(x => x["JwtSettings:SecretKey"])
             .Returns("YourSuperSecretKeyThatIsAtLeast32CharactersLongForHS256Algorithm!");
-        _mockConfig.Setup(x => x["JwtSettings:Issuer"]).Returns("ApartmentManagementSystem");
-        _mockConfig.Setup(x => x["JwtSettings:Audience"]).Returns("ApartmentManagementSystemUsers");
+        MockConfig.Setup(x => x["JwtSettings:Issuer"]).Returns("ApartmentManagementSystem");
+        MockConfig.Setup(x => x["JwtSettings:Audience"]).Returns("ApartmentManagementSystemUsers");
 
-        _authService = new AuthService(_mockUserRepo.Object, _mockConfig.Object);
+        AuthService = new AuthService(MockUserRepo.Object, MockConfig.Object);
     }
 
     [Fact]
@@ -40,12 +40,12 @@ public class AuthServiceEdgeCaseTests
             Password = "Password@123"
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(It.IsAny<string>()))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(It.IsAny<string>()))
             .ReturnsAsync((User?)null);
 
         // Act & Assert
         await Assert.ThrowsAsync<UnauthorizedAccessException>(
-            () => _authService.LoginAsync(request)
+            () => AuthService.LoginAsync(request)
         );
     }
 
@@ -67,7 +67,7 @@ public class AuthServiceEdgeCaseTests
             }
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("TESTUSER"))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("TESTUSER"))
             .ReturnsAsync(user);
 
         var request = new LoginRequestDto
@@ -77,7 +77,7 @@ public class AuthServiceEdgeCaseTests
         };
 
         // Act
-        var result = await _authService.LoginAsync(request);
+        var result = await AuthService.LoginAsync(request);
 
         // Assert
         Assert.NotNull(result);
@@ -103,7 +103,7 @@ public class AuthServiceEdgeCaseTests
             }
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
             .ReturnsAsync(user);
 
         var request = new LoginRequestDto
@@ -113,7 +113,7 @@ public class AuthServiceEdgeCaseTests
         };
 
         // Act
-        var result = await _authService.LoginAsync(request);
+        var result = await AuthService.LoginAsync(request);
 
         // Assert
         Assert.NotNull(result);
@@ -139,7 +139,7 @@ public class AuthServiceEdgeCaseTests
             }
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
             .ReturnsAsync(user);
 
         var request = new LoginRequestDto
@@ -149,7 +149,7 @@ public class AuthServiceEdgeCaseTests
         };
 
         // Act
-        var result = await _authService.LoginAsync(request);
+        var result = await AuthService.LoginAsync(request);
 
         // Assert
         Assert.NotNull(result);
@@ -170,7 +170,7 @@ public class AuthServiceEdgeCaseTests
             UserRoles = new List<UserRole>() // No roles
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
             .ReturnsAsync(user);
 
         var request = new LoginRequestDto
@@ -180,7 +180,7 @@ public class AuthServiceEdgeCaseTests
         };
 
         // Act
-        var result = await _authService.LoginAsync(request);
+        var result = await AuthService.LoginAsync(request);
 
         // Assert
         Assert.NotNull(result);
@@ -210,12 +210,12 @@ public class AuthServiceEdgeCaseTests
             UserRoles = new List<UserRole>()
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
             .ReturnsAsync(user);
 
         // Act & Assert
         await Assert.ThrowsAsync<UnauthorizedAccessException>(
-            () => _authService.LoginAsync(request)
+            () => AuthService.LoginAsync(request)
         );
     }
 
@@ -238,7 +238,7 @@ public class AuthServiceEdgeCaseTests
             }
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
             .ReturnsAsync(user);
 
         var request = new LoginRequestDto
@@ -248,7 +248,7 @@ public class AuthServiceEdgeCaseTests
         };
 
         // Act
-        var result = await _authService.LoginAsync(request);
+        var result = await AuthService.LoginAsync(request);
 
         // Assert
         Assert.NotNull(result);
@@ -259,11 +259,11 @@ public class AuthServiceEdgeCaseTests
     {
         // Arrange
         var emptyGuid = Guid.Empty;
-        _mockUserRepo.Setup(x => x.GetByIdAsync(emptyGuid))
+        MockUserRepo.Setup(x => x.GetByIdAsync(emptyGuid))
             .ReturnsAsync((User?)null);
 
         // Act
-        var result = await _authService.IsUserActiveAsync(emptyGuid);
+        var result = await AuthService.IsUserActiveAsync(emptyGuid);
 
         // Assert
         Assert.False(result);
@@ -279,12 +279,12 @@ public class AuthServiceEdgeCaseTests
             Password = "Password@123"
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(It.IsAny<string>()))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(It.IsAny<string>()))
             .ThrowsAsync(new Exception("Database connection failed"));
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<Exception>(
-            () => _authService.LoginAsync(request)
+            () => AuthService.LoginAsync(request)
         );
         Assert.Equal("Database connection failed", exception.Message);
     }
@@ -309,7 +309,7 @@ public class AuthServiceEdgeCaseTests
             }
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync("testuser"))
             .ReturnsAsync(user);
 
         var request = new LoginRequestDto
@@ -319,7 +319,7 @@ public class AuthServiceEdgeCaseTests
         };
 
         // Act
-        var result = await _authService.LoginAsync(request);
+        var result = await AuthService.LoginAsync(request);
 
         // Assert - Verify token structure
         Assert.NotNull(result.Token);

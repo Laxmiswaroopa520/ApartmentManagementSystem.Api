@@ -127,16 +127,16 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
     public class FlatRepository : IFlatRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext DBContext;
 
         public FlatRepository(AppDbContext context)
         {
-            _context = context;
+            DBContext = context;
         }
 
         public async Task<Flat?> GetByIdAsync(Guid id)
         {
-            return await _context.Flats
+            return await DBContext.Flats
                 .Include(f => f.Apartment)
                 .Include(f => f.Floor)
                 .Include(f => f.OwnerUser)
@@ -145,7 +145,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<List<Flat>> GetByFloorIdAsync(Guid floorId)
         {
-            return await _context.Flats
+            return await DBContext.Flats
                 .Where(f => f.FloorId == floorId)
                 .OrderBy(f => f.FlatNumber)
                 .ToListAsync();
@@ -153,7 +153,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<List<Flat>> GetVacantFlatsByFloorAsync(Guid floorId)
         {
-            return await _context.Flats
+            return await DBContext.Flats
                 .Where(f => f.FloorId == floorId && !f.IsOccupied && f.IsActive)
                 .OrderBy(f => f.FlatNumber)
                 .ToListAsync();
@@ -161,7 +161,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<List<Flat>> GetFlatsWithMappingsByOwnerIdAsync(Guid ownerId)
         {
-            return await _context.Flats
+            return await DBContext.Flats
                 .Include(f => f.Apartment)
                 .Include(f => f.Floor)
                 .Include(f => f.OwnerUser)
@@ -173,36 +173,36 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<List<Floor>> GetAllFloorsAsync()
         {
-            return await _context.Floors
+            return await DBContext.Floors
                 .OrderBy(f => f.FloorNumber)
                 .ToListAsync();
         }
 
         public async Task<int> GetTotalCountAsync()
         {
-            return await _context.Flats.CountAsync(f => f.IsActive);
+            return await DBContext.Flats.CountAsync(f => f.IsActive);
         }
 
         public async Task<int> GetOccupiedCountAsync()
         {
-            return await _context.Flats.CountAsync(f => f.IsActive && f.IsOccupied);
+            return await DBContext.Flats.CountAsync(f => f.IsActive && f.IsOccupied);
         }
 
         public async Task AddAsync(Flat flat)
         {
-            await _context.Flats.AddAsync(flat);
-            await _context.SaveChangesAsync();
+            await DBContext.Flats.AddAsync(flat);
+            await DBContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Flat flat)
         {
-            _context.Flats.Update(flat);
+            DBContext.Flats.Update(flat);
             // Don't save here - let SaveChangesAsync handle it
         }
 
         public async Task SaveChangesAsync()
         {
-            await _context.SaveChangesAsync();
+            await DBContext.SaveChangesAsync();
         }
     }
 }

@@ -12,12 +12,12 @@ namespace ApartmentManagementSystem.Application.Services
 {
     public class AdminResidentService : IAdminResidentService
     {
-        private readonly IUserRepository _userRepo;
-        private readonly IFlatRepository _flatRepo;
-        private readonly IFloorRepository _floorRepo;
-        private readonly IApartmentRepository _apartmentRepo;
-        private readonly IUserFlatMappingRepository _userFlatMappingRepo;
-        private readonly IEmailService _emailService;
+        private readonly IUserRepository UserRepo;
+        private readonly IFlatRepository FatRepo;
+        private readonly IFloorRepository FloorRepo;
+        private readonly IApartmentRepository ApartmentRepo;
+        private readonly IUserFlatMappingRepository UserFlatMappingRepo;
+        private readonly IEmailService EmailService;
 
         public AdminResidentService(
             IUserRepository userRepository,
@@ -27,17 +27,17 @@ namespace ApartmentManagementSystem.Application.Services
             IUserFlatMappingRepository userFlatMappingRepository,
             IEmailService emailService)
         {
-            _userRepo = userRepository;
-            _flatRepo = flatRepository;
-            _floorRepo = floorRepository;
-            _apartmentRepo = apartmentRepository;
-            _userFlatMappingRepo = userFlatMappingRepository;
-            _emailService = emailService;
+            UserRepo = userRepository;
+            FatRepo = flatRepository;
+            FloorRepo = floorRepository;
+            ApartmentRepo = apartmentRepository;
+            UserFlatMappingRepo = userFlatMappingRepository;
+            EmailService = emailService;
         }
 
         public async Task<List<PendingResidentDto>> GetPendingResidentsAsync()
         {
-            var users = await _userRepo.GetPendingResidentsAsync();
+            var users = await UserRepo.GetPendingResidentsAsync();
             return users.Select(u => new PendingResidentDto
             {
                 UserId = u.Id,
@@ -56,7 +56,7 @@ namespace ApartmentManagementSystem.Application.Services
             if (role == "SuperAdmin")
             {
                 // SuperAdmin sees ALL apartments
-                var allApartments = await _apartmentRepo.GetAllAsync();
+                var allApartments = await ApartmentRepo.GetAllAsync();
                 return allApartments
                     .Where(a => a.IsActive)
                     .Select(a => new ApartmentDropdownDto
@@ -70,10 +70,10 @@ namespace ApartmentManagementSystem.Application.Services
             else if (role == "Manager")
             {
                 // Manager sees only their assigned apartment
-                var manager = await _apartmentRepo.GetActiveManagerByUserIdAsync(userId);
+                var manager = await ApartmentRepo.GetActiveManagerByUserIdAsync(userId);
                 if (manager != null)
                 {
-                    var apartment = await _apartmentRepo.GetByIdAsync(manager.ApartmentId);
+                    var apartment = await ApartmentRepo.GetByIdAsync(manager.ApartmentId);
                     if (apartment != null && apartment.IsActive)
                     {
                         return new List<ApartmentDropdownDto>
@@ -94,7 +94,7 @@ namespace ApartmentManagementSystem.Application.Services
         // ⭐ NEW: Get floors by apartment
         public async Task<List<FloorDto>> GetFloorsByApartmentAsync(Guid apartmentId)
         {
-            var floors = await _floorRepo.GetByApartmentIdAsync(apartmentId);
+            var floors = await FloorRepo.GetByApartmentIdAsync(apartmentId);
             return floors
                 .OrderBy(f => f.FloorNumber)
                 .Select(f => new FloorDto
@@ -109,7 +109,7 @@ namespace ApartmentManagementSystem.Application.Services
 
         public async Task<List<FlatDto>> GetVacantFlatsByFloorAsync(Guid floorId)
         {
-            var flats = await _flatRepo.GetVacantFlatsByFloorAsync(floorId);
+            var flats = await FatRepo.GetVacantFlatsByFloorAsync(floorId);
             return flats
                 .OrderBy(f => f.FlatNumber)
                 .Select(f => new FlatDto
@@ -125,11 +125,11 @@ namespace ApartmentManagementSystem.Application.Services
 
         public async Task<AssignFlatResponseDto> AssignFlatToResidentAsync(AssignFlatDto dto)
         {
-            var user = await _userRepo.GetByIdAsync(dto.UserId);
+            var user = await UserRepo.GetByIdAsync(dto.UserId);
             if (user == null)
                 throw new Exception(ErrorMessages.UserNotFound);
 
-            var flat = await _flatRepo.GetByIdAsync(dto.FlatId);
+            var flat = await FatRepo.GetByIdAsync(dto.FlatId);
             if (flat == null)
                 throw new Exception(ErrorMessages.FlatNotFound);
 
@@ -141,9 +141,9 @@ namespace ApartmentManagementSystem.Application.Services
             user.FlatId = flat.Id;
             user.Status = ResidentStatus.Active;
 
-            await _userRepo.UpdateAsync(user);
-            await _flatRepo.UpdateAsync(flat);
-            await _flatRepo.SaveChangesAsync();
+            await UserRepo.UpdateAsync(user);
+            await FatRepo.UpdateAsync(flat);
+            await FatRepo.SaveChangesAsync();
 
             var mapping = new UserFlatMapping
             {
@@ -156,12 +156,12 @@ namespace ApartmentManagementSystem.Application.Services
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _userFlatMappingRepo.AddAsync(mapping);
-            await _userFlatMappingRepo.SaveChangesAsync();
+            await UserFlatMappingRepo.AddAsync(mapping);
+            await UserFlatMappingRepo.SaveChangesAsync();
 
             if (!string.IsNullOrEmpty(user.Email))
             {
-                await _emailService.SendFlatAssignedToResidentAsync(
+                await EmailService.SendFlatAssignedToResidentAsync(
                     user.Email,
                     user.FullName,
                     flat.FlatNumber

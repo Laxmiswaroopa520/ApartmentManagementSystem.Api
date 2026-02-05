@@ -13,11 +13,11 @@ namespace ApartmentManagementSystem.Application.Services
 {
     public class CommunityMemberService : ICommunityMemberService
     {
-        private readonly ICommunityMemberRepository _repo;
+        private readonly ICommunityMemberRepository CommunityMemberRepo;
 
         public CommunityMemberService(ICommunityMemberRepository communityMemberRepository)
         {
-            _repo = communityMemberRepository;
+            CommunityMemberRepo = communityMemberRepository;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace ApartmentManagementSystem.Application.Services
         /// </summary>
         public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync(Guid? apartmentId = null)
         {
-            var all = await _repo.GetAllCommunityMembersAsync();
+            var all = await CommunityMemberRepo.GetAllCommunityMembersAsync();
 
             if (apartmentId.HasValue)
             {
@@ -45,12 +45,12 @@ namespace ApartmentManagementSystem.Application.Services
         /// </summary>
         public async Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId)
         {
-            return await _repo.GetEligibleResidentsForApartmentAsync(apartmentId);
+            return await CommunityMemberRepo.GetEligibleResidentsForApartmentAsync(apartmentId);
         }
 
         public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
         {
-            return await _repo.GetCommunityMemberByUserIdAsync(userId);
+            return await CommunityMemberRepo.GetCommunityMemberByUserIdAsync(userId);
         }
 
         /// <summary>
@@ -60,15 +60,15 @@ namespace ApartmentManagementSystem.Application.Services
             Guid userId, string roleName, Guid apartmentId, Guid assignedBy)
         {
             // Check if this role already exists in this apartment
-            var roleExists = await _repo.CommunityRoleExistsForApartmentAsync(roleName, apartmentId);
+            var roleExists = await CommunityMemberRepo.CommunityRoleExistsForApartmentAsync(roleName, apartmentId);
             if (roleExists)
                 throw new Exception($"The {roleName} role is already assigned in this apartment. Remove the existing one first.");
 
             // Assign the role (repository handles creating the CommunityMember record)
-            await _repo.AssignCommunityRoleAsync(userId, roleName, apartmentId, assignedBy);
+            await CommunityMemberRepo.AssignCommunityRoleAsync(userId, roleName, apartmentId, assignedBy);
 
             // Return the newly created member DTO
-            var member = await _repo.GetCommunityMemberByUserIdAsync(userId);
+            var member = await CommunityMemberRepo.GetCommunityMemberByUserIdAsync(userId);
             if (member == null)
                 throw new Exception("Failed to retrieve the assigned community member.");
 
@@ -77,7 +77,7 @@ namespace ApartmentManagementSystem.Application.Services
 
         public async Task RemoveCommunityRoleAsync(Guid userId)
         {
-            await _repo.RemoveCommunityRoleAsync(userId);
+            await CommunityMemberRepo.RemoveCommunityRoleAsync(userId);
         }
     }
 }

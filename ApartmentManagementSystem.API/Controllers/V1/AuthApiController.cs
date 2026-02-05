@@ -21,77 +21,7 @@ public class AuthApiController : ControllerBase
         AuthService = authService;
     }
 
-    /*  [HttpPost("login")]
-      public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
-      {
-          try
-          {
-              var result = await AuthService.LoginAsync(request);
-              return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(result, "Login successful"));
-          }
-          catch (UnauthorizedAccessException ex)          //validate login checks status and return structured error
-          {
-              var message = ex.Message;
-
-              if (message.Contains("inactive"))
-              {
-                  return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse(
-                      message,
-                      "ACCOUNT_INACTIVE"
-                  ));
-              }
-
-              return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse(message));
-          }
-
-         // catch (UnauthorizedAccessException ex)
-        //  {
-         //     return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse(ex.Message));
-        //  }
-          catch (Exception ex)
-          {
-              return BadRequest(ApiResponse<LoginResponseDto>.ErrorResponse(ex.Message));
-          }
-      }
-    */
-
-
-
-    /*/ Update Login method in AuthApiController
-     [HttpPost("login")]
-     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
-     {
-         // ✅ ADD VALIDATION BEFORE AUTHENTICATION
-         if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
-         {
-             return BadRequest(ApiResponse<LoginResponseDto>.ErrorResponse(
-                 "Username and password are required"
-             ));
-         }
-
-         try
-         {
-             var result = await AuthService.LoginAsync(request);
-             return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(result, "Login successful"));
-         }
-         catch (UnauthorizedAccessException ex)
-         {
-             var message = ex.Message;
-             if (message.Contains("inactive"))
-             {
-                 return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse(
-                     message,
-                     "ACCOUNT_INACTIVE"
-                 ));
-             }
-             return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse(message));
-         }
-         catch (Exception ex)
-         {
-             return BadRequest(ApiResponse<LoginResponseDto>.ErrorResponse(ex.Message));
-         }
-     }*/
-
+   
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
     {

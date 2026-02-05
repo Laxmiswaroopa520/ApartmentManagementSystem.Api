@@ -53,21 +53,21 @@ namespace ApartmentManagementSystem.API.Endpoints.V1.Onboarding;
 
 public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
 {
-    private readonly IRoleRepository _roleRepository;
+    private readonly IRoleRepository RoleRepository;
 
     public GetRolesEndpoint(IRoleRepository roleRepository)
     {
-        _roleRepository = roleRepository;
+        RoleRepository = roleRepository;
     }
 
     public override void Configure()
     {
         // Route WITHOUT leading slash (RoutePrefix "api" is added automatically)
-        Get("onboardingApi/roles");
+        Get("OnboardingApi/roles");
         AllowAnonymous();
         
         Description(b => b
-            .WithTags("Onboarding") // This creates the tag grouping in Swagger
+            .WithTags("OnboardingApi") // This creates the tag grouping in Swagger
             .WithName("GetRoles")
             .WithSummary("Get all available system roles")
             .WithDescription("Returns a list of all roles available in the system. Used by web interface for role selection.")
@@ -77,7 +77,7 @@ public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
 
     public override async Task HandleAsync(CancellationToken ct)
     {
-        var roles = await _roleRepository.GetAllAsync();
+        var roles = await RoleRepository.GetAllAsync();
         
         var roleDtos = roles.Select(r => new RoleDto
         {

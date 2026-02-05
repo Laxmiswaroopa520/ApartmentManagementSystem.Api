@@ -72,20 +72,20 @@ namespace ApartmentManagementSystem.API.Endpoints.V1.Onboarding;
 public class CompleteRegistrationEndpoint
     : Endpoint<CompleteRegistrationDto, ApiResponse<CompleteRegistrationResponseDto>>
 {
-    private readonly IOnboardingService _onboardingService;
+    private readonly IOnboardingService OnboardingService;
 
     public CompleteRegistrationEndpoint(IOnboardingService onboardingService)
     {
-        _onboardingService = onboardingService;
+        OnboardingService = onboardingService;
     }
 
     public override void Configure()
     {
-        Post("onboardingApi/complete-registration");
+        Post("OnboardingApi/complete-registration");
         AllowAnonymous();
 
         Description(b => b
-            .WithTags("Onboarding")
+            .WithTags("OnboardingApi")
             .WithName("CompleteRegistration")
             .WithSummary("Complete resident registration")
             .WithDescription(@"
@@ -103,7 +103,7 @@ public class CompleteRegistrationEndpoint
     {
         try
         {
-            var result = await _onboardingService.CompleteRegistrationAsync(req);
+            var result = await OnboardingService.CompleteRegistrationAsync(req);
 
             await SendAsync(
                 ApiResponse<CompleteRegistrationResponseDto>

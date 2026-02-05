@@ -7,16 +7,16 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
     public class FloorRepository : IFloorRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext DBContext;
 
         public FloorRepository(AppDbContext context)
         {
-            _context = context;
+            DBContext = context;
         }
 
         public async Task<Floor?> GetByIdAsync(Guid id)
         {
-            return await _context.Floors
+            return await DBContext.Floors
                 .Include(f => f.Apartment)
                 .Include(f => f.Flats)
                 .FirstOrDefaultAsync(f => f.Id == id);
@@ -24,7 +24,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task<List<Floor>> GetAllAsync()
         {
-            return await _context.Floors
+            return await DBContext.Floors
                 .Include(f => f.Apartment)
                 .OrderBy(f => f.FloorNumber)
                 .ToListAsync();
@@ -33,7 +33,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         // ⭐ NEW: Get floors by apartment
         public async Task<List<Floor>> GetByApartmentIdAsync(Guid apartmentId)
         {
-            return await _context.Floors
+            return await DBContext.Floors
                 .Include(f => f.Apartment)
                 .Where(f => f.ApartmentId == apartmentId)
                 .OrderBy(f => f.FloorNumber)
@@ -42,25 +42,25 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
         public async Task AddAsync(Floor floor)
         {
-            await _context.Floors.AddAsync(floor);
-            await _context.SaveChangesAsync();
+            await DBContext.Floors.AddAsync(floor);
+            await DBContext.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Floor floor)
         {
-            _context.Floors.Update(floor);
-            await _context.SaveChangesAsync();
+            DBContext.Floors.Update(floor);
+            await DBContext.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(Floor floor)
         {
-            _context.Floors.Remove(floor);
-            await _context.SaveChangesAsync();
+            DBContext.Floors.Remove(floor);
+            await DBContext.SaveChangesAsync();
         }
 
         public async Task SaveChangesAsync()
         {
-            await _context.SaveChangesAsync();
+            await DBContext.SaveChangesAsync();
         }
     }
 }

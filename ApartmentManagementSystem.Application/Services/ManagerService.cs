@@ -1,240 +1,4 @@
-﻿// Application/Services/ManagerService.cs
-// ─────────────────────────────────────────
-// This is the COMPLETE replacement for ManagerService.cs
-// Key fix: removed "CreatedBy = assignedBy" from the new User { } in the external manager flow,
-// because your User entity does NOT have a CreatedBy property.
-/*// ─────────────────────────────────────────
-
-using ApartmentManagementSystem.Application.DTOs.Manager;
-using ApartmentManagementSystem.Application.Interfaces.Repositories;
-using ApartmentManagementSystem.Application.Interfaces.Services;
-using ApartmentManagementSystem.Domain.Entities;
-
-namespace ApartmentManagementSystem.Application.Services
-{
-    public class ManagerService : IManagerService
-    {
-        private readonly IUserRepository _userRepo;
-        private readonly IApartmentRepository _apartmentRepo;
-
-        public ManagerService(
-            IUserRepository userRepository,
-            IApartmentRepository apartmentRepository)
-        {
-            _userRepo = userRepository;
-            _apartmentRepo = apartmentRepository;
-        }
-
-        public async Task<List<AvailableManagerDto>> GetAvailableManagersAsync(Guid apartmentId)
-        {
-            var managers = await _userRepo.GetUsersByRoleAsync("Manager");
-            var availableManagers = new List<AvailableManagerDto>();
-
-            foreach (var manager in managers)
-            {
-                var currentAssignment = await _apartmentRepo.GetActiveManagerByUserIdAsync(manager.Id);
-
-                if (currentAssignment != null && currentAssignment.ApartmentId == apartmentId)
-                    continue;
-
-                availableManagers.Add(new AvailableManagerDto
-                {
-                    UserId = manager.Id,
-                    FullName = manager.FullName,
-                    Email = manager.Email ?? "",
-                    Phone = manager.PrimaryPhone,
-                    IsCurrentlyAssigned = currentAssignment != null,
-                    CurrentApartmentName = currentAssignment?.Apartment?.Name
-                });
-            }
-
-            return availableManagers.OrderBy(m => m.FullName).ToList();
-        }
-
-        public async Task<List<AvailableManagerDto>> GetResidentManagersForApartmentAsync(Guid apartmentId)
-        {
-            var managers = await _userRepo.GetUsersByRoleAsync("Manager");
-            var residentManagers = new List<AvailableManagerDto>();
-
-            foreach (var manager in managers)
-            {
-                var flatMappings = manager.UserFlatMappings
-                    ?.Where(ufm => ufm.IsActive && ufm.Flat?.ApartmentId == apartmentId)
-                    .ToList();
-
-                if (flatMappings == null || flatMappings.Count == 0)
-                    continue;       //skip-not a residnet of this apartment
-                //don't show if already managing this apartment
-                var currentAssignment = await _apartmentRepo.GetActiveManagerByUserIdAsync(manager.Id);
-
-                if (currentAssignment != null && currentAssignment.ApartmentId == apartmentId)
-                    continue;
-
-                residentManagers.Add(new AvailableManagerDto
-                {
-                    UserId = manager.Id,
-                    FullName = manager.FullName,
-                    Email = manager.Email ?? "",
-                    Phone = manager.PrimaryPhone,
-                    IsCurrentlyAssigned = currentAssignment != null,
-                    CurrentApartmentName = currentAssignment?.Apartment?.Name
-                });
-            }
-
-            return residentManagers.OrderBy(m => m.FullName).ToList();
-        }
-
-        public async Task<ManagerAssignmentDto> AssignManagerToApartmentAsync(
-            AssignManagerRequestDto dto,
-            Guid assignedBy)
-        {
-            Guid targetUserId;
-            User targetUser;
-
-            if (dto.IsExternalManager)
-            {
-                if (string.IsNullOrWhiteSpace(dto.ExternalManagerName))
-                    throw new Exception("Manager name is required for external managers");
-                if (string.IsNullOrWhiteSpace(dto.ExternalManagerPhone))
-                    throw new Exception("Manager phone is required for external managers");
-
-                // ⭐ FIX: User entity does NOT have CreatedBy.
-                // Only set properties that actually exist on the User entity.
-                targetUser = new User
-                {
-                    Id = Guid.NewGuid(),
-                    FullName = dto.ExternalManagerName.Trim(),
-                    PrimaryPhone = dto.ExternalManagerPhone.Trim(),
-                    Email = string.IsNullOrWhiteSpace(dto.ExternalManagerEmail) ? null : dto.ExternalManagerEmail.Trim(),
-                    IsActive = true,
-                    CreatedAt = DateTime.UtcNow
-                    // NO CreatedBy — it doesn't exist on User
-                };
-
-                await _userRepo.CreateExternalManagerUserAsync(targetUser, "Manager");
-                targetUserId = targetUser.Id;
-            }
-            else
-            {
-                if (!dto.UserId.HasValue || dto.UserId == Guid.Empty)
-                    throw new Exception("UserId is required when assigning an existing user as manager");
-
-                targetUser = await _userRepo.GetByIdAsync(dto.UserId.Value)
-                    ?? throw new Exception("User not found");
-
-                var hasManagerRole = targetUser.UserRoles?.Any(ur => ur.Role?.Name == "Manager") ?? false;
-                if (!hasManagerRole)
-                    throw new Exception("User must have Manager role to be assigned as apartment manager");
-
-                targetUserId = dto.UserId.Value;
-            }
-
-            var apartment = await _apartmentRepo.GetByIdAsync(dto.ApartmentId)
-                ?? throw new Exception("Apartment not found");
-
-            // Deactivate existing manager of this apartment
-            var existingManager = await _apartmentRepo.GetActiveManagerAsync(dto.ApartmentId);
-            if (existingManager != null)
-            {
-                existingManager.IsActive = false;
-                await _apartmentRepo.UpdateManagerAsync(existingManager);
-            }
-
-            // Deactivate this user from any OTHER apartment they manage
-            var userCurrentAssignment = await _apartmentRepo.GetActiveManagerByUserIdAsync(targetUserId);
-            if (userCurrentAssignment != null)
-            {
-                userCurrentAssignment.IsActive = false;
-                await _apartmentRepo.UpdateManagerAsync(userCurrentAssignment);
-            }
-
-            var newManager = new ApartmentManager
-            {
-                Id = Guid.NewGuid(),
-                ApartmentId = dto.ApartmentId,
-                UserId = targetUserId,
-                AssignedBy = assignedBy,
-                AssignedAt = DateTime.UtcNow,
-                IsActive = true
-            };
-
-            await _apartmentRepo.AddManagerAsync(newManager);
-
-            return new ManagerAssignmentDto
-            {
-                ApartmentId = apartment.Id,
-                ApartmentName = apartment.Name,
-                UserId = targetUser.Id,
-                FullName = targetUser.FullName,
-                Email = targetUser.Email ?? "",
-                Phone = targetUser.PrimaryPhone,
-                AssignedAt = newManager.AssignedAt
-            };
-        }
-
-        public async Task<bool> RemoveManagerFromApartmentAsync(
-            RemoveManagerRequestDto dto,
-            Guid removedBy)
-        {
-            var manager = await _apartmentRepo.GetActiveManagerAsync(dto.ApartmentId)
-                ?? throw new Exception("No active manager found for this apartment");
-
-            manager.IsActive = false;
-            await _apartmentRepo.UpdateManagerAsync(manager);
-
-            return true;
-        }
-
-        public async Task<List<ManagerListDto>> GetAllManagersAsync()
-        {
-            var managers = await _userRepo.GetUsersByRoleAsync("Manager");
-            var managerList = new List<ManagerListDto>();
-
-            foreach (var manager in managers)
-            {
-                var assignment = await _apartmentRepo.GetActiveManagerByUserIdAsync(manager.Id);
-
-                managerList.Add(new ManagerListDto
-                {
-                    UserId = manager.Id,
-                    FullName = manager.FullName,
-                    Email = manager.Email ?? "",
-                    Phone = manager.PrimaryPhone,
-                    ApartmentId = assignment?.ApartmentId,
-                    ApartmentName = assignment?.Apartment?.Name,
-                    IsActive = assignment != null,
-                    AssignedAt = assignment?.AssignedAt
-                });
-            }
-
-            return managerList.OrderBy(m => m.FullName).ToList();
-        }
-
-        public async Task<ManagerListDto?> GetManagerByUserIdAsync(Guid userId)
-        {
-            var manager = await _userRepo.GetByIdAsync(userId);
-            if (manager == null) return null;
-
-            var assignment = await _apartmentRepo.GetActiveManagerByUserIdAsync(userId);
-
-            return new ManagerListDto
-            {
-                UserId = manager.Id,
-                FullName = manager.FullName,
-                Email = manager.Email ?? "",
-                Phone = manager.PrimaryPhone,
-                ApartmentId = assignment?.ApartmentId,
-                ApartmentName = assignment?.Apartment?.Name,
-                IsActive = assignment != null,
-                AssignedAt = assignment?.AssignedAt
-            };
-        }
-    }
-}
-*/
-
-
-using ApartmentManagementSystem.Application.DTOs.Manager;
+﻿using ApartmentManagementSystem.Application.DTOs.Manager;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using ApartmentManagementSystem.Domain.Entities;
@@ -244,13 +8,13 @@ namespace ApartmentManagementSystem.Application.Services
 {
     public class ManagerService : IManagerService
     {
-        private readonly IUserRepository _userRepo;
-        private readonly IApartmentRepository _apartmentRepo;
+        private readonly IUserRepository UserRepo;
+        private readonly IApartmentRepository ApartmentRepo;
 
         public ManagerService(IUserRepository userRepository, IApartmentRepository apartmentRepository)
         {
-            _userRepo = userRepository;
-            _apartmentRepo = apartmentRepository;
+            UserRepo = userRepository;
+            ApartmentRepo = apartmentRepository;
         }
 
         /// <summary>
@@ -258,7 +22,9 @@ namespace ApartmentManagementSystem.Application.Services
         /// </summary>
         public async Task<List<AvailableManagerDto>> GetApartmentResidentsForManagerAssignmentAsync(Guid apartmentId)
         {
-            var residentOwners = await _userRepo.GetUsersByRoleAsync("ResidentOwner");
+            // var residentOwners = await _userRepo.GetUsersByRoleAsync("ResidentOwner");
+            var residentOwners = await UserRepo.GetUsersByRoleWithFlatsAsync("ResidentOwner");
+
             var result = new List<AvailableManagerDto>();
 
             foreach (var resident in residentOwners)
@@ -270,7 +36,7 @@ namespace ApartmentManagementSystem.Application.Services
                 if (flatInApartment == null) continue;
 
                 // Check if already manager of THIS apartment
-                var currentAssignment = await _apartmentRepo.GetActiveManagerByUserIdAsync(resident.Id);
+                var currentAssignment = await ApartmentRepo.GetActiveManagerByUserIdAsync(resident.Id);
                 if (currentAssignment != null && currentAssignment.ApartmentId == apartmentId)
                     continue; // Skip - already manager here
 
@@ -301,9 +67,7 @@ namespace ApartmentManagementSystem.Application.Services
 
             if (dto.IsExternalManager)
             {
-                // ═══════════════════════════════════════════════════════════
                 // EXTERNAL PERSON - Just create/find user, NO role checking
-                // ═══════════════════════════════════════════════════════════
 
                 if (string.IsNullOrWhiteSpace(dto.ExternalManagerName))
                     throw new Exception("Manager name is required");
@@ -312,7 +76,7 @@ namespace ApartmentManagementSystem.Application.Services
                     throw new Exception("Manager phone is required");
 
                 // Check if user exists
-                var existingUser = await _userRepo.GetByPhoneAsync(dto.ExternalManagerPhone.Trim());
+                var existingUser = await UserRepo.GetByPhoneAsync(dto.ExternalManagerPhone.Trim());
 
                 if (existingUser != null)
                 {
@@ -337,8 +101,8 @@ namespace ApartmentManagementSystem.Application.Services
                         CreatedAt = DateTime.UtcNow
                     };
 
-                    await _userRepo.AddAsync(targetUser);
-                    await _userRepo.SaveChangesAsync();
+                    await UserRepo.AddAsync(targetUser);
+                    await UserRepo.SaveChangesAsync();
                     targetUserId = targetUser.Id;
                 }
             }
@@ -349,7 +113,7 @@ namespace ApartmentManagementSystem.Application.Services
                 if (!dto.UserId.HasValue || dto.UserId == Guid.Empty)
                     throw new Exception("Please select a resident");
 
-                targetUser = await _userRepo.GetByIdAsync(dto.UserId.Value)
+                targetUser = await UserRepo.GetByIdAsync(dto.UserId.Value)
                     ?? throw new Exception("Resident not found");
 
                 targetUserId = dto.UserId.Value;
@@ -357,23 +121,23 @@ namespace ApartmentManagementSystem.Application.Services
 
             // ASSIGN AS APARTMENT MANAGER
 
-            var apartment = await _apartmentRepo.GetByIdAsync(dto.ApartmentId)
+            var apartment = await ApartmentRepo.GetByIdAsync(dto.ApartmentId)
                 ?? throw new Exception("Apartment not found");
 
             // Remove existing manager from THIS apartment
-            var existingManager = await _apartmentRepo.GetActiveManagerAsync(dto.ApartmentId);
+            var existingManager = await ApartmentRepo.GetActiveManagerAsync(dto.ApartmentId);
             if (existingManager != null)
             {
                 existingManager.IsActive = false;
-                await _apartmentRepo.UpdateManagerAsync(existingManager);
+                await ApartmentRepo.UpdateManagerAsync(existingManager);
             }
 
             // Remove this user from managing any OTHER apartment
-            var userOtherAssignment = await _apartmentRepo.GetActiveManagerByUserIdAsync(targetUserId);
+            var userOtherAssignment = await ApartmentRepo.GetActiveManagerByUserIdAsync(targetUserId);
             if (userOtherAssignment != null)
             {
                 userOtherAssignment.IsActive = false;
-                await _apartmentRepo.UpdateManagerAsync(userOtherAssignment);
+                await ApartmentRepo.UpdateManagerAsync(userOtherAssignment);
             }
 
             // Create new manager assignment
@@ -387,7 +151,7 @@ namespace ApartmentManagementSystem.Application.Services
                 IsActive = true
             };
 
-            await _apartmentRepo.AddManagerAsync(newManager);
+            await ApartmentRepo.AddManagerAsync(newManager);
 
             return new ManagerAssignmentDto
             {
@@ -403,11 +167,11 @@ namespace ApartmentManagementSystem.Application.Services
 
         public async Task<bool> RemoveManagerFromApartmentAsync(RemoveManagerRequestDto dto, Guid removedBy)
         {
-            var manager = await _apartmentRepo.GetActiveManagerAsync(dto.ApartmentId)
+            var manager = await ApartmentRepo.GetActiveManagerAsync(dto.ApartmentId)
                 ?? throw new Exception("No active manager found");
 
             manager.IsActive = false;
-            await _apartmentRepo.UpdateManagerAsync(manager);
+            await ApartmentRepo.UpdateManagerAsync(manager);
             return true;
         }
 

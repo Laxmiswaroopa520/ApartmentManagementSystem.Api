@@ -91,21 +91,21 @@ namespace ApartmentManagementSystem.API.Endpoints.V1.Onboarding;
 public class CreateInviteEndpoint
     : Endpoint<CreateUserInviteDto, ApiResponse<CreateInviteResponseDto>>
 {
-    private readonly IOnboardingService _onboardingService;
+    private readonly IOnboardingService OnboardingService;
 
     public CreateInviteEndpoint(IOnboardingService onboardingService)
     {
-        _onboardingService = onboardingService;
+        OnboardingService = onboardingService;
     }
 
     public override void Configure()
     {
         // NO leading slash - RoutePrefix adds "api" automatically
-        Post("onboardingApi/create-invite");
+        Post("OnboardingApi/create-invite");
         Roles("SuperAdmin", "Manager");
 
         Description(b => b
-            .WithTags("Onboarding")
+            .WithTags("OnboardingApi")
             .WithName("CreateInvite")
             .WithSummary("Create invitation for new resident")
             .WithDescription(@"
@@ -139,7 +139,7 @@ public class CreateInviteEndpoint
         try
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var result = await _onboardingService.CreateInviteAsync(req, userId);
+            var result = await OnboardingService.CreateInviteAsync(req, userId);
 
             await SendAsync(
                 ApiResponse<CreateInviteResponseDto>

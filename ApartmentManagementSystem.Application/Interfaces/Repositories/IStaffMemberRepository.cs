@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ApartmentManagementSystem.Application.DTOs.Community;
+﻿using ApartmentManagementSystem.Application.DTOs.Community;
 
 namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 {

@@ -11,22 +11,22 @@ namespace ApartmentManagementSystem.Tests.Services;
 
 public class AuthServiceTests
 {
-    private readonly Mock<IUserRepository> _mockUserRepo;
-    private readonly Mock<IConfiguration> _mockConfig;
-    private readonly AuthService _authService;
-    private readonly string _testSecretKey = "YourSuperSecretKeyThatIsAtLeast32CharactersLongForHS256Algorithm!";
+    private readonly Mock<IUserRepository> MockUserRepo;
+    private readonly Mock<IConfiguration> MockConfig;
+    private readonly AuthService AuthService;
+    private readonly string testSecretKey = "YourSuperSecretKeyThatIsAtLeast32CharactersLongForHS256Algorithm!";
 
     public AuthServiceTests()
     {
-        _mockUserRepo = new Mock<IUserRepository>();
-        _mockConfig = new Mock<IConfiguration>();
+        MockUserRepo = new Mock<IUserRepository>();
+        MockConfig = new Mock<IConfiguration>();
 
         // Setup JWT configuration
-        _mockConfig.Setup(x => x["JwtSettings:SecretKey"]).Returns(_testSecretKey);
-        _mockConfig.Setup(x => x["JwtSettings:Issuer"]).Returns("ApartmentManagementSystem");
-        _mockConfig.Setup(x => x["JwtSettings:Audience"]).Returns("ApartmentManagementSystemUsers");
+        MockConfig.Setup(x => x["JwtSettings:SecretKey"]).Returns(testSecretKey);
+        MockConfig.Setup(x => x["JwtSettings:Issuer"]).Returns("ApartmentManagementSystem");
+        MockConfig.Setup(x => x["JwtSettings:Audience"]).Returns("ApartmentManagementSystemUsers");
 
-        _authService = new AuthService(_mockUserRepo.Object, _mockConfig.Object);
+        AuthService = new AuthService(MockUserRepo.Object, MockConfig.Object);
     }
 
     [Fact]
@@ -56,11 +56,11 @@ public class AuthServiceTests
             }
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
             .ReturnsAsync(user);
 
         // Act
-        var result = await _authService.LoginAsync(request);
+        var result = await AuthService.LoginAsync(request);
 
         // Assert
         Assert.NotNull(result);
@@ -80,12 +80,12 @@ public class AuthServiceTests
             Password = "Password@123"
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
             .ReturnsAsync((User?)null);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
-            () => _authService.LoginAsync(request)
+            () => AuthService.LoginAsync(request)
         );
         Assert.Equal("Invalid credentials", exception.Message);
     }
@@ -110,12 +110,12 @@ public class AuthServiceTests
             UserRoles = new List<UserRole>()
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
             .ReturnsAsync(user);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
-            () => _authService.LoginAsync(request)
+            () => AuthService.LoginAsync(request)
         );
         Assert.Equal("Invalid credentials", exception.Message);
     }
@@ -141,12 +141,12 @@ public class AuthServiceTests
             UserRoles = new List<UserRole>()
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
             .ReturnsAsync(user);
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<UnauthorizedAccessException>(
-            () => _authService.LoginAsync(request)
+            () => AuthService.LoginAsync(request)
         );
         Assert.Contains("inactive", exception.Message.ToLower());
     }
@@ -176,11 +176,11 @@ public class AuthServiceTests
             }
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
             .ReturnsAsync(user);
 
         // Act
-        var result = await _authService.LoginAsync(request);
+        var result = await AuthService.LoginAsync(request);
 
         // Assert
         Assert.NotNull(result);
@@ -198,11 +198,11 @@ public class AuthServiceTests
             IsActive = true
         };
 
-        _mockUserRepo.Setup(x => x.GetByIdAsync(userId))
+        MockUserRepo.Setup(x => x.GetByIdAsync(userId))
             .ReturnsAsync(user);
 
         // Act
-        var result = await _authService.IsUserActiveAsync(userId);
+        var result = await AuthService.IsUserActiveAsync(userId);
 
         // Assert
         Assert.True(result);
@@ -219,11 +219,11 @@ public class AuthServiceTests
             IsActive = false
         };
 
-        _mockUserRepo.Setup(x => x.GetByIdAsync(userId))
+        MockUserRepo.Setup(x => x.GetByIdAsync(userId))
             .ReturnsAsync(user);
 
         // Act
-        var result = await _authService.IsUserActiveAsync(userId);
+        var result = await AuthService.IsUserActiveAsync(userId);
 
         // Assert
         Assert.False(result);
@@ -234,11 +234,11 @@ public class AuthServiceTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        _mockUserRepo.Setup(x => x.GetByIdAsync(userId))
+        MockUserRepo.Setup(x => x.GetByIdAsync(userId))
             .ReturnsAsync((User?)null);
 
         // Act
-        var result = await _authService.IsUserActiveAsync(userId);
+        var result = await AuthService.IsUserActiveAsync(userId);
 
         // Assert
         Assert.False(result);
@@ -254,12 +254,12 @@ public class AuthServiceTests
             Password = "Password@123"
         };
 
-        _mockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
+        MockUserRepo.Setup(x => x.GetByUsernameWithRolesAsync(request.Username))
             .ReturnsAsync((User?)null);
 
         // Act & Assert
         await Assert.ThrowsAsync<UnauthorizedAccessException>(
-            () => _authService.LoginAsync(request)
+            () => AuthService.LoginAsync(request)
         );
     }
 }

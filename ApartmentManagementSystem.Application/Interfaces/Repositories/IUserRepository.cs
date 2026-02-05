@@ -1,42 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ApartmentManagementSystem.Application.Interfaces.Repositories
+﻿namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 {
     using ApartmentManagementSystem.Domain.Entities;
- //   using global::ApartmentManagementSystem.Domain.Entities;
-
-   // namespace ApartmentManagementSystem.Application.Interfaces.Repositories;
-
     public interface IUserRepository
-    {
-
-
-       
-            // YOUR EXISTING METHODS
+    {     
             Task<User?> GetByUsernameAsync(string username);
             Task<User?> GetByIdAsync(Guid id);
             Task<User?> GetByPhoneAsync(string phone);
             Task AddAsync(User user);
             Task SaveChangesAsync();
             Task<List<User>> GetPendingResidentsAsync();
-
-            // ADDED: Missing methods needed by services
             Task<User?> GetByEmailAsync(string email);
             Task<bool> PhoneExistsAsync(string phone);
             Task<bool> UsernameExistsAsync(string username);
             Task UpdateAsync(User user);
         Task<User?> GetByUsernameWithRolesAsync(string username);//added new method
         Task<List<User>> GetUsersByRoleAsync(string roleName);      //added this method for assingning manager..
-        /// <summary>
-        /// ⭐ NEW: Creates a brand-new User record AND assigns them the specified role.
-        /// Used when SuperAdmin adds an external manager who doesn't exist in the system yet.
-        /// </summary>
         Task CreateExternalManagerUserAsync(User user, string roleName);
         Task AddRoleToUserAsync(Guid userId, string roleName);
+        Task<List<User>> GetUsersByRoleWithFlatsAsync(string roleName);     //added this for role dropdown
+
     }
 
 }
