@@ -53,13 +53,6 @@ public class AuthApiController : ControllerBase
             return BadRequest(ApiResponse<LoginResponseDto>.ErrorResponse(ex.Message));
         }
     }
-    /* [HttpGet("users/{userId}/is-active")]
-     [Authorize]
-     public async Task<IActionResult> IsUserActive(Guid userId)
-     {
-         var user = await Users.GetByIdAsync(userId);
-         return Ok(user != null && user.IsActive);
-     }*/
     [HttpGet("users/{userId}/is-active")]
     [Authorize]
     public async Task<IActionResult> IsUserActive(Guid userId)
