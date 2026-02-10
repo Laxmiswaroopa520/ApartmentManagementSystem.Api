@@ -139,14 +139,10 @@ public class EnhancedDashboardService : IEnhancedDashboardService
 
 
 
-
-
-
 using ApartmentManagementSystem.Application.DTOs.Admin;
 using ApartmentManagementSystem.Application.DTOs.Dashboard;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
-using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Domain.Enums;
 
 namespace ApartmentManagementSystem.Application.Services;
@@ -157,17 +153,20 @@ public class EnhancedDashboardService : IEnhancedDashboardService
     private readonly IEnhancedDashboardRepository DashboardRepo;
     private readonly IApartmentRepository ApartmentRepo;
     private readonly IAdminResidentService AdminResidentService;
+    private readonly ICommunityMemberRepository CommunityMemberRepo;
 
     public EnhancedDashboardService(
         IUserRepository userRepo,
         IEnhancedDashboardRepository dashboardRepo,
         IApartmentRepository apartmentRepo,
-        IAdminResidentService adminResidentService)
+        IAdminResidentService adminResidentService,
+        ICommunityMemberRepository communityMemberRepo)
     {
         UserRepo = userRepo;
         DashboardRepo = dashboardRepo;
         ApartmentRepo = apartmentRepo;
         AdminResidentService = adminResidentService;
+        CommunityMemberRepo = communityMemberRepo;
     }
 
     public async Task<EnhancedAdminDashboardDto> GetEnhancedAdminDashboardAsync(Guid userId)
@@ -219,7 +218,8 @@ public class EnhancedDashboardService : IEnhancedDashboardService
         var managerAssignment = await ApartmentRepo.GetActiveManagerByUserIdAsync(userId)
             ?? throw new Exception("Manager is not assigned to any apartment");
 
-        var apartment = managerAssignment.Apartment;
+        var apartment = managerAssignment.Apartment
+            ?? throw new Exception("Apartment data not found");
 
         // Get apartment-specific stats
         var stats = await DashboardRepo.GetApartmentDashboardStatsAsync(apartment.Id);
@@ -250,13 +250,12 @@ public class EnhancedDashboardService : IEnhancedDashboardService
         var user = await UserRepo.GetByIdAsync(userId)
             ?? throw new Exception("User not found");
 
-        // Get community member's apartment
-        var communityMember = await ApartmentRepo.DBContext.Set<CommunityMember>()
-            .Include(cm => cm.Apartment)
-            .FirstOrDefaultAsync(cm => cm.UserId == userId && cm.IsActive)
+        // ⭐ FIX: Use ICommunityMemberRepository instead of DBContext
+        var communityMember = await CommunityMemberRepo.GetByUserIdAsync(userId)
             ?? throw new Exception($"{role} is not assigned to any apartment");
 
-        var apartment = communityMember.Apartment;
+        var apartment = communityMember.Apartment
+            ?? throw new Exception("Apartment data not found");
 
         // Get user's flat number
         var flatMapping = user.UserFlatMappings?.FirstOrDefault(ufm => ufm.IsActive);
@@ -472,8 +471,6 @@ public class EnhancedDashboardService : IEnhancedDashboardService
         return await Task.FromResult(actions);
     }
 }
-
-
 
 
 

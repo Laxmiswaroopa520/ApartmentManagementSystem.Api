@@ -5,6 +5,7 @@ using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Domain.Enums;
 using ApartmentManagementSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
@@ -184,6 +185,14 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
             communityMember.IsActive = false;
             await _context.SaveChangesAsync();
+        }
+        //newly added one..
+        public async Task<CommunityMember?> GetByUserIdAsync(Guid userId)
+        {
+            return await _context.CommunityMembers
+                .Include(cm => cm.Apartment)
+                .Include(cm => cm.User)
+                .FirstOrDefaultAsync(cm => cm.UserId == userId && cm.IsActive);
         }
     }
 }

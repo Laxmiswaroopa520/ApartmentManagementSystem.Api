@@ -1,6 +1,7 @@
 ﻿
 using ApartmentManagementSystem.Application.DTOs.Community;
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
+using ApartmentManagementSystem.Domain.Entities;
 
 namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 {
@@ -8,6 +9,7 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
     {
         Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync();
         Task<List<ResidentListDto>> GetEligibleResidentsAsync();
+        Task<CommunityMember?> GetByUserIdAsync(Guid userId);
 
         ///  Eligible residents filtered to a specific apartment</summary>
         Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId);
