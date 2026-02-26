@@ -7,11 +7,11 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence;
 
 public class DatabaseSeeder
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext DBContext;
 
     public DatabaseSeeder(AppDbContext context)
     {
-        _context = context;
+        DBContext = context;
     }
 
     public async Task SeedAsync()
@@ -49,11 +49,11 @@ public class DatabaseSeeder
 
         foreach (var (name, description) in rolesToSeed)
         {
-            var exists = await _context.Roles.AnyAsync(r => r.Name == name);
+            var exists = await DBContext.Roles.AnyAsync(r => r.Name == name);
 
             if (!exists)
             {
-                _context.Roles.Add(new Role
+                DBContext.Roles.Add(new Role
                 {
                     Id = Guid.NewGuid(),
                     Name = name,
@@ -63,6 +63,6 @@ public class DatabaseSeeder
             }
         }
 
-        await _context.SaveChangesAsync();
+        await DBContext.SaveChangesAsync();
     }
 }

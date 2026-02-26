@@ -1,7 +1,4 @@
-﻿// Application/Services/ApartmentManagementService.cs
-
-// Application/Services/ApartmentManagementService.cs
-using ApartmentManagementSystem.Application.DTOs.Apartment;
+﻿using ApartmentManagementSystem.Application.DTOs.Apartment;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using ApartmentManagementSystem.Domain.Entities;
@@ -337,10 +334,6 @@ namespace ApartmentManagementSystem.Application.Services
                 AssignedAt = cm.AssignedAt
             };
         }
-
-
-
-      
     }
 }
 

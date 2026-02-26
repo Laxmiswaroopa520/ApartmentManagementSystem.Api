@@ -5,7 +5,6 @@
         public Guid Id { get; set; }
         public Guid ApartmentId { get; set; }
         public Guid UserId { get; set; }
-
         public DateTime AssignedAt { get; set; } = DateTime.UtcNow;
 
        public DateTime RemovedAt { get; set; }=DateTime.UtcNow; //newly added now

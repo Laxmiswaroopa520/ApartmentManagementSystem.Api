@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ApartmentManagementSystem.Application.DTOs.Apartment
+﻿namespace ApartmentManagementSystem.Application.DTOs.Apartment
 {
     public class CreateApartmentDto
     {
@@ -17,7 +11,7 @@ namespace ApartmentManagementSystem.Application.DTOs.Apartment
         public int TotalFloors { get; set; }
         public int FlatsPerFloor { get; set; }
 
-        // Optional: Custom flat numbering pattern
+        //  Custom flat numbering pattern
         public string? FlatNumberingPattern { get; set; } // e.g., "101, 102..." or "A1, A2..."
     }
 }

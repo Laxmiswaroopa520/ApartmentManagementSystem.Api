@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApartmentManagementSystem.API.Extensions
 {
-  
-
     public static class DatabaseExtensions
     {
         public static IServiceCollection AddDatabaseServices(

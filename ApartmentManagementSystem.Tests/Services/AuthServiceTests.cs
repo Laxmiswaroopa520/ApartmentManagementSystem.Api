@@ -2,7 +2,6 @@
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Services;
 using ApartmentManagementSystem.Domain.Entities;
-using ApartmentManagementSystem.Domain.Enums;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using Xunit;

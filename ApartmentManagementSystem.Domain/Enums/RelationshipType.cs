@@ -1,6 +1,5 @@
 ﻿namespace ApartmentManagementSystem.Domain.Enums
 {
-
     public enum RelationshipType
     {
         Owner = 1,

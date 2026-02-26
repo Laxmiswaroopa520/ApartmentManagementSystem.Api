@@ -7,9 +7,6 @@ using System.Security.Claims;
 namespace ApartmentManagementSystem.API.Controllers.V1
     {
       [ApiController]
-   // [ApiVersion("1.0")] 
-
-   // [Route("api/v{version:apiVersion}/ApartmentManagement")]
     // [Route("api/[controller]")]
     [Route("api/ApartmentManagement")]
     [Authorize(Roles = "SuperAdmin")]
@@ -21,7 +18,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
             {
                 ApartmentService = apartmentService;
             }
-        /// Create new apartment with floors and flats
+        // Create new apartment with floors and flats
         [HttpPost("create")]
          public async Task<IActionResult> CreateApartment([FromBody] CreateApartmentDto dto)
          {
@@ -40,7 +37,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
                  return BadRequest(ApiResponse<CreateApartmentResponseDto>.ErrorResponse(ex.Message));
              }
          }
-             /// Get all apartments managed by SuperAdmin
+             // Get all apartments managed by SuperAdmin
         [HttpGet("all")]
             public async Task<IActionResult> GetAllApartments()
             {
@@ -57,7 +54,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
                     return BadRequest(ApiResponse<List<ApartmentListDto>>.ErrorResponse(ex.Message));
                 }
             }
-            /// Get detailed apartment information
+            // Get detailed apartment information
             [HttpGet("{apartmentId}")]
             public async Task<IActionResult> GetApartmentDetail(Guid apartmentId)
             {
@@ -80,7 +77,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
                     return BadRequest(ApiResponse<ApartmentDetailDto>.ErrorResponse(ex.Message));
                 }
             }
-            /// Get apartment visual diagram for 3D/2D rendering
+            // Get apartment visual diagram for 3D/2D rendering
             [HttpGet("{apartmentId}/diagram")]
             public async Task<IActionResult> GetApartmentDiagram(Guid apartmentId)
             {
@@ -97,7 +94,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
                     return BadRequest(ApiResponse<ApartmentDiagramDto>.ErrorResponse(ex.Message));
                 }
             }
-            /// Assign manager to apartment
+            //Assign manager to apartment
             [HttpPost("assign-manager")]
             public async Task<IActionResult> AssignManager([FromBody] AssignManagerDto dto)
             {

@@ -61,7 +61,7 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
-    /// Get community leader dashboard (President, Secretary, Treasurer)
+    // Get community leader dashboard (President, Secretary, Treasurer)
     [HttpGet("community-leader")]
     [Authorize(Roles = "President,Secretary,Treasurer")]
     public async Task<IActionResult> GetCommunityLeaderDashboard()
@@ -70,7 +70,7 @@ public class EnhancedDashboardApiController : ControllerBase
         {
             var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            // ✅ FIX: Get ALL roles and find the community leader role
+            //  Get ALL roles and find the community leader role
             var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
             var role = roles.FirstOrDefault(r => r == "President" || r == "Secretary" || r == "Treasurer") ?? "";
 
@@ -94,7 +94,7 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
-    /// Get staff member dashboard (minimal)
+    // Get staff member dashboard (minimal)
     [HttpGet("staff")]
     [Authorize(Roles = "Security,Plumber,Electrician,Carpenter,Sweeper,Gardener,MaintenanceStaff")]
     public async Task<IActionResult> GetStaffDashboard()
@@ -115,7 +115,7 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
-    /// Get advanced statistics for admin dashboard
+    // Get advanced statistics for admin dashboard
     [HttpGet("advanced-stats")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetAdvancedDashboardStats()
@@ -135,7 +135,7 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
-    /// Get apartment statistics
+    // Get apartment statistics
     [HttpGet("apartment-stats/{apartmentId}")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetApartmentStats(Guid apartmentId)
@@ -155,7 +155,7 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
-    /// Get financial summary (for Treasurer and SuperAdmin)
+    // Get financial summary (for Treasurer and SuperAdmin)
     [HttpGet("financial-summary")]
     [Authorize(Roles = "SuperAdmin,Treasurer")]
     public async Task<IActionResult> GetFinancialSummary()
@@ -175,7 +175,7 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
-    /// Get apartment financial summary
+    // Get apartment financial summary
     [HttpGet("apartment-financial-summary/{apartmentId}")]
     [Authorize(Roles = "SuperAdmin,Manager,Treasurer")]
     public async Task<IActionResult> GetApartmentFinancialSummary(Guid apartmentId)
@@ -195,7 +195,7 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
-    /// Get notice board messages
+    //Get notice board messages
     [HttpGet("notice-board/{apartmentId}")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetNoticeBoardMessages(Guid apartmentId)
@@ -215,13 +215,13 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
-    /// Get quick actions based on user role
+    // Get quick actions based on user role
     [HttpGet("quick-actions")]
     public async Task<IActionResult> GetQuickActions()
     {
         try
         {
-            // ✅ FIX: Get the highest priority role
+            // Get the highest priority role
             var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
             var role = roles.Contains("SuperAdmin") ? "SuperAdmin" :

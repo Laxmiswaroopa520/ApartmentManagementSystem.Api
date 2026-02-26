@@ -1,5 +1,4 @@
-﻿
-namespace ApartmentManagementSystem.Application.Interfaces.Services
+﻿namespace ApartmentManagementSystem.Application.Interfaces.Services
 {
     public interface IEmailService
     {

@@ -39,7 +39,7 @@ public class StaffMembersApiController : ControllerBase
         }
     }
 
-    /// Get staff members by type (Plumber, Security, etc.)
+    //Get staff members by type (Plumber, Security, etc.)
     [HttpGet("by-type/{staffType}")]
     public async Task<IActionResult> GetStaffMembersByType(string staffType)
     {
@@ -57,7 +57,7 @@ public class StaffMembersApiController : ControllerBase
         }
     }
 
-      /// Create new staff member
+      // Create new staff member
     [HttpPost]
     public async Task<IActionResult> CreateStaffMember([FromBody] CreateStaffMemberDto dto)
     {
@@ -76,7 +76,7 @@ public class StaffMembersApiController : ControllerBase
             return BadRequest(ApiResponse<StaffMemberDto>.ErrorResponse(ex.Message));
         }
     }
-    /// Update staff member details
+    // Update staff member details
     [HttpPut]
     public async Task<IActionResult> UpdateStaffMember([FromBody] UpdateStaffMemberDto dto)
     {
@@ -96,7 +96,7 @@ public class StaffMembersApiController : ControllerBase
         }
     }
 
-    /// Deactivate staff member
+    // Deactivate staff member
     [HttpPost("{staffId}/deactivate")]
     public async Task<IActionResult> DeactivateStaffMember(Guid staffId)
     {
@@ -115,10 +115,7 @@ public class StaffMembersApiController : ControllerBase
             return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
         }
     }
-
-   
-    /// Activate staff member
-   
+    // Activate staff member   
     [HttpPost("{staffId}/activate")]
     public async Task<IActionResult> ActivateStaffMember(Guid staffId)
     {
@@ -137,7 +134,7 @@ public class StaffMembersApiController : ControllerBase
             return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
         }
     }
-    /// Get staff member by ID
+    // Get staff member by ID
     [HttpGet("{staffId}")]
     public async Task<IActionResult> GetStaffMember(Guid staffId)
     {

@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 namespace ApartmentManagementSystem.API.Controllers.V1;
 [ApiController]
-//[ApiVersion("1.0")]  
-//[Route("api/v{version:apiVersion}/[controller]")]
+
 [Route("api/[controller]")]
 [Authorize]
 public class ResidentManagementApiController : ControllerBase
@@ -18,7 +17,8 @@ public class ResidentManagementApiController : ControllerBase
     {
         ResidentService = residentService;
     }
-    /// Get all residents (Admin, President, Secretary, Treasurer can view)
+
+    // Get all residents (Admin, President, Secretary, Treasurer can view)
 
     [HttpGet]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
@@ -37,7 +37,7 @@ public class ResidentManagementApiController : ControllerBase
             return BadRequest(ApiResponse<List<ResidentListDto>>.ErrorResponse(ex.Message));
         }
     }
-    /// Get residents by type (Owner/Tenant)
+    // Get residents by type (Owner/Tenant)
     [HttpGet("by-type/{residentType}")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetResidentsByType(string residentType)
@@ -55,7 +55,7 @@ public class ResidentManagementApiController : ControllerBase
             return BadRequest(ApiResponse<List<ResidentListDto>>.ErrorResponse(ex.Message));
         }
     }
-    /// Get detailed resident information
+    // Get detailed resident information
     [HttpGet("{userId}")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetResidentDetail(Guid userId)
@@ -80,7 +80,7 @@ public class ResidentManagementApiController : ControllerBase
         }
     }
 
-    /// Deactivate resident account
+    // Deactivate resident account
     [HttpPost("{userId}/deactivate")]
     [Authorize(Roles = "SuperAdmin,Manager")]
     public async Task<IActionResult> DeactivateResident(Guid userId)
@@ -100,7 +100,7 @@ public class ResidentManagementApiController : ControllerBase
             return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
         }
     }
-    /// Activate resident account
+    // Activate resident account
     [HttpPost("{userId}/activate")]
     [Authorize(Roles = "SuperAdmin,Manager")]
     public async Task<IActionResult> ActivateResident(Guid userId)

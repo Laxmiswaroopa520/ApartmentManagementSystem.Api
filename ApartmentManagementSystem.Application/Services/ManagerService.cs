@@ -17,9 +17,7 @@ namespace ApartmentManagementSystem.Application.Services
             ApartmentRepo = apartmentRepository;
         }
 
-        /// <summary>
         /// Get ResidentOwners from THIS apartment
-        /// </summary>
         public async Task<List<AvailableManagerDto>> GetApartmentResidentsForManagerAssignmentAsync(Guid apartmentId)
         {
             // var residentOwners = await _userRepo.GetUsersByRoleAsync("ResidentOwner");
@@ -55,9 +53,7 @@ namespace ApartmentManagementSystem.Application.Services
             return result.OrderBy(r => r.FullName).ToList();
         }
 
-        /// <summary>
         /// Assign manager - SIMPLIFIED
-        /// </summary>
         public async Task<ManagerAssignmentDto> AssignManagerToApartmentAsync(
             AssignManagerRequestDto dto,
             Guid assignedBy)

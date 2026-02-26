@@ -4,7 +4,6 @@ using ApartmentManagementSystem.Application.Interfaces.Services;
 using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Domain.Enums;
-using System.Runtime.Intrinsics.X86;
 using static System.Net.WebRequestMethods;
 
 
@@ -69,19 +68,6 @@ public class OnboardingService : IOnboardingService
         // Use YOUR pattern: AddAsync + SaveChangesAsync
         await UserRepo.AddAsync(user);
         await UserRepo.SaveChangesAsync();
-
-        // Generate OTP
-       // var otpCode = _otpService.GenerateOtp();
-       /* var otp = new UserOtp
-        {
-            Id = Guid.NewGuid(),
-            UserId = user.Id,
-            PhoneNumber = user.PrimaryPhone,
-            OtpCode = otpCode,
-            ExpiresAt = DateTime.UtcNow.AddMinutes(10),
-            IsUsed = false,
-            CreatedAt = DateTime.UtcNow
-        };*/
        // Generate OTP - Use YOUR UserOtp structure
         var otpCode = OtpService.GenerateOtp();
         var otp = new UserOtp
@@ -121,7 +107,6 @@ public class OnboardingService : IOnboardingService
             Message = SuccessMessages.InviteCreated
         };
     }
-
     public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto request)
     {
         var user = await UserRepo.GetByPhoneAsync(request.PrimaryPhone);
@@ -200,7 +185,7 @@ public class OnboardingService : IOnboardingService
             Message = SuccessMessages.RegistrationCompleted
         };
     }
-    //staff   check here..
+    //staff  check here..
     private async Task<Role?> GetRoleForResidentType(ResidentType residentType)
     {
         var roleName = residentType switch

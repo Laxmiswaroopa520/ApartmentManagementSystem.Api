@@ -11,17 +11,13 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
         Task<List<ResidentListDto>> GetEligibleResidentsAsync();
         Task<CommunityMember?> GetByUserIdAsync(Guid userId);
 
-        ///  Eligible residents filtered to a specific apartment</summary>
+        //  Eligible residents filtered to a specific apartment</summary>
         Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId);
-
         Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId);
-
         Task<bool> CommunityRoleExistsAsync(string roleName);
-
-        /// Check role existence scoped to an apartment</summary>
+        // Check role existence scoped to an apartment</summary>
         Task<bool> CommunityRoleExistsForApartmentAsync(string roleName, Guid apartmentId);
-
-        ///  now accepts apartmentId and assignedBy</summary>
+        //  now accepts apartmentId and assignedBy</summary>
         Task AssignCommunityRoleAsync(Guid userId, string roleName, Guid apartmentId, Guid assignedBy);
 
         Task RemoveCommunityRoleAsync(Guid userId);

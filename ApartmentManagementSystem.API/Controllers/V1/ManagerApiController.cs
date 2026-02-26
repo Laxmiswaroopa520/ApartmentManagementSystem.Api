@@ -1,5 +1,4 @@
-﻿
-using ApartmentManagementSystem.Application.DTOs.Common;
+﻿using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Manager;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -20,9 +19,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
             ManagerService = managerService;
         }
 
-        /// <summary>
-        /// Get ResidentOwners from this apartment who can be assigned as manager
-        /// </summary>
+        //Get ResidentOwners from this apartment who can be assigned as manager
         [HttpGet("apartment-residents/{apartmentId}")]
         public async Task<IActionResult> GetApartmentResidents(Guid apartmentId)
         {
@@ -41,9 +38,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
             }
         }
 
-        /// <summary>
-        /// Assign manager - supports both resident and external person
-        /// </summary>
+        //Assign manager - supports both resident and external person
         [HttpPost("assign")]
         public async Task<IActionResult> AssignManager([FromBody] AssignManagerRequestDto dto)
         {
@@ -62,10 +57,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
                 return BadRequest(ApiResponse<ManagerAssignmentDto>.ErrorResponse(ex.Message));
             }
         }
-
-        /// <summary>
-        /// Remove manager from apartment
-        /// </summary>
+        // Remove manager from apartment
         [HttpPost("remove")]
         public async Task<IActionResult> RemoveManager([FromBody] RemoveManagerRequestDto dto)
         {

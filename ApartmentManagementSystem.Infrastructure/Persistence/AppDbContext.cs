@@ -1,6 +1,4 @@
-﻿
-// Infrastructure/Persistence/AppDbContext.cs
-using ApartmentManagementSystem.Domain.Constants;
+﻿using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,16 +27,16 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            // ✅ Apply all entity configurations from separate files
+            //  Apply all entity configurations from separate files
             // This will automatically apply all IEntityTypeConfiguration<T> classes
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-            // ⭐ SEED MASTER DATA
+            // SEED MASTER DATA
             SeedRoles(modelBuilder);
             SeedSuperAdmin(modelBuilder);
         }
-
-        // ⭐ ROLE SEEDING
+        
+        // ROLE SEEDING
         private static void SeedRoles(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Role>().HasData(
@@ -54,7 +52,7 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
             );
         }
 
-        // ⭐ SUPER ADMIN SEEDING
+        // SUPER ADMIN SEEDING
         private static void SeedSuperAdmin(ModelBuilder modelBuilder)
         {
             var adminUserId = Guid.Parse("20000000-0000-0000-0000-000000000001");

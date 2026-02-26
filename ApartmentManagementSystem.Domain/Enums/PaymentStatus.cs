@@ -1,6 +1,5 @@
 ﻿namespace ApartmentManagementSystem.Domain.Enums
 {
-
     public enum PaymentStatus
     {
         Pending = 1,

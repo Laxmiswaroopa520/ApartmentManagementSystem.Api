@@ -50,7 +50,7 @@ namespace ApartmentManagementSystem.Application.Services
             }).ToList();
         }
 
-        // ⭐ NEW: Get apartments based on user role
+        // Get apartments based on user role
         public async Task<List<ApartmentDropdownDto>> GetApartmentsForUserAsync(Guid userId, string role)
         {
             if (role == "SuperAdmin")
@@ -91,7 +91,7 @@ namespace ApartmentManagementSystem.Application.Services
             return new List<ApartmentDropdownDto>();
         }
 
-        // ⭐ NEW: Get floors by apartment
+        //  Get floors by apartment
         public async Task<List<FloorDto>> GetFloorsByApartmentAsync(Guid apartmentId)
         {
             var floors = await FloorRepo.GetByApartmentIdAsync(apartmentId);

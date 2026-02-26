@@ -29,12 +29,5 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
             otp!.IsUsed = true;
             await DBContext.SaveChangesAsync();
         }
-      /*  public async Task<UserOtp?> GetLatestByUserIdAsync(Guid userId)
-        {
-            return await _db.UserOtps
-                .Where(o => o.UserId == userId)
-                .OrderByDescending(o => o.CreatedAt)
-                .FirstOrDefaultAsync();
-        }*/
     }
 }

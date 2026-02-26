@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ApartmentManagementSystem.Domain.Entities;
 
 namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 {
-    using ApartmentManagementSystem.Domain.Entities;
-
-   // namespace ApartmentManagementSystem.Application.Interfaces.Repositories;
-
     public interface IUserOtpRepository
     {
         Task<UserOtp?> GetValidOtpAsync(string phoneNumber, string otp);

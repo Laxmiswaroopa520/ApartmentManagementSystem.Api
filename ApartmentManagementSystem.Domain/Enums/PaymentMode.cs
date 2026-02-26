@@ -1,6 +1,5 @@
 ﻿namespace ApartmentManagementSystem.Domain.Enums
-{
-
+{ 
     public enum PaymentMode
     {
         Cash = 1,

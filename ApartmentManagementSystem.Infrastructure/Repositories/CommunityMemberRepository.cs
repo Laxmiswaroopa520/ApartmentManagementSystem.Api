@@ -2,7 +2,6 @@
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Domain.Entities;
-using ApartmentManagementSystem.Domain.Enums;
 using ApartmentManagementSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,17 +10,17 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
     public class CommunityMemberRepository : ICommunityMemberRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext DBContext;
 
         public CommunityMemberRepository(AppDbContext context)
         {
-            _context = context;
+            DBContext = context;
         }
 
-        // ─── GET ALL (no filter)
+        // GET ALL (no filter)
         public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync()
         {
-            return await _context.Set<CommunityMember>()
+            return await DBContext.Set<CommunityMember>()
                 .Include(cm => cm.User)
                     .ThenInclude(u => u.UserFlatMappings)
                         .ThenInclude(ufm => ufm.Flat)
@@ -45,15 +44,15 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        // ─── ELIGIBLE RESIDENTS 
+        //  ELIGIBLE RESIDENTS 
         public async Task<List<ResidentListDto>> GetEligibleResidentsAsync()
         {
-            var usersWithRoles = await _context.Set<CommunityMember>()
+            var usersWithRoles = await DBContext.Set<CommunityMember>()
                 .Where(cm => cm.IsActive)
                 .Select(cm => cm.UserId)
                 .ToListAsync();
 
-            return await _context.Users
+            return await DBContext.Users
                 .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
                 .Include(u => u.UserFlatMappings).ThenInclude(ufm => ufm.Flat)
                 .Where(u =>
@@ -82,7 +81,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         public async Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId)
         {
             // Get users who ALREADY have a community role in THIS apartment
-            var usersWithRolesInApartment = await _context.Set<CommunityMember>()
+            var usersWithRolesInApartment = await DBContext.Set<CommunityMember>()
                 .Where(cm => cm.IsActive && cm.ApartmentId == apartmentId)
                 .Select(cm => cm.UserId)
                 .ToListAsync();
@@ -90,7 +89,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
             // Return resident owners who:
             //   1) Have an active flat in THIS apartment
             //   2) Don't already have a community role in THIS apartment
-            return await _context.Users
+            return await DBContext.Users
                 .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
                 .Include(u => u.UserFlatMappings).ThenInclude(ufm => ufm.Flat)
                 .Where(u =>
@@ -115,10 +114,10 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        // ─── GET SINGLE MEMBER 
+        //  GET SINGLE MEMBER 
         public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
         {
-            return await _context.Set<CommunityMember>()
+            return await DBContext.Set<CommunityMember>()
                 .Include(cm => cm.User)
                     .ThenInclude(u => u.UserFlatMappings)
                         .ThenInclude(ufm => ufm.Flat)
@@ -145,14 +144,14 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         //  ROLE EXISTS (global)
         public async Task<bool> CommunityRoleExistsAsync(string roleName)
         {
-            return await _context.Set<CommunityMember>()
+            return await DBContext.Set<CommunityMember>()
                 .AnyAsync(cm => cm.CommunityRole == roleName && cm.IsActive);
         }
 
         //ROLE EXISTS (scoped to apartment) 
         public async Task<bool> CommunityRoleExistsForApartmentAsync(string roleName, Guid apartmentId)
         {
-            return await _context.Set<CommunityMember>()
+            return await DBContext.Set<CommunityMember>()
                 .AnyAsync(cm => cm.CommunityRole == roleName && cm.ApartmentId == apartmentId && cm.IsActive);
         }
 
@@ -170,26 +169,26 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
                 IsActive = true
             };
 
-            await _context.Set<CommunityMember>().AddAsync(communityMember);
-            await _context.SaveChangesAsync();
+            await DBContext.Set<CommunityMember>().AddAsync(communityMember);
+            await DBContext.SaveChangesAsync();
         }
 
         // REMOVE ROLE 
         public async Task RemoveCommunityRoleAsync(Guid userId)
         {
-            var communityMember = await _context.Set<CommunityMember>()
+            var communityMember = await DBContext.Set<CommunityMember>()
                 .FirstOrDefaultAsync(cm => cm.UserId == userId && cm.IsActive);
 
             if (communityMember == null)
                 throw new Exception("Community member not found");
 
             communityMember.IsActive = false;
-            await _context.SaveChangesAsync();
+            await DBContext.SaveChangesAsync();
         }
         //newly added one..
         public async Task<CommunityMember?> GetByUserIdAsync(Guid userId)
         {
-            return await _context.CommunityMembers
+            return await DBContext.CommunityMembers
                 .Include(cm => cm.Apartment)
                 .Include(cm => cm.User)
                 .FirstOrDefaultAsync(cm => cm.UserId == userId && cm.IsActive);

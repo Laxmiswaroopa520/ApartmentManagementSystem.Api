@@ -1,11 +1,8 @@
 ﻿using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Domain.Enums;
-
 namespace ApartmentManagementSystem.Tests.Helpers;
 
-/// <summary>
-/// Provides test data builders for creating test entities
-/// </summary>
+// Provides test data builders for creating test entities
 public static class TestDataBuilder
 {
     public static User CreateTestUser(
@@ -88,9 +85,7 @@ public static class TestDataBuilder
     }
 }
 
-/// <summary>
-/// Contains constant values used across tests
-/// </summary>
+//Contains constant values used across tests
 public static class TestConstants
 {
     public const string ValidPassword = "Password@123";

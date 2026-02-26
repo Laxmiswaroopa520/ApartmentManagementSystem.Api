@@ -14,29 +14,23 @@ namespace ApartmentManagementSystem.Application.Services
             CommunityMemberRepo = communityMemberRepository;
         }
 
-        /// <summary>
-        /// ⭐ If apartmentId is provided, filter to that apartment only.
-        /// Otherwise return all (backward-compatible).
-        /// </summary>
+        // If apartmentId is provided, filter to that apartment only.
+        // Otherwise return all (backward-compatible).
         public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync(Guid? apartmentId = null)
         {
             var all = await CommunityMemberRepo.GetAllCommunityMembersAsync();
 
             if (apartmentId.HasValue)
             {
-                // Filter: only members whose flat belongs to this apartment
-                // Note: CommunityMember has ApartmentId directly, so filter on that
+                //  only members whose flat belongs to this apartment
+                //  CommunityMember has ApartmentId directly, so filter on that
                 all = all.Where(m => m.ApartmentId == apartmentId.Value).ToList();
             }
 
             return all;
         }
-
-        /// <summary>
-        /// ⭐ NEW: Returns resident owners who:
-        ///   1) Have an active flat in THIS apartment
-        ///   2) Do NOT already have a community role in THIS apartment
-        /// </summary>
+        ///Returns resident owners who:
+        //   1) Have an active flat in THIS apartment   2) Do NOT already have a community role in THIS apartment
         public async Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId)
         {
             return await CommunityMemberRepo.GetEligibleResidentsForApartmentAsync(apartmentId);
@@ -47,9 +41,7 @@ namespace ApartmentManagementSystem.Application.Services
             return await CommunityMemberRepo.GetCommunityMemberByUserIdAsync(userId);
         }
 
-        /// <summary>
-        /// ⭐ Validates that the user is a resident owner in the given apartment before assigning.
-        /// </summary>
+        // Validates that the user is a resident owner in the given apartment before assigning.
         public async Task<CommunityMemberDto> AssignCommunityRoleAsync(
             Guid userId, string roleName, Guid apartmentId, Guid assignedBy)
         {

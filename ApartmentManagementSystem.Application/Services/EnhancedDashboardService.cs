@@ -138,8 +138,6 @@ public class EnhancedDashboardService : IEnhancedDashboardService
 
 
 
-
-using ApartmentManagementSystem.Application.DTOs.Admin;
 using ApartmentManagementSystem.Application.DTOs.Dashboard;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
@@ -209,7 +207,7 @@ public class EnhancedDashboardService : IEnhancedDashboardService
         };
     }
 
-    public async Task<ManagerDashboardDto> GetManagerDashboardAsync(Guid userId)
+     public async Task<ManagerDashboardDto> GetManagerDashboardAsync(Guid userId)
     {
         var user = await UserRepo.GetByIdAsync(userId)
             ?? throw new Exception("User not found");

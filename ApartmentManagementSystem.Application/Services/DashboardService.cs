@@ -1,5 +1,4 @@
-﻿// Application/Services/DashboardService.cs
-using ApartmentManagementSystem.Application.DTOs.Dashboard;
+﻿using ApartmentManagementSystem.Application.DTOs.Dashboard;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 

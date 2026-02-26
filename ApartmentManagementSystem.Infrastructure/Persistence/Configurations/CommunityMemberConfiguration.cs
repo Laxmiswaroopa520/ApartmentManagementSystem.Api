@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ApartmentManagementSystem.Infrastructure.Persistence.Configurations;
-
 public class CommunityMemberConfiguration : IEntityTypeConfiguration<CommunityMember>
 {
     public void Configure(EntityTypeBuilder<CommunityMember> builder)

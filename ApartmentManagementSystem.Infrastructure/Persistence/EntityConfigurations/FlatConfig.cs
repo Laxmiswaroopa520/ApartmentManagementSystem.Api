@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ApartmentManagementSystem.Domain.Entities;
+﻿using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -29,23 +24,10 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence.EntityConfigurati
    .WithMany(a => a.Flats)
    .HasForeignKey(f => f.ApartmentId)
    .OnDelete(DeleteBehavior.Restrict);
-
-
-            /*   builder.HasOne(f => f.OwnerUser)
-                   .WithMany(u => u.OwnedFlats)
-                   .HasForeignKey(f => f.OwnerUserId)
-                   .OnDelete(DeleteBehavior.SetNull);
-              */
-            builder.HasOne(f => f.OwnerUser)
-          .WithMany() // no navigation on User side
-          .HasForeignKey(f => f.OwnerUserId)
-          .OnDelete(DeleteBehavior.SetNull);
-
-
-            /*   builder.HasOne(f => f.TenantUser)
-                   .WithMany(u => u.RentedFlats)
-                   .HasForeignKey(f => f.TenantUserId)
-                   .OnDelete(DeleteBehavior.SetNull);*/
+     builder.HasOne(f => f.OwnerUser)
+     .WithMany() // no navigation on User side
+     .HasForeignKey(f => f.OwnerUserId)
+      .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

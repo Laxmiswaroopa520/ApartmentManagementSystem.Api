@@ -1,9 +1,4 @@
-﻿//using ApartmentManagementSystem.Application.Interfaces.Repositories;
-//using ApartmentManagementSystem.Application.Interfaces.Services;
-
-
-
-using ApartmentManagementSystem.Application.DTOs.Auth;
+﻿using ApartmentManagementSystem.Application.DTOs.Auth;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-
 namespace ApartmentManagementSystem.Application.Services;
-
 public class AuthService : IAuthService
 {
     private readonly IUserRepository Users;

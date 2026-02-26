@@ -43,7 +43,7 @@ public class EmailService : IEmailService
 
         try
         {
-            await client.SendMailAsync(message); // Fixed: was SendAsync(message)
+            await client.SendMailAsync(message); //  was SendAsync(message)
             EmailLogger.LogInformation($"Email sent to {to}");
         }
         catch (Exception ex)

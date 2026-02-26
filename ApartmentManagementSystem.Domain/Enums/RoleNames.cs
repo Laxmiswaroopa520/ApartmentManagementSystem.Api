@@ -1,7 +1,6 @@
 ﻿// these are constant role names not stored in database..
 namespace ApartmentManagementSystem.Domain.Enums
 {
-
     public static class RoleNames
     {
         // SYSTEM ROLES (Platform level)
@@ -50,8 +49,7 @@ namespace ApartmentManagementSystem.Domain.Enums
             Sweeper, Gardener, MaintenanceStaff
         };
         }
-
-        public static List<string> GetAdminRoles()
+       public static List<string> GetAdminRoles()
         {
             return new List<string> { SuperAdmin, Manager, President, Secretary, Treasurer };
         }

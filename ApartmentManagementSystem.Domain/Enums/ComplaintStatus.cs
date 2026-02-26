@@ -1,6 +1,5 @@
 ﻿namespace ApartmentManagementSystem.Domain.Enums
 {
-
     public enum ComplaintStatus
     {
         Raised = 1,

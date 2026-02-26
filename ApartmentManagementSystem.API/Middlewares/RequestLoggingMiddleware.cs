@@ -1,7 +1,5 @@
 ﻿namespace ApartmentManagementSystem.API.Middlewares
 {
-   // namespace ApartmentManagementSystem.API.Middlewares;
-
     public class RequestLoggingMiddleware
     {
         private readonly RequestDelegate Next;

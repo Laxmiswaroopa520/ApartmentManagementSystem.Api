@@ -29,13 +29,7 @@ public class User
     // Navigation
     //  public Role Role { get; set; } = null!;
     public Flat? Flat { get; set; }
-    /* public ICollection<UserOtp> UserOtps { get; set; } = new List<UserOtp>();
-     public ICollection<UserFlatMapping> UserFlatMappings { get; set; } = new List<UserFlatMapping>();
-     // i added this becuase 1 user can have multiple roels right?? like owner+president liek that..
-     public ICollection<RoleNames> UserRoles { get; set; } = new List<RoleNames>();
-    */
-    //
-       // I Added this becuase 1 user can have multiple roels right?? like owner+president liek that.. and also many roles has many users like 2 securities like that..
+    // I Added this becuase 1 user can have multiple roels right?? like owner+president liek that.. and also many roles has many users like 2 securities like that..
 
     public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 

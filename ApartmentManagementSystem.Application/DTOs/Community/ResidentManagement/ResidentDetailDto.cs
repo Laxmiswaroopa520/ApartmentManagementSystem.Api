@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement
+﻿namespace ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement
 {
-
     public class ResidentDetailDto
     {
         public Guid UserId { get; set; }

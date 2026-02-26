@@ -1,8 +1,4 @@
-﻿
-
-using System;
-
-namespace ApartmentManagementSystem.Application.DTOs.Onboarding
+﻿namespace ApartmentManagementSystem.Application.DTOs.Onboarding
 {
     public class CompleteRegistrationDto
     {

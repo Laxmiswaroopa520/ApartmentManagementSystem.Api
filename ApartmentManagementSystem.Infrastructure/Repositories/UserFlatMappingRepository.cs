@@ -1,15 +1,10 @@
-﻿using ApartmentManagementSystem.Domain.Entities;
-using ApartmentManagementSystem.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+﻿using ApartmentManagementSystem.Infrastructure.Persistence;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
-
+using ApartmentManagementSystem.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
-
-    // Infrastructure/Persistence/Repositories/UserFlatMappingRepository.cs
-    using ApartmentManagementSystem.Application.Interfaces.Repositories;
-    using ApartmentManagementSystem.Domain.Entities;
-    using Microsoft.EntityFrameworkCore;
+    
   public class UserFlatMappingRepository : IUserFlatMappingRepository
         {
             private readonly AppDbContext DBContext;

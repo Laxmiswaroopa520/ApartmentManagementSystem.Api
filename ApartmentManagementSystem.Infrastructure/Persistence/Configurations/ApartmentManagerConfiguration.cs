@@ -1,9 +1,7 @@
 ﻿using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace ApartmentManagementSystem.Infrastructure.Persistence.Configurations;
-
 public class ApartmentManagerConfiguration : IEntityTypeConfiguration<ApartmentManager>
 {
     public void Configure(EntityTypeBuilder<ApartmentManager> builder)

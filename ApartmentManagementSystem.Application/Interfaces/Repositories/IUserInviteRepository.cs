@@ -8,8 +8,8 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
     {
         Task<UserInvite?> GetByIdAsync(Guid id);
         Task<UserInvite?> GetByPhoneAsync(string phone);
-        Task<UserInvite> CreateAsync(UserInvite invite); // ADDED
-        Task UpdateStatusAsync(Guid inviteId, string status); // ADDED
+        Task<UserInvite> CreateAsync(UserInvite invite); 
+        Task UpdateStatusAsync(Guid inviteId, string status); 
         Task<List<UserInvite>> GetAllAsync();
         Task SaveChangesAsync();
 

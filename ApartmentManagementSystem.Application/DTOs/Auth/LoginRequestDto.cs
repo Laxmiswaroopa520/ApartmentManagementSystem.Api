@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.ComponentModel.DataAnnotations;
 namespace ApartmentManagementSystem.Application.DTOs.Auth
 {
     public class LoginRequestDto
     {
-       // LoginRequestDto.cs
-
-     
+       // LoginRequestDto.cs 
             [Required(ErrorMessage = "Username is required")]
             public string Username { get; set; } = string.Empty;
 

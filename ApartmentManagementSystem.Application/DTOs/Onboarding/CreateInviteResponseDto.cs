@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 //used in the ui for storing full name,mobile number and otp..
 namespace ApartmentManagementSystem.Application.DTOs.Onboarding
 {
-
    public class CreateInviteResponseDto
     {
         public Guid UserId { get; set; }

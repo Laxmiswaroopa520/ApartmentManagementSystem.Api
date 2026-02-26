@@ -18,7 +18,7 @@ namespace ApartmentManagementSystem.API.Policies
             options.AddPolicy(IsAdmin, policy =>
                 policy.RequireRole("SuperAdmin", "President", "Secretary", "Treasurer"));
 
-            // ⭐ NEW: Manager policy
+            // Manager policy
             options.AddPolicy(IsManager, policy =>
                 policy.RequireRole("Manager"));
 

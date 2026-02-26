@@ -1,9 +1,7 @@
 ﻿using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace ApartmentManagementSystem.Infrastructure.Persistence.Configurations;
-
 public class UserInviteConfiguration : IEntityTypeConfiguration<UserInvite>
 {
     public void Configure(EntityTypeBuilder<UserInvite> builder)
@@ -23,7 +21,7 @@ public class UserInviteConfiguration : IEntityTypeConfiguration<UserInvite>
 
         builder.Property(ui => ui.InviteStatus)
             .IsRequired()
-            .HasMaxLength(50); // ✅ Specific length instead of max
+            .HasMaxLength(50); //  Specific length instead of max
 
         builder.Property(ui => ui.CreatedAt)
             .IsRequired();

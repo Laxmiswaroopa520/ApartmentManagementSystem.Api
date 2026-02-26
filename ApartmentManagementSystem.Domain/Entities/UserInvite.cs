@@ -1,6 +1,5 @@
 ﻿using ApartmentManagementSystem.Domain.Enums;
 namespace ApartmentManagementSystem.Domain.Entities;
-
 public class UserInvite
 {
     public Guid Id { get; set; }

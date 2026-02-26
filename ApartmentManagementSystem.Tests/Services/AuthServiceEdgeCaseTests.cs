@@ -8,9 +8,7 @@ using Xunit;
 
 namespace ApartmentManagementSystem.Tests.Services;
 
-/// <summary>
 /// Additional edge case and security tests for AuthService
-/// </summary>
 public class AuthServiceEdgeCaseTests
 {
     private readonly Mock<IUserRepository> MockUserRepo;

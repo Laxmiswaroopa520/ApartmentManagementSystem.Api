@@ -1,5 +1,4 @@
-﻿// Domain/Entities/Apartment.cs
-using ApartmentManagementSystem.Domain.Enums;
+﻿using ApartmentManagementSystem.Domain.Enums;
 
 namespace ApartmentManagementSystem.Domain.Entities
 {

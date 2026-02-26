@@ -7,12 +7,9 @@
         public string Name { get; set; } = null!;
        
         // FOREIGN KEYS
-  
         public Guid ApartmentId { get; set; }
         public Guid FloorId { get; set; }
-
         public Guid? OwnerUserId { get; set; }   // NULL = available
-
        
         // NAVIGATION PROPERTIES
         public Apartment? Apartment { get; set; } = null!;
@@ -29,7 +26,6 @@
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
-
         public Floor Floor { get; set; } = null!;
         public bool IsOccupied { get; set; }
     }

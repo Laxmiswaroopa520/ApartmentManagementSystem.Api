@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Interfaces\Auth\**" />
+    <EmbeddedResource Remove="Interfaces\Auth\**" />
+    <None Remove="Interfaces\Auth\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
@@ -14,10 +20,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ApartmentManagementSystem.Domain\ApartmentManagementSystem.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Interfaces\Auth\" />
   </ItemGroup>
 
 </Project>

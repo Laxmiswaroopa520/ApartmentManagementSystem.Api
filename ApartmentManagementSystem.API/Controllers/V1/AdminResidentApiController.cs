@@ -10,8 +10,6 @@ using System.Security.Claims;
 namespace ApartmentManagementSystem.API.Controllers.V1
 {
     [ApiController]
-   // [ApiVersion("1.0")]                             
-  //  [Route("api/v{version:apiVersion}/[controller]")] 
     [Route("api/[controller]")]
     [Authorize(Roles = "SuperAdmin,Manager")]
     public class AdminResidentApiController : ControllerBase
@@ -37,7 +35,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
             }
         }
 
-        // ⭐ NEW: Get apartments for current user
+        //Get apartments for current user
         [HttpGet("apartments")]
         public async Task<IActionResult> GetApartments()
         {

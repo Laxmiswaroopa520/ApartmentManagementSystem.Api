@@ -36,15 +36,6 @@ public class UserRepository : IUserRepository
                 .ThenInclude(ur => ur.Role)
             .FirstOrDefaultAsync(u => u.Id == id);
     }
-
-  /*  public async Task<User?> GetByPhoneAsync(string phone)
-    {
-        return await DBContext.Users
-            .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-            .FirstOrDefaultAsync(u => u.PrimaryPhone == phone);
-    }*/
-
     public async Task AddAsync(User user)
     {
         await DBContext.Users.AddAsync(user);
@@ -92,9 +83,8 @@ public class UserRepository : IUserRepository
             .ToListAsync();
     }
 
-    //METHOD 1: Get user by phone number
+    //Get user by phone number
     // Add to your existing UserRepository class
-
     public async Task<User?> GetByPhoneAsync(string phone)
     {
         return await DBContext.Users
@@ -102,15 +92,7 @@ public class UserRepository : IUserRepository
                 .ThenInclude(ur => ur.Role)
             .FirstOrDefaultAsync(u => u.PrimaryPhone == phone);
     }
-  /*  public async Task<User?> GetByPhoneAsync(string phone)
-    {
-        return await DBContext.Users
-            .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-            .FirstOrDefaultAsync(u => u.PrimaryPhone == phone);
-    }
-  */
-    // METHOD 2: Create external manager user (with Manager role)
+    // Create external manager user (with Manager role)
     public async Task CreateExternalManagerUserAsync(User user, string roleName)
     {
         // Add user to database
@@ -136,7 +118,7 @@ public class UserRepository : IUserRepository
         await DBContext.SaveChangesAsync();
     }
 
-    // METHOD 3: Add role to existing user
+    //  Add role to existing user
     public async Task AddRoleToUserAsync(Guid userId, string roleName)
     {
         // Check if user already has this role
@@ -171,19 +153,17 @@ public class UserRepository : IUserRepository
         Console.WriteLine($"Successfully added {roleName} role to user {userId}");
     }
 
-    //METHOD 4: Update GetUsersByRoleAsync to include UserFlatMappings
+    //Update GetUsersByRoleAsync to include UserFlatMappings
     public async Task<List<User>> GetUsersByRoleAsync(string roleName)
     {
         return await DBContext.Users
             .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role)
-            .Include(u => u.UserFlatMappings!)  // ⭐ CRITICAL - must include
+            .Include(u => u.UserFlatMappings!)  
                 .ThenInclude(ufm => ufm.Flat)
             .Where(u => u.UserRoles.Any(ur => ur.Role.Name == roleName) && u.IsActive)
             .ToListAsync();
     }
-
-
 }
 
 

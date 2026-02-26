@@ -1,9 +1,7 @@
 ﻿using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace ApartmentManagementSystem.Infrastructure.Persistence.Configurations;
-
 public class UserOtpConfiguration : IEntityTypeConfiguration<UserOtp>
 {
     public void Configure(EntityTypeBuilder<UserOtp> builder)
