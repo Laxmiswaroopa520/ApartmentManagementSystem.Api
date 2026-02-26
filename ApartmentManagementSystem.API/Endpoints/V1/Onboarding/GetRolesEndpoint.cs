@@ -53,6 +53,10 @@ public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
 
 
 
+
+
+
+
 /*using FastEndpoints;
 using ApartmentManagementSystem.Application.DTOs;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;

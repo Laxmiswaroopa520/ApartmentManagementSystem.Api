@@ -1,6 +1,103 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Auth;
 using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ApartmentManagementSystem.API.Controllers.V1;
+
+[ApiController]
+[Route("api/[controller]")]
+public class AuthApiController : ControllerBase
+{
+    private readonly IAuthService AuthService;
+
+    public AuthApiController(IAuthService authService)
+    {
+        AuthService = authService;
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Username) ||
+            string.IsNullOrWhiteSpace(request.Password))
+        {
+            return BadRequest(ApiResponse<LoginResponseDto>.ErrorResponse(
+                AuthMessages.UsernamePasswordRequired
+            ));
+        }
+
+        try
+        {
+            var result = await AuthService.LoginAsync(request);
+
+            return Ok(ApiResponse<LoginResponseDto>.SuccessResponse(
+                result,
+                AuthMessages.LoginSuccessful
+            ));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            var message = ex.Message;
+
+            if (message.Contains("inactive", StringComparison.OrdinalIgnoreCase))
+            {
+                return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse(
+                    message,
+                    AuthMessages.AccountInactiveCode                                //calling messages from constants.
+                ));
+            }
+
+            return Unauthorized(ApiResponse<LoginResponseDto>.ErrorResponse(message));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ApiResponse<LoginResponseDto>.ErrorResponse(ex.Message));
+        }
+    }
+
+    [HttpGet("users/{userId}/is-active")]
+    [Authorize]
+    public async Task<IActionResult> IsUserActive(Guid userId)
+    {
+        var isActive = await AuthService.IsUserActiveAsync(userId);
+        return Ok(isActive);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.DTOs.Auth;
+using ApartmentManagementSystem.Application.DTOs.Common;
+using ApartmentManagementSystem.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -57,6 +154,5 @@ public class AuthApiController : ControllerBase
         return Ok(isActive);
     }
 
-
-
 }
+*/

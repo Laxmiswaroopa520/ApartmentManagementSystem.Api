@@ -2,6 +2,140 @@
 using ApartmentManagementSystem.Application.DTOs.Community;
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+
+namespace ApartmentManagementSystem.API.Controllers.V1
+{
+    [ApiController]
+    [Route("api/CommunityMembers")]
+    [Authorize(Roles = "SuperAdmin,Manager")]
+    public class CommunityMembersApiController : ControllerBase
+    {
+        private readonly ICommunityMemberService CommunityService;
+
+        public CommunityMembersApiController(ICommunityMemberService communityService)
+        {
+            CommunityService = communityService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCommunityMembers([FromQuery] Guid? apartmentId = null)
+        {
+            try
+            {
+                var members = await CommunityService.GetAllCommunityMembersAsync(apartmentId);
+
+                return Ok(ApiResponse<List<CommunityMemberDto>>.SuccessResponse(
+                    members,
+                    CommunityMessages.CommunityMembersRetrieved
+                ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<List<CommunityMemberDto>>.ErrorResponse(ex.Message));
+            }
+        }
+
+        [HttpGet("eligible-residents/{apartmentId}")]
+        public async Task<IActionResult> GetEligibleResidents(Guid apartmentId)
+        {
+            try
+            {
+                var residents = await CommunityService.GetEligibleResidentsForApartmentAsync(apartmentId);
+
+                return Ok(ApiResponse<List<ResidentListDto>>.SuccessResponse(
+                    residents,
+                    CommunityMessages.EligibleResidentsRetrieved
+                ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<List<ResidentListDto>>.ErrorResponse(ex.Message));
+            }
+        }
+
+        [HttpPost("assign-role")]
+        public async Task<IActionResult> AssignCommunityRole([FromBody] AssignCommunityRoleRequestDto request)
+        {
+            try
+            {
+                if (!request.ApartmentId.HasValue)
+                {
+                    return BadRequest(ApiResponse<CommunityMemberDto>.ErrorResponse(
+                        CommunityMessages.ApartmentIdRequired
+                    ));
+                }
+
+                var assignedBy = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+                var result = await CommunityService.AssignCommunityRoleAsync(
+                    request.UserId,
+                    request.CommunityRole,
+                    request.ApartmentId.Value,
+                    assignedBy
+                );
+
+                return Ok(ApiResponse<CommunityMemberDto>.SuccessResponse(
+                    result,
+                    $"{request.CommunityRole} {CommunityMessages.RoleAssigned}"
+                ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<CommunityMemberDto>.ErrorResponse(ex.Message));
+            }
+        }
+
+        [HttpPost("remove-role")]
+        public async Task<IActionResult> RemoveCommunityRole([FromBody] RemoveCommunityRoleRequestDto request)
+        {
+            try
+            {
+                await CommunityService.RemoveCommunityRoleAsync(request.UserId);
+
+                return Ok(ApiResponse<bool>.SuccessResponse(
+                    true,
+                    CommunityMessages.RoleRemoved
+                ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.DTOs.Common;
+using ApartmentManagementSystem.Application.DTOs.Community;
+using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
+using ApartmentManagementSystem.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -102,7 +236,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
 
 
 
-
+*/
 
 
 

@@ -61,16 +61,17 @@ public class UserRepository : IUserRepository
         return await DBContext.Users
             .FirstOrDefaultAsync(u => u.Email == email);
     }
-
-    public async Task<List<User>> GetPendingResidentsAsync()
-    {
-        return await DBContext.Users
-            .Include(u => u.UserRoles)
-                .ThenInclude(ur => ur.Role)
-            .Where(u => u.Status == ResidentStatus.PendingFlatAllocation)
-            .OrderBy(u => u.CreatedAt)
-            .ToListAsync();
-    }
+    
+        public async Task<List<User>> GetPendingResidentsAsync()
+        {
+            return await DBContext.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .Where(u => u.Status == ResidentStatus.PendingFlatAllocation)
+                .OrderBy(u => u.CreatedAt)
+                .ToListAsync();
+        }
+   
     //added this part for flat dropdown for manager
     public async Task<List<User>> GetUsersByRoleWithFlatsAsync(string roleName)
     {

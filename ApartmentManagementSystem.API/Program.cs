@@ -1,7 +1,5 @@
 ﻿using FastEndpoints;
-using FastEndpoints;
 using FastEndpoints.Swagger;
-//using ApartmentManagementSystem.API.Configuration;
 using ApartmentManagementSystem.API.Extensions;
 using ApartmentManagementSystem.API.Filters;
 using ApartmentManagementSystem.API.Middlewares;
@@ -14,10 +12,7 @@ using ApartmentManagementSystem.Infrastructure.OTP;
 using ApartmentManagementSystem.Infrastructure.Persistence;
 using ApartmentManagementSystem.Infrastructure.Repositories;
 using ApartmentManagementSystem.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,19 +59,16 @@ builder.Services.AddAuthorization(options =>
 AuthorizationPolicies.AddPolicies(options);
 });
 
-// FASTENDPOINTS - Add this BEFORE controllers
 builder.Services.AddFastEndpoints();
 
 // API Versioning for Controllers
-//builder.Services.AddApiVersioningConfiguration();
-
 // Controllers
 builder.Services.AddControllers(options =>
 {
 options.Filters.Add<ValidationFilter>();
 });
 
-// CRITICAL FIX: SWAGGER MUST BE CONFIGURED FOR BOTH CONTROLLERS AND FASTENDPOINTS
+// SWAGGER MUST BE CONFIGURED FOR BOTH CONTROLLERS AND FASTENDPOINTS
 //builder.Services.AddEndpointsApiExplorer();
 
 // FastEndpoints Swagger Document - This generates docs for FastEndpoints
@@ -90,7 +82,7 @@ s.Version = "v1";
 s.Description = "Complete API Documentation - Controllers and FastEndpoints";
 };
 
-// CRITICAL: This tells Swagger to include BOTH FastEndpoints AND Controllers
+//This tells Swagger to include BOTH FastEndpoints AND Controllers
 o.EndpointFilter = ep => true; // Include all endpoints
 
 // Enable JWT in Swagger
@@ -103,7 +95,7 @@ o.RemoveEmptyRequestSchema = true;
 // Tag configuration
 o.TagCase = TagCase.TitleCase;
 
-// IMPORTANT: Set this to help with auto-tagging
+//  Set this to help with auto-tagging
 o.AutoTagPathSegmentIndex = 1; // Use second segment for tag (after "api")
 });
 
@@ -166,16 +158,6 @@ app.UseFastEndpoints(c =>
     c.Endpoints.RoutePrefix = "api";
 });
 
-// FASTENDPOINTS CONFIGURATION - CRITICAL ORDER
-/*app.UseFastEndpoints(c =>
-{
-c.Endpoints.RoutePrefix = "api";
-
-// Optional: Configure serialization
-c.Serializer.Options.PropertyNamingPolicy = null; // Keep PascalCase
-});
-
-*/
 // CONTROLLERS (for backward compatibility)
 app.MapControllers();
 
@@ -197,6 +179,25 @@ app.Run();
 
 // At the end of Program.cs to make it accessible for integration tests
 public partial class Program { }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*recent working one 03-02-2026

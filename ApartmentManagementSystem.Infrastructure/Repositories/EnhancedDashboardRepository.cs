@@ -31,12 +31,15 @@ public class EnhancedDashboardRepository : IEnhancedDashboardRepository
 
         var vacantFlats = totalFlats - occupiedFlats;
 
+        /*  var pendingRegistrations = await DBContext.Users
+              .CountAsync(u =>
+                  u.UserRoles.Any(ur =>
+                      ur.Role.Name == RoleNames.ResidentOwner ||
+                      ur.Role.Name == RoleNames.Tenant)
+                  && !u.UserFlatMappings.Any());*/
         var pendingRegistrations = await DBContext.Users
-            .CountAsync(u =>
-                u.UserRoles.Any(ur =>
-                    ur.Role.Name == RoleNames.ResidentOwner ||
-                    ur.Role.Name == RoleNames.Tenant)
-                && !u.UserFlatMappings.Any());
+      .CountAsync(u => u.Status == ResidentStatus.PendingFlatAllocation);
+
 
         var totalStaff = await DBContext.StaffMembers.CountAsync();
         var activeStaff = await DBContext.StaffMembers.CountAsync(s => s.IsActive);
@@ -90,12 +93,14 @@ public class EnhancedDashboardRepository : IEnhancedDashboardRepository
             .Distinct()
             .CountAsync();
 
+        /* var pendingRegistrations = await DBContext.Users
+             .CountAsync(u =>
+                 u.UserRoles.Any(ur =>
+                     ur.Role.Name == RoleNames.ResidentOwner ||
+                     ur.Role.Name == RoleNames.Tenant)
+                 && !u.UserFlatMappings.Any());*/
         var pendingRegistrations = await DBContext.Users
-            .CountAsync(u =>
-                u.UserRoles.Any(ur =>
-                    ur.Role.Name == RoleNames.ResidentOwner ||
-                    ur.Role.Name == RoleNames.Tenant)
-                && !u.UserFlatMappings.Any());
+     .CountAsync(u => u.Status == ResidentStatus.PendingFlatAllocation);
 
         var communityMembers = await DBContext.CommunityMembers
             .CountAsync(cm => cm.ApartmentId == apartmentId && cm.IsActive);
