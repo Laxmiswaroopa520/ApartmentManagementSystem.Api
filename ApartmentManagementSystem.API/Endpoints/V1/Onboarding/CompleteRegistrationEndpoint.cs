@@ -1,7 +1,5 @@
-﻿using ApartmentManagementSystem.Application.DTOs;
-using ApartmentManagementSystem.Application.DTOs.Common;
+﻿using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
-using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using FastEndpoints;
 
