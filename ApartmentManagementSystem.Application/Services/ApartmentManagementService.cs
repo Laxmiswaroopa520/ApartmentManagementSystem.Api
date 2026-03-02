@@ -175,7 +175,7 @@ namespace ApartmentManagementSystem.Application.Services
             Console.WriteLine($"Apartment found: {apartment.Name}");
             Console.WriteLine($"Floors in apartment: {apartment.Floors?.Count ?? 0}");
 
-            // ⚠️ CRITICAL FIX: Check if Floors collection is null or empty
+            //  CRITICAL FIX: Check if Floors collection is null or empty
             if (apartment.Floors == null || !apartment.Floors.Any())
             {
                 Console.WriteLine("ERROR: No floors found for this apartment!");
@@ -186,6 +186,7 @@ namespace ApartmentManagementSystem.Application.Services
             {
                 ApartmentId = apartment.Id,
                 Name = apartment.Name,
+                Address=apartment.Address,              //Added this only line to show 3d view of my apartment...
                 TotalFloors = apartment.TotalFloors,
                 Floors = new List<FloorDiagramDto>()
             };
