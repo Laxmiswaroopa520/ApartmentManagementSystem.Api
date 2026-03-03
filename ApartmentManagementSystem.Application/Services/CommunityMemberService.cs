@@ -2,6 +2,7 @@
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
 
 namespace ApartmentManagementSystem.Application.Services
 {
@@ -141,7 +142,7 @@ namespace ApartmentManagementSystem.Application.Services
                 .GetCommunityMemberByUserIdAsync(userId);
 
             if (member == null)
-                throw new Exception("Failed to retrieve the assigned community member.");
+                throw new Exception(CommunityMessages.NoCommunityMember);
 
             return member;
         }
@@ -161,6 +162,9 @@ namespace ApartmentManagementSystem.Application.Services
         }
     }
 }
+
+
+
 
 
 

@@ -141,6 +141,7 @@ public class EnhancedDashboardService : IEnhancedDashboardService
 using ApartmentManagementSystem.Application.DTOs.Dashboard;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Domain.Enums;
 
 namespace ApartmentManagementSystem.Application.Services;
@@ -170,7 +171,7 @@ public class EnhancedDashboardService : IEnhancedDashboardService
     public async Task<EnhancedAdminDashboardDto> GetEnhancedAdminDashboardAsync(Guid userId)
     {
         var user = await UserRepo.GetByIdAsync(userId)
-            ?? throw new Exception("User not found");
+            ?? throw new Exception(ErrorMessages.UserNotFound);
 
         var roles = user.UserRoles?
             .Select(ur => ur.Role?.Name)
@@ -210,7 +211,7 @@ public class EnhancedDashboardService : IEnhancedDashboardService
      public async Task<ManagerDashboardDto> GetManagerDashboardAsync(Guid userId)
     {
         var user = await UserRepo.GetByIdAsync(userId)
-            ?? throw new Exception("User not found");
+            ?? throw new Exception(ErrorMessages.UserNotFound);
 
         // Get manager's apartment assignment
         var managerAssignment = await ApartmentRepo.GetActiveManagerByUserIdAsync(userId)
@@ -246,14 +247,14 @@ public class EnhancedDashboardService : IEnhancedDashboardService
     public async Task<CommunityLeaderDashboardDto> GetCommunityLeaderDashboardAsync(Guid userId, string role)
     {
         var user = await UserRepo.GetByIdAsync(userId)
-            ?? throw new Exception("User not found");
+            ?? throw new Exception(ErrorMessages.UserNotFound);
 
-        // ⭐ FIX: Use ICommunityMemberRepository instead of DBContext
+        // Use ICommunityMemberRepository instead of DBContext
         var communityMember = await CommunityMemberRepo.GetByUserIdAsync(userId)
             ?? throw new Exception($"{role} is not assigned to any apartment");
 
         var apartment = communityMember.Apartment
-            ?? throw new Exception("Apartment data not found");
+            ?? throw new Exception(ErrorMessages.ApartmentDataNotFound);
 
         // Get user's flat number
         var flatMapping = user.UserFlatMappings?.FirstOrDefault(ufm => ufm.IsActive);

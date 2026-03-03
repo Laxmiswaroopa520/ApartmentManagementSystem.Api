@@ -1,4 +1,98 @@
-﻿using FastEndpoints;
+﻿
+using FastEndpoints;
+using ApartmentManagementSystem.Application.DTOs;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Constants;
+
+namespace ApartmentManagementSystem.API.Endpoints.V1.Onboarding;
+
+/// <summary>
+/// Endpoint responsible for retrieving all system roles.
+/// Anonymous access allowed.
+/// </summary>
+public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
+{
+    /// <summary>
+    /// Repository used to fetch roles from database.
+    /// </summary>
+    private readonly IRoleRepository RoleRepository;
+
+    /// <summary>
+    /// Constructor for dependency injection.
+    /// </summary>
+    public GetRolesEndpoint(IRoleRepository roleRepository)
+    {
+        RoleRepository = roleRepository;
+    }
+
+    /// <summary>
+    /// Configures route and Swagger metadata.
+    /// </summary>
+    public override void Configure()
+    {
+        Get("OnboardingApi/roles");
+        AllowAnonymous();
+
+        Description(b => b
+            .WithTags("OnboardingApi")
+            .WithName("GetRoles")
+            .WithSummary("Get all available system roles")
+            .WithDescription(RoleMessages.GetRolesDescription)
+            .Produces<List<RoleDto>>(200, "application/json")
+        );
+    }
+
+    /// <summary>
+    /// Handles request to retrieve all roles.
+    /// </summary>
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var roles = await RoleRepository.GetAllAsync();
+
+        var roleDtos = roles.Select(r => new RoleDto
+        {
+            Id = r.Id,
+            Name = r.Name
+        }).ToList();
+
+        await SendOkAsync(roleDtos, ct);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using FastEndpoints;
 using ApartmentManagementSystem.Application.DTOs;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 
@@ -42,7 +136,7 @@ public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
     }
 }
 
-
+*/
 
 
 

@@ -9,5 +9,7 @@
         public const string ResidentActivated = "Resident activated successfully";
 
         public const string ResidentsByTypeRetrievedSuffix = "residents retrieved successfully";
+        public const string SelectResident = "Please select a resident";
+        public const string InvalidResident = "Invalid resident type";
     }
 }

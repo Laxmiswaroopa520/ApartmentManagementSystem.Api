@@ -1,6 +1,7 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Manager;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Domain.Enums;
 
@@ -66,10 +67,10 @@ namespace ApartmentManagementSystem.Application.Services
                 // EXTERNAL PERSON - Just create/find user, NO role checking
 
                 if (string.IsNullOrWhiteSpace(dto.ExternalManagerName))
-                    throw new Exception("Manager name is required");
+                    throw new Exception(ManagerMessages.ManagerNameRequired);
 
                 if (string.IsNullOrWhiteSpace(dto.ExternalManagerPhone))
-                    throw new Exception("Manager phone is required");
+                    throw new Exception(ManagerMessages.ManagerPhoneRequired);
 
                 // Check if user exists
                 var existingUser = await UserRepo.GetByPhoneAsync(dto.ExternalManagerPhone.Trim());
@@ -107,10 +108,10 @@ namespace ApartmentManagementSystem.Application.Services
                 // RESIDENT FROM APARTMENT - Just use their existing account
 
                 if (!dto.UserId.HasValue || dto.UserId == Guid.Empty)
-                    throw new Exception("Please select a resident");
+                    throw new Exception(ResidentMessages.SelectResident);
 
                 targetUser = await UserRepo.GetByIdAsync(dto.UserId.Value)
-                    ?? throw new Exception("Resident not found");
+                    ?? throw new Exception(ResidentMessages.ResidentNotFound);
 
                 targetUserId = dto.UserId.Value;
             }
@@ -118,7 +119,7 @@ namespace ApartmentManagementSystem.Application.Services
             // ASSIGN AS APARTMENT MANAGER
 
             var apartment = await ApartmentRepo.GetByIdAsync(dto.ApartmentId)
-                ?? throw new Exception("Apartment not found");
+                ?? throw new Exception(ErrorMessages.ApartmentNotFound);
 
             // Remove existing manager from THIS apartment
             var existingManager = await ApartmentRepo.GetActiveManagerAsync(dto.ApartmentId);
@@ -164,7 +165,7 @@ namespace ApartmentManagementSystem.Application.Services
         public async Task<bool> RemoveManagerFromApartmentAsync(RemoveManagerRequestDto dto, Guid removedBy)
         {
             var manager = await ApartmentRepo.GetActiveManagerAsync(dto.ApartmentId)
-                ?? throw new Exception("No active manager found");
+                ?? throw new Exception(ManagerMessages.NoActiveManager);
 
             manager.IsActive = false;
             await ApartmentRepo.UpdateManagerAsync(manager);

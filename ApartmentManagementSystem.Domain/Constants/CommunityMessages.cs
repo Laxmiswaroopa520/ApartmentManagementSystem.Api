@@ -8,5 +8,6 @@ namespace ApartmentManagementSystem.Domain.Constants
         public const string ApartmentIdRequired = "Apartment ID is required";
         public const string RoleAssigned = "role assigned successfully";
         public const string RoleRemoved = "Community role removed successfully";
+        public const string NoCommunityMember = "Failed to retrieve the assigned community member.";
     }
 }

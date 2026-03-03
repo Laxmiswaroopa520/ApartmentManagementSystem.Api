@@ -39,7 +39,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
                 return BadRequest(ApiResponse<CreateApartmentResponseDto>.ErrorResponse(ex.Message));
             }
         }
-
+       
         // Get all apartments
         [HttpGet("all")]
         public async Task<IActionResult> GetAllApartments()
@@ -116,6 +116,25 @@ namespace ApartmentManagementSystem.API.Controllers.V1
                 return Ok(ApiResponse<bool>.SuccessResponse(
                     result,
                     ResponseMessages.ManagerAssigned
+                ));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
+            }
+        }
+        // Delete apartment (SuperAdmin only)
+        [HttpDelete("{apartmentId}")]
+        public async Task<IActionResult> DeleteApartment(Guid apartmentId)
+        {
+            try
+            {
+                var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+                var result = await ApartmentService.DeleteApartmentAsync(apartmentId, userId);
+
+                return Ok(ApiResponse<bool>.SuccessResponse(
+                    result,
+                    "Apartment deleted successfully"
                 ));
             }
             catch (Exception ex)

@@ -1,4 +1,5 @@
-﻿using ApartmentManagementSystem.Application.DTOs.Auth;
+﻿using ApartmentManagementSystem.Domain.Constants;
+using ApartmentManagementSystem.Application.DTOs.Auth;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using Microsoft.Extensions.Configuration;
@@ -61,18 +62,16 @@ namespace ApartmentManagementSystem.Application.Services
         {
             // Retrieve user with roles
             var user = await Users.GetByUsernameWithRolesAsync(request.Username)
-                ?? throw new UnauthorizedAccessException("Invalid credentials");
+                ?? throw new UnauthorizedAccessException(ErrorMessages.InvalidCredentials);
 
             // Verify password using BCrypt hashing
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                throw new UnauthorizedAccessException("Invalid credentials");
+                throw new UnauthorizedAccessException(ErrorMessages.InvalidCredentials);
 
             // Check whether the account is active
             if (!user.IsActive)
-                throw new UnauthorizedAccessException(
-                    "Your account is inactive. Please contact the administrator."
-                );
-
+                throw new UnauthorizedAccessException(ErrorMessages.AccountInactive);
+                
             // Base claims
             var claims = new List<Claim>
             {

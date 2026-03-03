@@ -8,6 +8,7 @@
         public string Phone { get; set; } = string.Empty;
         public string ResidentType { get; set; } = string.Empty;
         public string? FlatNumber { get; set; }
+        public string? ApartmentName { get; set; }      //added this for displaying apartment name also for all residents Option..
         public string Status { get; set; } = string.Empty;
         public DateTime RegisteredOn { get; set; }
         public string DisplayText { get; set; } = string.Empty;

@@ -1,6 +1,7 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Dashboard;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
 
 namespace ApartmentManagementSystem.Application.Services
 {
@@ -26,7 +27,7 @@ namespace ApartmentManagementSystem.Application.Services
         public async Task<AdminDashboardDto> GetAdminDashboardAsync(Guid userId)
         {
             var user = await UserRepo.GetByIdAsync(userId)
-                ?? throw new Exception("User not found");
+                ?? throw new Exception(ErrorMessages.UserNotFound);
 
             var roleName = user.UserRoles
                 .Select(ur => ur.Role.Name)

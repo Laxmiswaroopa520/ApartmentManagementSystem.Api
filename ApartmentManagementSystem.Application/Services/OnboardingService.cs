@@ -42,7 +42,7 @@ public class OnboardingService : IOnboardingService
         // Get role based on resident type
         var role = await GetRoleForResidentType((ResidentType)request.ResidentType);
         if (role == null)
-            throw new Exception("Invalid resident type");
+            throw new Exception(ResidentMessages.InvalidResident);
 
         // Create user with PendingOtpVerification status
         var user = new User
@@ -145,7 +145,7 @@ public class OnboardingService : IOnboardingService
             throw new Exception(ErrorMessages.UserNotFound);
 
         if (!user.IsOtpVerified)
-            throw new Exception("Please verify OTP first");
+            throw new Exception(OtpMessages.OtpNotVerified);
 
         if (await UserRepo.UsernameExistsAsync(request.Username))
             throw new Exception(ErrorMessages.UsernameAlreadyExists);

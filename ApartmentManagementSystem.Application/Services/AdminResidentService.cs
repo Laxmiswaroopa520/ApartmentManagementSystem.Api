@@ -50,6 +50,7 @@ namespace ApartmentManagementSystem.Application.Services
             }).ToList();
         }
 
+     
         // Get apartments based on user role
         public async Task<List<ApartmentDropdownDto>> GetApartmentsForUserAsync(Guid userId, string role)
         {

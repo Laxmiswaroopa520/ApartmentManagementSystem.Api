@@ -168,6 +168,26 @@ namespace ApartmentManagementSystem.API.Controllers.V1
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*using ApartmentManagementSystem.Application.DTOs.Common;
 using ApartmentManagementSystem.Application.DTOs.Manager;
 using ApartmentManagementSystem.Application.Interfaces.Services;
