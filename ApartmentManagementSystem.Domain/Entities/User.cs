@@ -11,7 +11,7 @@ public class User
     public string? SecondaryPhone { get; set; }
     //  public Guid RoleId { get; set; }
 
-    // NEW: Registration workflow tracking
+    // Registration workflow tracking
     public ResidentStatus Status { get; set; } = ResidentStatus.PendingOtpVerification;
     public ResidentType? ResidentType { get; set; }
 
@@ -19,7 +19,7 @@ public class User
     public bool IsOtpVerified { get; set; }
     public bool IsRegistrationCompleted { get; set; }
 
-    // Flat assignment (nullable - assigned later by admin)
+    // Flat assignment 
     public Guid? FlatId { get; set; }
 
     public DateTime CreatedAt { get; set; }
@@ -27,7 +27,6 @@ public class User
     public Guid? UpdatedBy { get; set; }
 
     // Navigation
-    //  public Role Role { get; set; } = null!;
     public Flat? Flat { get; set; }
     // I Added this becuase 1 user can have multiple roels right?? like owner+president liek that.. and also many roles has many users like 2 securities like that..
 

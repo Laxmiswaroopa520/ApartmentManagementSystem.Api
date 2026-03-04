@@ -7,7 +7,7 @@
         public Guid UserId { get; set; }
         public DateTime AssignedAt { get; set; } = DateTime.UtcNow;
 
-       public DateTime RemovedAt { get; set; }=DateTime.UtcNow; //newly added now
+       public DateTime RemovedAt { get; set; }=DateTime.UtcNow;
         public Guid AssignedBy { get; set; }
         public bool IsActive { get; set; } = true;
 

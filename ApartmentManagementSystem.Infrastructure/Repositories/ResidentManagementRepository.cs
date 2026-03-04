@@ -14,42 +14,6 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         {
             DBContext = context;
         }
-
-        /*  public async Task<List<ResidentListDto>> GetAllResidentsAsync()
-          {
-              return await DBContext.Users
-      .Where(u => u.UserRoles.Any(ur =>
-          ur.Role.Name == RoleNames.ResidentOwner ||
-          ur.Role.Name == RoleNames.Tenant))
-      .Select(u => new ResidentListDto
-      {
-          UserId = u.Id,
-          FullName = u.FullName,
-          Email = u.Email,
-          Phone = u.PrimaryPhone,
-
-          ResidentType = u.UserRoles.Any(ur => ur.Role.Name == RoleNames.ResidentOwner)
-              ? "Owner"
-              : "Tenant",
-
-          FlatNumber = u.UserFlatMappings
-              .Select(f => f.Flat.FlatNumber)
-              .FirstOrDefault(),
-
-          Status = !u.IsActive
-              ? "Inactive"
-              : !u.UserFlatMappings.Any()
-                  ? "Pending Assignment"
-                  : "Active",
-
-          RegisteredOn = u.CreatedAt
-      })
-      .OrderByDescending(r => r.RegisteredOn)
-      .AsNoTracking()
-      .ToListAsync();
-
-              }
-        */
         public async Task<List<ResidentListDto>> GetAllResidentsAsync()
         {
             return await DBContext.Users

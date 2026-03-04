@@ -1,4 +1,4 @@
-﻿// these are constant role names not stored in database..
+﻿// These are constant role names not stored in database..
 namespace ApartmentManagementSystem.Domain.Enums
 {
     public static class RoleNames

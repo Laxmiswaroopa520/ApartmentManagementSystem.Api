@@ -1,5 +1,4 @@
-﻿//Track registration workflow status
-namespace ApartmentManagementSystem.Domain.Enums
+﻿namespace ApartmentManagementSystem.Domain.Enums
 {
    public enum ResidentStatus
     {

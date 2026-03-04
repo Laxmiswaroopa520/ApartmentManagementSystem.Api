@@ -4,6 +4,6 @@
     {
         Owner = 1,
         Tenant = 2,
-        Staff=3,                //added here for staff also optional
+        Staff=3,                
     }
 }

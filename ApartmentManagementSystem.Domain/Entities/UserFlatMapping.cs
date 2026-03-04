@@ -5,7 +5,7 @@
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public Guid FlatId { get; set; }
-        public string RelationshipType { get; set; } = string.Empty; // "Owner" or "Tenant"
+        public string RelationshipType { get; set; } = string.Empty; 
         public DateTime FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public bool IsActive { get; set; }

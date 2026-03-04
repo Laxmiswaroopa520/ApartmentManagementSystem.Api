@@ -1,7 +1,6 @@
 ﻿using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-//for testing part..
 namespace ApartmentManagementSystem.Infrastructure.Persistence.Configurations
 {
     public class RoleConfiguration : IEntityTypeConfiguration<Role>

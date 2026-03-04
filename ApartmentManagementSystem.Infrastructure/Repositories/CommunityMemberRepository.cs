@@ -185,7 +185,6 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
             communityMember.IsActive = false;
             await DBContext.SaveChangesAsync();
         }
-        //newly added one..
         public async Task<CommunityMember?> GetByUserIdAsync(Guid userId)
         {
             return await DBContext.CommunityMembers

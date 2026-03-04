@@ -9,7 +9,7 @@
         // FOREIGN KEYS
         public Guid ApartmentId { get; set; }
         public Guid FloorId { get; set; }
-        public Guid? OwnerUserId { get; set; }   // NULL = available
+        public Guid? OwnerUserId { get; set; }   
        
         // NAVIGATION PROPERTIES
         public Apartment? Apartment { get; set; } = null!;

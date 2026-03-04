@@ -2,8 +2,6 @@
 public class UserOtp
 {
     public Guid Id { get; set; }
-
-    // OTP is for onboarding → user may NOT exist yet
     public string PhoneNumber { get; set; } = string.Empty;
 
     public string OtpCode { get; set; } = string.Empty;

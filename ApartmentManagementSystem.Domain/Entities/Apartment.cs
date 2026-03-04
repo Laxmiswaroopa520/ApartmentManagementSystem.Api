@@ -5,7 +5,7 @@ namespace ApartmentManagementSystem.Domain.Entities
     public class Apartment
     {
         public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty; // Block Name
+        public string Name { get; set; } = string.Empty; 
         public string Address { get; set; } = string.Empty;
         public string? City { get; set; }
         public string? State { get; set; }

@@ -29,7 +29,6 @@ public class StaffMemberConfiguration : IEntityTypeConfiguration<StaffMember>
         builder.Property(sm => sm.Specialization)
             .HasMaxLength(200);
 
-        // SQLite-compatible: Use HasPrecision instead of HasColumnType("decimal(10,2)")
         builder.Property(sm => sm.HourlyRate)
             .HasPrecision(10, 2);
 

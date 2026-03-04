@@ -75,33 +75,3 @@
 
 
 
-
-/*
-
-
-        private readonly AppDbContext _context;
-
-        public UserInviteRepository(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        public async Task<UserInvite?> GetByPhoneAsync(string phone)
-        {
-            return await _context.UserInvites
-                .FirstOrDefaultAsync(i => i.PrimaryPhone == phone);
-        }
-
-        public async Task AddAsync(UserInvite invite)
-        {
-            await _context.UserInvites.AddAsync(invite);
-        }
-
-        public async Task SaveChangesAsync()
-        {
-            await _context.SaveChangesAsync();
-        }
-    }
-
-}
-*/

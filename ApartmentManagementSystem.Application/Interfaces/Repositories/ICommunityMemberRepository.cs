@@ -1,5 +1,4 @@
-﻿
-using ApartmentManagementSystem.Application.DTOs.Community;
+﻿using ApartmentManagementSystem.Application.DTOs.Community;
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Domain.Entities;
 

@@ -1,5 +1,4 @@
-﻿// Application/Services/AdminResidentService.cs
-using ApartmentManagementSystem.Application.DTOs.Admin;
+﻿using ApartmentManagementSystem.Application.DTOs.Admin;
 using ApartmentManagementSystem.Application.DTOs.Apartment;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;

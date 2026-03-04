@@ -30,13 +30,6 @@ public class EnhancedDashboardRepository : IEnhancedDashboardRepository
             .CountAsync();
 
         var vacantFlats = totalFlats - occupiedFlats;
-
-        /*  var pendingRegistrations = await DBContext.Users
-              .CountAsync(u =>
-                  u.UserRoles.Any(ur =>
-                      ur.Role.Name == RoleNames.ResidentOwner ||
-                      ur.Role.Name == RoleNames.Tenant)
-                  && !u.UserFlatMappings.Any());*/
         var pendingRegistrations = await DBContext.Users
       .CountAsync(u => u.Status == ResidentStatus.PendingFlatAllocation);
 
@@ -92,13 +85,6 @@ public class EnhancedDashboardRepository : IEnhancedDashboardRepository
             .Select(ufm => ufm.UserId)
             .Distinct()
             .CountAsync();
-
-        /* var pendingRegistrations = await DBContext.Users
-             .CountAsync(u =>
-                 u.UserRoles.Any(ur =>
-                     ur.Role.Name == RoleNames.ResidentOwner ||
-                     ur.Role.Name == RoleNames.Tenant)
-                 && !u.UserFlatMappings.Any());*/
         var pendingRegistrations = await DBContext.Users
      .CountAsync(u => u.Status == ResidentStatus.PendingFlatAllocation);
 
