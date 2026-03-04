@@ -10,5 +10,19 @@
         public bool IsActive { get; set; }
         public string? Specialization { get; set; }
         public decimal? HourlyRate { get; set; }
+        public Guid? ApartmentId { get; set; }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

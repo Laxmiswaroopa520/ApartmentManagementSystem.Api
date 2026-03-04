@@ -9,7 +9,27 @@
         public string StaffType { get; set; } = string.Empty;
         public string? Specialization { get; set; }
         public decimal? HourlyRate { get; set; }
-        public string? Password { get; set; } // Optional for login
+        public string? Password { get; set; }
 
+        public Guid? ApartmentId { get; set; }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

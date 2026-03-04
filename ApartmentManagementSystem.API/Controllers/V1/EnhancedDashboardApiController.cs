@@ -8,6 +8,13 @@ using System.Security.Claims;
 
 namespace ApartmentManagementSystem.API.Controllers.V1;
 
+/// <summary>
+/// REST API controller for all enhanced dashboard data endpoints.
+/// Serves role-specific dashboard payloads for SuperAdmin, Manager,
+/// Community Leaders (President/Secretary/Treasurer), and Staff members.
+/// Also provides supporting endpoints for advanced stats, financial summaries,
+/// notice board messages, and quick actions.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
@@ -15,11 +22,22 @@ public class EnhancedDashboardApiController : ControllerBase
 {
     private readonly IEnhancedDashboardService DashboardService;
 
+    /// <summary>
+    /// Injects the enhanced dashboard service that handles all
+    /// dashboard data assembly and business logic.
+    /// </summary>
     public EnhancedDashboardApiController(IEnhancedDashboardService dashboardService)
     {
         DashboardService = dashboardService;
     }
 
+    /// <summary>
+    /// Returns the enhanced admin dashboard payload for SuperAdmin and management roles.
+    /// Includes portfolio overview, key metrics (residents, flats, staff, community members),
+    /// financial summary, module statuses, and recent activity log.
+    /// The calling user's ID is used to scope data where applicable.
+    /// </summary>
+    /// <returns>Fully assembled enhanced admin dashboard DTO.</returns>
     [HttpGet("admin")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetEnhancedAdminDashboard()
@@ -40,6 +58,13 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the manager-specific dashboard payload.
+    /// Scoped to the apartments assigned to the calling manager.
+    /// Includes occupancy stats, pending registrations, and staff overview
+    /// for their managed properties.
+    /// </summary>
+    /// <returns>Manager dashboard DTO scoped to the calling user's apartments.</returns>
     [HttpGet("manager")]
     [Authorize(Roles = "Manager")]
     public async Task<IActionResult> GetManagerDashboard()
@@ -60,6 +85,13 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the community leader dashboard for President, Secretary, or Treasurer roles.
+    /// The active community role is resolved from the user's claims and passed to the service
+    /// to tailor the dashboard content accordingly (e.g., financial data for Treasurer).
+    /// Returns 400 if no valid community leader role is found in the claims.
+    /// </summary>
+    /// <returns>Community leader dashboard DTO tailored to the user's community role.</returns>
     [HttpGet("community-leader")]
     [Authorize(Roles = "President,Secretary,Treasurer")]
     public async Task<IActionResult> GetCommunityLeaderDashboard()
@@ -70,7 +102,7 @@ public class EnhancedDashboardApiController : ControllerBase
 
             var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
             var role = roles.FirstOrDefault(r =>
-                r == "President" || r == "Secretary" || r == "Treasurer") ?? "";
+                r == "President" || r == "Secretary" || r == "Treasurer") ?? string.Empty;
 
             if (string.IsNullOrEmpty(role))
             {
@@ -92,6 +124,12 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the staff member dashboard for operational roles
+    /// (Security, Plumber, Electrician, Carpenter, Sweeper, Gardener, MaintenanceStaff).
+    /// Scoped to the calling staff member's assigned apartment and work history.
+    /// </summary>
+    /// <returns>Staff dashboard DTO for the calling staff user.</returns>
     [HttpGet("staff")]
     [Authorize(Roles = "Security,Plumber,Electrician,Carpenter,Sweeper,Gardener,MaintenanceStaff")]
     public async Task<IActionResult> GetStaffDashboard()
@@ -112,6 +150,13 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns system-wide advanced dashboard statistics for management roles.
+    /// Includes aggregated data such as total occupancy rates, staff distribution,
+    /// complaint counts, and billing summaries across all apartments.
+    /// Not scoped to any specific apartment or user.
+    /// </summary>
+    /// <returns>Advanced dashboard stats DTO with system-wide aggregates.</returns>
     [HttpGet("advanced-stats")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetAdvancedDashboardStats()
@@ -131,6 +176,13 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns dashboard statistics scoped to a single apartment.
+    /// Includes floor/flat occupancy breakdown, assigned manager info,
+    /// community member roles, and staff count for that building.
+    /// </summary>
+    /// <param name="apartmentId">The GUID of the apartment to retrieve stats for.</param>
+    /// <returns>Apartment-scoped dashboard stats DTO.</returns>
     [HttpGet("apartment-stats/{apartmentId}")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetApartmentStats(Guid apartmentId)
@@ -150,6 +202,13 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the financial summary for the entire system.
+    /// Includes total outstanding maintenance dues and the amount collected
+    /// in the current month across all apartments.
+    /// Restricted to SuperAdmin and Treasurer roles only.
+    /// </summary>
+    /// <returns>System-wide financial summary DTO.</returns>
     [HttpGet("financial-summary")]
     [Authorize(Roles = "SuperAdmin,Treasurer")]
     public async Task<IActionResult> GetFinancialSummary()
@@ -169,6 +228,12 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the financial summary scoped to a specific apartment.
+    /// Useful for Managers and Treasurers who need per-building billing insight.
+    /// </summary>
+    /// <param name="apartmentId">The GUID of the apartment to retrieve financial data for.</param>
+    /// <returns>Apartment-scoped financial summary DTO.</returns>
     [HttpGet("apartment-financial-summary/{apartmentId}")]
     [Authorize(Roles = "SuperAdmin,Manager,Treasurer")]
     public async Task<IActionResult> GetApartmentFinancialSummary(Guid apartmentId)
@@ -188,6 +253,13 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the notice board messages for a specific apartment.
+    /// Used to display community announcements, maintenance alerts,
+    /// and important updates on the dashboard notice board section.
+    /// </summary>
+    /// <param name="apartmentId">The GUID of the apartment whose notice board to fetch.</param>
+    /// <returns>List of notice board message DTOs for the given apartment.</returns>
     [HttpGet("notice-board/{apartmentId}")]
     [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
     public async Task<IActionResult> GetNoticeBoardMessages(Guid apartmentId)
@@ -207,6 +279,13 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Returns the list of quick action tiles relevant to the calling user's role.
+    /// Resolves the highest-priority role from the user's claims (SuperAdmin > Manager > Community Leader)
+    /// and delegates to the service to return the appropriate action set.
+    /// Used to populate the Quick Actions section on the dashboard.
+    /// </summary>
+    /// <returns>List of quick action DTOs tailored to the calling user's role.</returns>
     [HttpGet("quick-actions")]
     public async Task<IActionResult> GetQuickActions()
     {
@@ -217,7 +296,7 @@ public class EnhancedDashboardApiController : ControllerBase
             var role = roles.Contains("SuperAdmin") ? "SuperAdmin" :
                        roles.Contains("Manager") ? "Manager" :
                        roles.FirstOrDefault(r => r == "President" || r == "Secretary" || r == "Treasurer") ??
-                       roles.FirstOrDefault() ?? "";
+                       roles.FirstOrDefault() ?? string.Empty;
 
             var actions = await DashboardService.GetQuickActionsForRoleAsync(role);
 
@@ -232,32 +311,3 @@ public class EnhancedDashboardApiController : ControllerBase
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
