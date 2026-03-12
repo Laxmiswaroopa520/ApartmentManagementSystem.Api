@@ -202,5 +202,6 @@ namespace ApartmentManagementSystem.API.Controllers.V1
                 return BadRequest(ApiResponse<bool>.ErrorResponse(ex.Message));
             }
         }
+
     }
 }

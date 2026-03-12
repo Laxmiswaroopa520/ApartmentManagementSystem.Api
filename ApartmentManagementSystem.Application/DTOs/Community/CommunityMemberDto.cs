@@ -10,6 +10,6 @@
         public string Role { get; set; } = string.Empty;
         public DateTime AssignedOn { get; set; }
         public bool IsActive { get; set; }
-        public Guid ApartmentId { get; set; }  //for filtering in multi-apartment scenario
+        public Guid ApartmentId { get; set; }  //for filtering in multi-apartment scenario..
     }
 }
