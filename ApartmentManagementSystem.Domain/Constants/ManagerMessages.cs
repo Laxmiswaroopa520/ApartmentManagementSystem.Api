@@ -8,8 +8,5 @@
         public const string ManagerNameRequired= "Manager name is required";
         public const string ManagerPhoneRequired = "Manager phone is required";
         public const string NoActiveManager = "No active manager found";
-
-
-
     }
 }

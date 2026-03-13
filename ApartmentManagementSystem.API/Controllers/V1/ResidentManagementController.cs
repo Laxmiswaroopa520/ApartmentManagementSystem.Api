@@ -21,7 +21,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class ResidentManagementApiController : ControllerBase
+    public class ResidentManagementController : ControllerBase
     {
         /// <summary>
         /// Service responsible for resident management business logic.
@@ -34,7 +34,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// <param name="residentService">
         /// Service that handles resident retrieval, activation, and deactivation.
         /// </param>
-        public ResidentManagementApiController(IResidentManagementService residentService)
+        public ResidentManagementController(IResidentManagementService residentService)
         {
             ResidentService = residentService;
         }

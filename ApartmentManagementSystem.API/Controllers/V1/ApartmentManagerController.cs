@@ -8,13 +8,14 @@ using System.Security.Claims;
 
 namespace ApartmentManagementSystem.API.Controllers.V1
 {
-    [ApiController]
-    [Route("api/ApartmentManager")]
-    [Authorize(Roles = "SuperAdmin")]
-    public class ApartmentManagerApiController : Controller
-    {
-      
-        /// <summary>
+        [ApiController]
+        [Route("api/ApartmentManager")]
+    // [Authorize(Roles = "SuperAdmin")]
+     [Authorize(Roles = SystemRoles.SuperAdmin)]
+    public class ApartmentManagerController : Controller
+        {
+
+            /// <summary>
             /// Service responsible for manager-related business logic.
             /// </summary>
             private readonly IManagerService ManagerService;
@@ -25,7 +26,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
             /// <param name="managerService">
             /// Service that handles manager assignment and removal operations.
             /// </param>
-            public ApartmentManagerApiController(IManagerService managerService)
+            public ApartmentManagerController(IManagerService managerService)
             {
                 ManagerService = managerService;
             }

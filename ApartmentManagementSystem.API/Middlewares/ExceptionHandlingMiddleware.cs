@@ -1,4 +1,4 @@
-﻿namespace ApartmentManagementSystem.API.Middlewares
+﻿/*namespace ApartmentManagementSystem.API.Middlewares
 {
     public class ExceptionHandlingMiddleware
     {
@@ -17,3 +17,4 @@
         }
     }
 }
+*/

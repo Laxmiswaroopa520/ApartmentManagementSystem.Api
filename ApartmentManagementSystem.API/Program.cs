@@ -119,7 +119,7 @@ builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 // MIDDLEWARE PIPELINE
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+//app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.UseHttpsRedirection();

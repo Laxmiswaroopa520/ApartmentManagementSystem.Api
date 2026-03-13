@@ -25,7 +25,78 @@ namespace ApartmentManagementSystem.Application.Services
             FlatRepo = flatRepo;
             UserRepo = userRepo;
         }
+        public async Task<CreateApartmentResponseDto> CreateApartmentAsync(
+    CreateApartmentDto dto, Guid createdBy)
+        {
+            var apartment = new Apartment
+            {
+                Id = Guid.NewGuid(),
+                Name = dto.Name,
+                Address = dto.Address,
+                City = dto.City,
+                State = dto.State,
+                PinCode = dto.PinCode,
+                TotalFloors = dto.TotalFloors,
+                FlatsPerFloor = dto.FlatsPerFloor,
+                TotalFlats = dto.TotalFloors * dto.FlatsPerFloor,
+                Status = ApartmentStatus.UnderConstruction,
+                IsActive = true,
+                CreatedBy = createdBy,
+                CreatedAt = DateTime.UtcNow
+            };
+            await ApartmentRepo.AddAsync(apartment);
 
+            var response = new CreateApartmentResponseDto
+            {
+                ApartmentId = apartment.Id,
+                Name = apartment.Name,
+                TotalFloors = apartment.TotalFloors,
+                TotalFlats = apartment.TotalFlats,
+                FloorsCreated = new List<FloorCreatedDto>()
+            };
+
+            foreach (int floorNum in Enumerable.Range(1, dto.TotalFloors))
+            {
+                var floor = new Floor
+                {
+                    Id = Guid.NewGuid(),
+                    FloorNumber = floorNum,
+                    Name = $"Floor {floorNum}",
+                    ApartmentId = apartment.Id
+                };
+                await FloorRepo.AddAsync(floor);
+
+                var floorCreated = new FloorCreatedDto
+                {
+                    FloorId = floor.Id,
+                    FloorNumber = floorNum,
+                    FlatNumbers = new List<string>()
+                };
+
+                foreach (int flatNum in Enumerable.Range(1, dto.FlatsPerFloor))
+                {
+                    string flatNumber = $"{floorNum}{flatNum:D2}";
+                    var flat = new Flat
+                    {
+                        Id = Guid.NewGuid(),
+                        FlatNumber = flatNumber,
+                        Name = $"Flat {flatNumber}",
+                        FloorId = floor.Id,
+                        ApartmentId = apartment.Id,
+                        IsOccupied = false,
+                        IsActive = true,
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    await FlatRepo.AddAsync(flat);
+                    floorCreated.FlatNumbers.Add(flatNumber);
+                }
+
+                response.FloorsCreated.Add(floorCreated);
+            }
+
+            return response;
+        }
+        /*
         // CREATE 
         public async Task<CreateApartmentResponseDto> CreateApartmentAsync(
             CreateApartmentDto dto, Guid createdBy)
@@ -101,7 +172,7 @@ namespace ApartmentManagementSystem.Application.Services
             }
 
             return response;
-        }
+        }*/
 
         //GET ALL
         public async Task<List<ApartmentListDto>> GetAllApartmentsAsync()
@@ -128,10 +199,13 @@ namespace ApartmentManagementSystem.Application.Services
             var apartment = await ApartmentRepo.GetByIdWithFullDetailsAsync(apartmentId);
             if (apartment == null) return null;
 
+            //var president = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == "President" && cm.IsActive);
+            //var secretary = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == "Secretary" && cm.IsActive);
+            // var treasurer = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == "Treasurer" && cm.IsActive);
             var manager = apartment.Managers.FirstOrDefault(m => m.IsActive);
-            var president = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == "President" && cm.IsActive);
-            var secretary = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == "Secretary" && cm.IsActive);
-            var treasurer = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == "Treasurer" && cm.IsActive);
+            var president = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == SystemRoles.President && cm.IsActive);
+            var secretary = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == SystemRoles.Secretary && cm.IsActive);
+            var treasurer = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == SystemRoles.Treasurer && cm.IsActive);
 
             return new ApartmentDetailDto
             {
