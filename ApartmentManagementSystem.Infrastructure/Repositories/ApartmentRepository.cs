@@ -1,4 +1,117 @@
-﻿using ApartmentManagementSystem.Application.Interfaces.Repositories;
+﻿// ═══════════════════════════════════════════════════════════════════
+// ApartmentRepository.cs
+// Place in: Infrastructure/Repositories/ApartmentRepository.cs
+// ═══════════════════════════════════════════════════════════════════
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class ApartmentRepository : GenericRepository<Apartment>, IApartmentRepository
+    {
+        public ApartmentRepository(AppDbContext context) : base(context) { }
+
+        public async Task<Apartment?> GetByIdWithFloorsAndFlatsAsync(Guid id)
+            => await DBContext.Apartments
+                .Include(a => a.Floors)
+                    .ThenInclude(f => f.Flats)
+                        .ThenInclude(flat => flat.UserFlatMappings!)
+                            .ThenInclude(ufm => ufm.User)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+        public async Task<Apartment?> GetByIdWithFullDetailsAsync(Guid id)
+            => await DBContext.Apartments
+                .Include(a => a.Floors)
+                .Include(a => a.Flats)
+                .Include(a => a.Managers.Where(m => m.IsActive))
+                    .ThenInclude(m => m.User)
+                .Include(a => a.CommunityMembers.Where(cm => cm.IsActive))
+                    .ThenInclude(cm => cm.User)
+                        .ThenInclude(u => u.UserFlatMappings!)
+                            .ThenInclude(ufm => ufm.Flat)
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+        public async Task<List<Apartment>> GetAllWithDetailsAsync()
+            => await DBContext.Apartments
+                .Include(a => a.Flats)
+                .Include(a => a.Managers.Where(m => m.IsActive))
+                .Where(a => a.IsActive)
+                .ToListAsync();
+
+        public new async Task<List<Apartment>> GetAllAsync()
+            => await DBContext.Apartments
+                .Where(a => a.IsActive)
+                .OrderBy(a => a.Name)
+                .ToListAsync();
+
+        public async Task<int> GetTotalCountAsync()
+            => await DBContext.Apartments.CountAsync(a => a.IsActive);
+
+        public async Task<ApartmentManager?> GetActiveManagerAsync(Guid apartmentId)
+            => await DBContext.Set<ApartmentManager>()
+                .Include(m => m.User)
+                .Include(m => m.Apartment)
+                .FirstOrDefaultAsync(m => m.ApartmentId == apartmentId && m.IsActive);
+
+        public async Task<ApartmentManager?> GetActiveManagerByUserIdAsync(Guid userId)
+            => await DBContext.Set<ApartmentManager>()
+                .Include(m => m.Apartment)
+                .FirstOrDefaultAsync(m => m.UserId == userId && m.IsActive);
+
+        public async Task AddManagerAsync(ApartmentManager manager)
+            => await DBContext.Set<ApartmentManager>().AddAsync(manager);
+
+        // sync — just marks entity as modified, no DB hit
+        public void UpdateManager(ApartmentManager manager)
+            => DBContext.Set<ApartmentManager>().Update(manager);
+
+        /// <summary>
+        /// Stages all cascade deletes in memory. Caller calls UoW.SaveChangesAsync().
+        /// </summary>
+        public async Task PrepareDeleteAsync(Apartment apartment)
+        {
+            var full = await DBContext.Apartments
+                .Include(a => a.Floors)
+                    .ThenInclude(f => f.Flats)
+                        .ThenInclude(flat => flat.UserFlatMappings!)
+                .Include(a => a.Managers)
+                .Include(a => a.CommunityMembers)
+                .FirstOrDefaultAsync(a => a.Id == apartment.Id);
+
+            if (full == null) return;
+
+            foreach (var floor in full.Floors)
+                foreach (var flat in floor.Flats)
+                    DBContext.UserFlatMappings.RemoveRange(
+                        flat.UserFlatMappings ?? new List<UserFlatMapping>());
+
+            foreach (var floor in full.Floors)
+                DBContext.Flats.RemoveRange(floor.Flats);
+
+            DBContext.Floors.RemoveRange(full.Floors);
+            DBContext.Set<ApartmentManager>().RemoveRange(full.Managers);
+            DBContext.Set<CommunityMember>().RemoveRange(full.CommunityMembers);
+            DBContext.Apartments.Remove(full);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -128,7 +241,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
             => await DBContext.SaveChangesAsync();
     }
 }
-
+*/
 
 
 

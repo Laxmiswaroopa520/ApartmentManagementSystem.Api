@@ -1,4 +1,42 @@
-﻿namespace ApartmentManagementSystem.Infrastructure.Repositories
+﻿using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class UserOtpRepository : GenericRepository<UserOtp>, IUserOtpRepository
+    {
+        public UserOtpRepository(AppDbContext context) : base(context) { }
+
+        public async Task<UserOtp?> GetValidOtpAsync(string phone, string otp)
+            => await DBContext.UserOtps.FirstOrDefaultAsync(x =>
+                x.PhoneNumber == phone &&
+                x.OtpCode == otp &&
+                !x.IsUsed &&
+                x.ExpiresAt > DateTime.UtcNow);
+
+        /// <summary>
+        /// Mutates OTP as used in memory. Caller calls UoW.SaveChangesAsync().
+        /// </summary>
+        public async Task MarkAsUsedAsync(Guid otpId)
+        {
+            var otp = await DBContext.UserOtps.FindAsync(otpId);
+            if (otp != null)
+                otp.IsUsed = true;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+/*namespace ApartmentManagementSystem.Infrastructure.Repositories
 {
     using ApartmentManagementSystem.Application.Interfaces.Repositories;
     using ApartmentManagementSystem.Domain.Entities;
@@ -94,7 +132,7 @@
         }
     }
 }
-
+*/
 
 
 

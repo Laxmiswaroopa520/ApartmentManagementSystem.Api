@@ -1,4 +1,340 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Apartment;
+using ApartmentManagementSystem.Application.Interfaces;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Domain.Enums;
+
+namespace ApartmentManagementSystem.Application.Services
+{
+    public class ApartmentManagementService : IApartmentManagementService
+    {
+        private readonly IUnitOfWork UoW;
+
+        public ApartmentManagementService(IUnitOfWork unitOfWork)
+        {
+            UoW = unitOfWork;
+        }
+
+        // ── CREATE ─────────────────────────────────────────────────
+        public async Task<CreateApartmentResponseDto> CreateApartmentAsync(
+            CreateApartmentDto dto, Guid createdBy)
+        {
+            var apartment = new Apartment
+            {
+                Id = Guid.NewGuid(),
+                Name = dto.Name,
+                Address = dto.Address,
+                City = dto.City,
+                State = dto.State,
+                PinCode = dto.PinCode,
+                TotalFloors = dto.TotalFloors,
+                FlatsPerFloor = dto.FlatsPerFloor,
+                TotalFlats = dto.TotalFloors * dto.FlatsPerFloor,
+                Status = ApartmentStatus.UnderConstruction,
+                IsActive = true,
+                CreatedBy = createdBy,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await UoW.Apartments.AddAsync(apartment);
+
+            // Build all floors + flats in memory — no DB hit per iteration
+            var floors = Enumerable.Range(1, dto.TotalFloors)
+                .Select(floorNum => new Floor
+                {
+                    Id = Guid.NewGuid(),
+                    FloorNumber = floorNum,
+                    Name = $"Floor {floorNum}",
+                    ApartmentId = apartment.Id
+                }).ToList();
+
+            var flats = floors.SelectMany(floor =>
+                Enumerable.Range(1, dto.FlatsPerFloor).Select(flatNum => new Flat
+                {
+                    Id = Guid.NewGuid(),
+                    FlatNumber = $"{floor.FloorNumber}{flatNum:D2}",
+                    Name = $"Flat {floor.FloorNumber}{flatNum:D2}",
+                    FloorId = floor.Id,
+                    ApartmentId = apartment.Id,
+                    IsOccupied = false,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                })
+            ).ToList();
+
+            await UoW.Floors.AddRangeAsync(floors);
+            await UoW.Flats.AddRangeAsync(flats);
+
+            // ONE SaveChanges for apartment + all floors + all flats
+            await UoW.SaveChangesAsync();
+
+            return new CreateApartmentResponseDto
+            {
+                ApartmentId = apartment.Id,
+                Name = apartment.Name,
+                TotalFloors = apartment.TotalFloors,
+                TotalFlats = apartment.TotalFlats,
+                FloorsCreated = floors.Select(floor => new FloorCreatedDto
+                {
+                    FloorId = floor.Id,
+                    FloorNumber = floor.FloorNumber,
+                    FlatNumbers = flats
+                        .Where(f => f.FloorId == floor.Id)
+                        .Select(f => f.FlatNumber)
+                        .ToList()
+                }).ToList()
+            };
+        }
+
+        // ── GET ALL ────────────────────────────────────────────────
+        public async Task<List<ApartmentListDto>> GetAllApartmentsAsync()
+        {
+            var apartments = await UoW.Apartments.GetAllWithDetailsAsync();
+            return apartments.Select(a => new ApartmentListDto
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Address = a.Address,
+                City = a.City,
+                TotalFloors = a.TotalFloors,
+                TotalFlats = a.TotalFlats,
+                OccupiedFlats = a.Flats.Count(f => f.IsOccupied),
+                Status = a.Status.ToString(),
+                IsActive = a.IsActive
+            }).ToList();
+        }
+
+        // ── GET DETAIL ─────────────────────────────────────────────
+        public async Task<ApartmentDetailDto?> GetApartmentDetailAsync(Guid apartmentId)
+        {
+            var apartment = await UoW.Apartments.GetByIdWithFullDetailsAsync(apartmentId);
+            if (apartment == null) return null;
+
+            var manager = apartment.Managers.FirstOrDefault(m => m.IsActive);
+            var president = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == SystemRoles.President && cm.IsActive);
+            var secretary = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == SystemRoles.Secretary && cm.IsActive);
+            var treasurer = apartment.CommunityMembers.FirstOrDefault(cm => cm.CommunityRole == SystemRoles.Treasurer && cm.IsActive);
+
+            return new ApartmentDetailDto
+            {
+                Id = apartment.Id,
+                Name = apartment.Name,
+                Address = apartment.Address,
+                City = apartment.City,
+                State = apartment.State,
+                PinCode = apartment.PinCode,
+                TotalFloors = apartment.TotalFloors,
+                FlatsPerFloor = apartment.FlatsPerFloor,
+                TotalFlats = apartment.TotalFlats,
+                OccupiedFlats = apartment.Flats.Count(f => f.IsOccupied),
+                VacantFlats = apartment.Flats.Count(f => !f.IsOccupied),
+                Status = apartment.Status.ToString(),
+                IsActive = apartment.IsActive,
+                Manager = manager != null ? new ManagerInfoDto
+                {
+                    UserId = manager.UserId,
+                    FullName = manager.User.FullName,
+                    Email = manager.User.Email,
+                    Phone = manager.User.PrimaryPhone,
+                    AssignedAt = manager.AssignedAt
+                } : null,
+                President = president != null ? MapToCommunityLeader(president) : null,
+                Secretary = secretary != null ? MapToCommunityLeader(secretary) : null,
+                Treasurer = treasurer != null ? MapToCommunityLeader(treasurer) : null,
+                CreatedAt = apartment.CreatedAt
+            };
+        }
+
+        // ── GET DIAGRAM ────────────────────────────────────────────
+        public async Task<ApartmentDiagramDto> GetApartmentDiagramAsync(Guid apartmentId)
+        {
+            var apartment = await UoW.Apartments.GetByIdWithFloorsAndFlatsAsync(apartmentId)
+                ?? throw new Exception(ErrorMessages.ApartmentNotFound);
+
+            if (apartment.Floors == null || !apartment.Floors.Any())
+                throw new Exception(ErrorMessages.NoFloorsFound);
+
+            var diagram = new ApartmentDiagramDto
+            {
+                ApartmentId = apartment.Id,
+                Name = apartment.Name,
+                Address = apartment.Address,
+                TotalFloors = apartment.TotalFloors,
+                Floors = new List<FloorDiagramDto>()
+            };
+
+            foreach (var floor in apartment.Floors.OrderBy(f => f.FloorNumber))
+            {
+                var floorDiagram = new FloorDiagramDto
+                {
+                    FloorId = floor.Id,
+                    FloorNumber = floor.FloorNumber,
+                    Name = floor.Name ?? $"Floor {floor.FloorNumber}",
+                    Flats = new List<FlatDiagramDto>()
+                };
+
+                if (floor.Flats != null && floor.Flats.Any())
+                {
+                    foreach (var flat in floor.Flats.OrderBy(f => f.FlatNumber))
+                    {
+                        var mapping = flat.UserFlatMappings?.FirstOrDefault(m => m.IsActive);
+                        floorDiagram.Flats.Add(new FlatDiagramDto
+                        {
+                            FlatId = flat.Id,
+                            FlatNumber = flat.FlatNumber ?? "N/A",
+                            IsOccupied = flat.IsOccupied,
+                            OccupantName = mapping?.User?.FullName,
+                            OccupantType = mapping?.RelationshipType,
+                            Status = flat.IsOccupied ? "Occupied" : "Vacant"
+                        });
+                    }
+                }
+
+                diagram.Floors.Add(floorDiagram);
+            }
+
+            if (!diagram.Floors.Any())
+                throw new Exception(ErrorMessages.DiagramNoFloors);
+
+            if (!diagram.Floors.First().Flats.Any())
+                throw new Exception(ErrorMessages.DiagramNoFlats);
+
+            return diagram;
+        }
+
+        // ── ASSIGN MANAGER ─────────────────────────────────────────
+        public async Task<bool> AssignManagerAsync(AssignManagerDto dto, Guid assignedBy)
+        {
+            var user = await UoW.Users.GetByIdAsync(dto.UserId)
+                ?? throw new Exception(ErrorMessages.UserNotFound);
+
+            var hasManagerRole = user.UserRoles?.Any(ur => ur.Role.Name == SystemRoles.Manager) ?? false;
+            if (!hasManagerRole)
+                throw new Exception(ErrorMessages.UserMustHaveManagerRole);
+
+            var existingManager = await UoW.Apartments.GetActiveManagerAsync(dto.ApartmentId);
+            if (existingManager != null)
+            {
+                existingManager.IsActive = false;
+                UoW.Apartments.UpdateManager(existingManager);
+            }
+
+            await UoW.Apartments.AddManagerAsync(new ApartmentManager
+            {
+                Id = Guid.NewGuid(),
+                ApartmentId = dto.ApartmentId,
+                UserId = dto.UserId,
+                AssignedBy = assignedBy,
+                AssignedAt = DateTime.UtcNow,
+                IsActive = true
+            });
+
+            await UoW.SaveChangesAsync();
+            return true;
+        }
+
+        // ── REMOVE MANAGER ─────────────────────────────────────────
+        public async Task<bool> RemoveManagerAsync(Guid apartmentId, Guid userId, Guid removedBy)
+        {
+            var manager = await UoW.Apartments.GetActiveManagerAsync(apartmentId);
+            if (manager == null || manager.UserId != userId)
+                throw new Exception(ErrorMessages.ManagerNotFound);
+
+            manager.IsActive = false;
+            UoW.Apartments.UpdateManager(manager);
+            await UoW.SaveChangesAsync();
+            return true;
+        }
+
+        // ── UPDATE ─────────────────────────────────────────────────
+        public async Task<bool> UpdateApartmentAsync(
+            Guid apartmentId, UpdateApartmentDto dto, Guid updatedBy)
+        {
+            var apartment = await UoW.Apartments.GetByIdAsync(apartmentId)
+                ?? throw new Exception(ErrorMessages.ApartmentNotFound);
+
+            apartment.Name = dto.Name;
+            apartment.Address = dto.Address;
+            apartment.City = dto.City;
+            apartment.State = dto.State;
+            apartment.PinCode = dto.PinCode;
+            apartment.IsActive = dto.IsActive;
+            apartment.UpdatedAt = DateTime.UtcNow;
+            apartment.UpdatedBy = updatedBy;
+
+            UoW.Apartments.Update(apartment);
+            await UoW.SaveChangesAsync();
+            return true;
+        }
+
+        // ── DEACTIVATE ─────────────────────────────────────────────
+        public async Task<bool> DeactivateApartmentAsync(Guid apartmentId, Guid deactivatedBy)
+        {
+            var apartment = await UoW.Apartments.GetByIdAsync(apartmentId)
+                ?? throw new Exception(ErrorMessages.ApartmentNotFound);
+
+            apartment.IsActive = false;
+            apartment.UpdatedAt = DateTime.UtcNow;
+            apartment.UpdatedBy = deactivatedBy;
+
+            UoW.Apartments.Update(apartment);
+            await UoW.SaveChangesAsync();
+            return true;
+        }
+
+        // ── DELETE ─────────────────────────────────────────────────
+        public async Task<bool> DeleteApartmentAsync(Guid apartmentId, Guid deletedBy)
+        {
+            var apartment = await UoW.Apartments.GetByIdAsync(apartmentId)
+                ?? throw new Exception(ErrorMessages.ApartmentNotFound);
+
+            var full = await UoW.Apartments.GetByIdWithFloorsAndFlatsAsync(apartmentId);
+            if (full?.Floors != null)
+            {
+                var hasOccupied = full.Floors
+                    .SelectMany(f => f.Flats)
+                    .Any(fl => fl.IsOccupied);
+
+                if (hasOccupied)
+                    throw new Exception(ErrorMessages.ApartmentHasOccupants);
+            }
+
+            await UoW.Apartments.PrepareDeleteAsync(apartment);
+            await UoW.SaveChangesAsync();
+            return true;
+        }
+
+        // ── PRIVATE HELPERS ────────────────────────────────────────
+        private static CommunityLeaderDto MapToCommunityLeader(CommunityMember cm)
+        {
+            var flatMapping = cm.User.UserFlatMappings?.FirstOrDefault(ufm => ufm.IsActive);
+            return new CommunityLeaderDto
+            {
+                UserId = cm.UserId,
+                FullName = cm.User.FullName,
+                Email = cm.User.Email,
+                FlatNumber = flatMapping?.Flat?.FlatNumber ?? "N/A",
+                AssignedAt = cm.AssignedAt
+            };
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.DTOs.Apartment;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using ApartmentManagementSystem.Domain.Constants;
@@ -172,10 +508,10 @@ namespace ApartmentManagementSystem.Application.Services
             }
 
             return response;
-        }*/
+        }---------------
 
-        //GET ALL
-        public async Task<List<ApartmentListDto>> GetAllApartmentsAsync()
+//GET ALL
+public async Task<List<ApartmentListDto>> GetAllApartmentsAsync()
         {
             var apartments = await ApartmentRepo.GetAllWithDetailsAsync();
 
@@ -434,6 +770,7 @@ namespace ApartmentManagementSystem.Application.Services
         }
     }
 }
+*/
 
 
 

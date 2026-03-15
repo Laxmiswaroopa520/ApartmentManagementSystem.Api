@@ -1,6 +1,156 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Admin;
 using ApartmentManagementSystem.Application.DTOs.Apartment;
 using ApartmentManagementSystem.Application.DTOs.Onboarding;
+using ApartmentManagementSystem.Application.Interfaces;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Domain.Enums;
+
+namespace ApartmentManagementSystem.Application.Services
+{
+    public class AdminResidentService : IAdminResidentService
+    {
+        private readonly IUnitOfWork UoW;
+        private readonly IEmailService EmailService;
+
+        public AdminResidentService(IUnitOfWork unitOfWork, IEmailService emailService)
+        {
+            UoW = unitOfWork;
+            EmailService = emailService;
+        }
+
+        public async Task<List<PendingResidentDto>> GetPendingResidentsAsync()
+        {
+            var users = await UoW.Users.GetPendingResidentsAsync();
+            return users.Select(u => new PendingResidentDto
+            {
+                UserId = u.Id,
+                FullName = u.FullName,
+                PrimaryPhone = u.PrimaryPhone,
+                Email = u.Email ?? "",
+                ResidentType = u.ResidentType?.ToString() ?? "Unknown",
+                RegisteredOn = u.CreatedAt,
+                Status = u.Status.ToString()
+            }).ToList();
+        }
+
+        public async Task<List<ApartmentDropdownDto>> GetApartmentsForUserAsync(Guid userId, string role)
+        {
+            if (role == "SuperAdmin")
+            {
+                var all = await UoW.Apartments.GetAllAsync();
+                return all
+                    .Where(a => a.IsActive)
+                    .Select(a => new ApartmentDropdownDto { Id = a.Id, Name = a.Name })
+                    .OrderBy(a => a.Name)
+                    .ToList();
+            }
+            else if (role == "Manager")
+            {
+                var manager = await UoW.Apartments.GetActiveManagerByUserIdAsync(userId);
+                if (manager != null)
+                {
+                    var apartment = await UoW.Apartments.GetByIdAsync(manager.ApartmentId);
+                    if (apartment != null && apartment.IsActive)
+                        return new List<ApartmentDropdownDto>
+                        {
+                            new() { Id = apartment.Id, Name = apartment.Name }
+                        };
+                }
+            }
+
+            return new List<ApartmentDropdownDto>();
+        }
+
+        public async Task<List<FloorDto>> GetFloorsByApartmentAsync(Guid apartmentId)
+        {
+            var floors = await UoW.Floors.GetByApartmentIdAsync(apartmentId);
+            return floors
+                .OrderBy(f => f.FloorNumber)
+                .Select(f => new FloorDto
+                {
+                    Id = f.Id,
+                    FloorNumber = f.FloorNumber,
+                    ApartmentId = f.ApartmentId,
+                    ApartmentName = f.Apartment?.Name ?? ""
+                })
+                .ToList();
+        }
+
+        public async Task<List<FlatDto>> GetVacantFlatsByFloorAsync(Guid floorId)
+        {
+            var flats = await UoW.Flats.GetVacantFlatsByFloorAsync(floorId);
+            return flats
+                .OrderBy(f => f.FlatNumber)
+                .Select(f => new FlatDto
+                {
+                    Id = f.Id,
+                    FlatNumber = f.FlatNumber,
+                    FloorId = f.FloorId,
+                    ApartmentId = f.ApartmentId,
+                    IsOccupied = f.IsOccupied
+                })
+                .ToList();
+        }
+
+        public async Task<AssignFlatResponseDto> AssignFlatToResidentAsync(AssignFlatDto dto)
+        {
+            var user = await UoW.Users.GetByIdAsync(dto.UserId)
+                ?? throw new Exception(ErrorMessages.UserNotFound);
+
+            var flat = await UoW.Flats.GetByIdAsync(dto.FlatId)
+                ?? throw new Exception(ErrorMessages.FlatNotFound);
+
+            if (flat.OwnerUserId != null)
+                throw new Exception(ErrorMessages.FlatAlreadyOccupied);
+
+            // Mutate in memory
+            flat.OwnerUserId = user.Id;
+            flat.IsOccupied = true;
+            user.FlatId = flat.Id;
+            user.Status = ResidentStatus.Active;
+
+            UoW.Users.Update(user);
+            UoW.Flats.Update(flat);
+
+            await UoW.UserFlatMappings.AddAsync(new UserFlatMapping
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                FlatId = flat.Id,
+                RelationshipType = user.ResidentType == ResidentType.Owner ? "Owner" : "Tenant",
+                FromDate = DateTime.UtcNow,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            });
+
+            // ONE SaveChanges for user + flat + mapping
+            await UoW.SaveChangesAsync();
+
+            if (!string.IsNullOrEmpty(user.Email))
+                await EmailService.SendFlatAssignedToResidentAsync(user.Email, user.FullName, flat.FlatNumber);
+
+            return new AssignFlatResponseDto
+            {
+                UserId = user.Id,
+                UserName = user.FullName,
+                FlatNumber = flat.FlatNumber,
+                Message = SuccessMessages.FlatAssigned
+            };
+        }
+    }
+}
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.DTOs.Admin;
+using ApartmentManagementSystem.Application.DTOs.Apartment;
+using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using ApartmentManagementSystem.Domain.Constants;
@@ -179,7 +329,7 @@ namespace ApartmentManagementSystem.Application.Services
     }
 }
 
-
+*/
 
 
 

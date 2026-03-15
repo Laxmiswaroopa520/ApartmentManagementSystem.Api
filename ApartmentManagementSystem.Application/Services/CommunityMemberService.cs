@@ -1,5 +1,89 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Community;
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
+using ApartmentManagementSystem.Application.Interfaces;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
+
+namespace ApartmentManagementSystem.Application.Services
+{
+    public class CommunityMemberService : ICommunityMemberService
+    {
+        private readonly IUnitOfWork UoW;
+
+        public CommunityMemberService(IUnitOfWork unitOfWork)
+        {
+            UoW = unitOfWork;
+        }
+
+        public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync(Guid? apartmentId = null)
+        {
+            var all = await UoW.CommunityMembers.GetAllCommunityMembersAsync();
+
+            if (apartmentId.HasValue)
+                all = all.Where(m => m.ApartmentId == apartmentId.Value).ToList();
+
+            return all;
+        }
+
+        public async Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId)
+            => await UoW.CommunityMembers.GetEligibleResidentsForApartmentAsync(apartmentId);
+
+        public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
+            => await UoW.CommunityMembers.GetCommunityMemberByUserIdAsync(userId);
+
+        public async Task<CommunityMemberDto> AssignCommunityRoleAsync(
+            Guid userId, string roleName, Guid apartmentId, Guid assignedBy)
+        {
+            var roleExists = await UoW.CommunityMembers
+                .CommunityRoleExistsForApartmentAsync(roleName, apartmentId);
+
+            if (roleExists)
+                throw new Exception(
+                    $"The {roleName} role is already assigned in this apartment. Remove the existing one first.");
+
+            // Stage the new community member
+            await UoW.CommunityMembers.AssignCommunityRoleAsync(userId, roleName, apartmentId, assignedBy);
+
+            // ONE SaveChanges
+            await UoW.SaveChangesAsync();
+
+            var member = await UoW.CommunityMembers.GetCommunityMemberByUserIdAsync(userId)
+                ?? throw new Exception(CommunityMessages.NoCommunityMember);
+
+            return member;
+        }
+
+        public async Task RemoveCommunityRoleAsync(Guid userId)
+        {
+            // Mutates in memory
+            await UoW.CommunityMembers.RemoveCommunityRoleAsync(userId);
+
+            // ONE SaveChanges
+            await UoW.SaveChangesAsync();
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.DTOs.Community;
+using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using ApartmentManagementSystem.Domain.Constants;
@@ -162,6 +246,7 @@ namespace ApartmentManagementSystem.Application.Services
         }
     }
 }
+*/
 
 
 

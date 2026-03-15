@@ -1,4 +1,127 @@
-﻿using ApartmentManagementSystem.Application.Interfaces.Repositories;
+﻿// Infrastructure/Repositories/UserRepository.cs
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Domain.Enums;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class UserRepository : GenericRepository<User>, IUserRepository
+    {
+        public UserRepository(AppDbContext context) : base(context) { }
+
+        public async Task<User?> GetByUsernameAsync(string username)
+            => await DBContext.Users
+                .FirstOrDefaultAsync(u => u.Username == username);
+
+        public async Task<User?> GetByUsernameWithRolesAsync(string username)
+            => await DBContext.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Username == username);
+
+        public async Task<User?> GetByIdWithRolesAsync(Guid id)
+            => await DBContext.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+        public async Task<User?> GetByEmailAsync(string email)
+            => await DBContext.Users
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+        public async Task<User?> GetByPhoneAsync(string phone)
+            => await DBContext.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.PrimaryPhone == phone);
+
+        public async Task<bool> PhoneExistsAsync(string phone)
+            => await DBContext.Users.AnyAsync(u => u.PrimaryPhone == phone);
+
+        public async Task<bool> UsernameExistsAsync(string username)
+            => await DBContext.Users.AnyAsync(u => u.Username == username);
+
+        public async Task<List<User>> GetPendingResidentsAsync()
+            => await DBContext.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .Where(u => u.Status == ResidentStatus.PendingFlatAllocation)
+                .OrderBy(u => u.CreatedAt)
+                .ToListAsync();
+
+        public async Task<List<User>> GetUsersByRoleAsync(string roleName)
+            => await DBContext.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .Include(u => u.UserFlatMappings!)
+                    .ThenInclude(ufm => ufm.Flat)
+                .Where(u => u.UserRoles.Any(ur => ur.Role.Name == roleName) && u.IsActive)
+                .ToListAsync();
+
+        public async Task<List<User>> GetUsersByRoleWithFlatsAsync(string roleName)
+            => await DBContext.Users
+                .Include(u => u.UserRoles)
+                    .ThenInclude(ur => ur.Role)
+                .Include(u => u.UserFlatMappings!)
+                    .ThenInclude(ufm => ufm.Flat)
+                .Where(u => u.UserRoles.Any(ur => ur.Role.Name == roleName))
+                .ToListAsync();
+
+        /// <summary>
+        /// Stages a new user + role assignment. Caller calls UoW.SaveChangesAsync().
+        /// </summary>
+        public async Task AddWithRoleAsync(User user, Guid roleId)
+        {
+            await DBContext.Users.AddAsync(user);
+            await DBContext.Set<UserRole>().AddAsync(new UserRole
+            {
+                Id = Guid.NewGuid(),
+                UserId = user.Id,
+                RoleId = roleId,
+                AssignedAt = DateTime.UtcNow
+            });
+        }
+
+        /// <summary>
+        /// Stages role assignment for existing user. Caller calls UoW.SaveChangesAsync().
+        /// </summary>
+        public async Task AddRoleToUserAsync(Guid userId, string roleName)
+        {
+            var alreadyHasRole = await DBContext.Set<UserRole>()
+                .Include(ur => ur.Role)
+                .AnyAsync(ur => ur.UserId == userId && ur.Role.Name == roleName);
+
+            if (alreadyHasRole) return;
+
+            var role = await DBContext.Roles
+                .FirstOrDefaultAsync(r => r.Name == roleName)
+                ?? throw new Exception($"Role '{roleName}' not found");
+
+            await DBContext.Set<UserRole>().AddAsync(new UserRole
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                RoleId = role.Id,
+                AssignedAt = DateTime.UtcNow
+            });
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Domain.Enums;
 using ApartmentManagementSystem.Infrastructure.Persistence;
@@ -167,7 +290,7 @@ public class UserRepository : IUserRepository
     }
 }
 
-
+*/
 
 
 

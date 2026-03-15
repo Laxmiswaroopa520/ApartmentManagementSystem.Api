@@ -1,4 +1,47 @@
-﻿using ApartmentManagementSystem.Application.Interfaces.Repositories;
+﻿// Infrastructure/Repositories/FloorRepository.cs
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class FloorRepository : GenericRepository<Floor>, IFloorRepository
+    {
+        public FloorRepository(AppDbContext context) : base(context) { }
+
+        public async Task<Floor?> GetByIdWithDetailsAsync(Guid id)
+            => await DBContext.Floors
+                .Include(f => f.Apartment)
+                .Include(f => f.Flats)
+                .FirstOrDefaultAsync(f => f.Id == id);
+
+        public new async Task<List<Floor>> GetAllAsync()
+            => await DBContext.Floors
+                .Include(f => f.Apartment)
+                .OrderBy(f => f.FloorNumber)
+                .ToListAsync();
+
+        public async Task<List<Floor>> GetByApartmentIdAsync(Guid apartmentId)
+            => await DBContext.Floors
+                .Include(f => f.Apartment)
+                .Where(f => f.ApartmentId == apartmentId)
+                .OrderBy(f => f.FloorNumber)
+                .ToListAsync();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -141,7 +184,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
     }
 }
 
-
+*/
 
 
 

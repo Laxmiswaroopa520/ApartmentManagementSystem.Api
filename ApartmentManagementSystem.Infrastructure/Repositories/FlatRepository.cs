@@ -1,6 +1,63 @@
-﻿// Infrastructure/Persistence/Repositories/FlatRepository.cs
-// Infrastructure/Persistence/Repositories/FlatRepository.cs
+﻿// Infrastructure/Repositories/FlatRepository.cs
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class FlatRepository : GenericRepository<Flat>, IFlatRepository
+    {
+        public FlatRepository(AppDbContext context) : base(context) { }
+
+        public async Task<Flat?> GetByIdWithDetailsAsync(Guid id)
+            => await DBContext.Flats
+                .Include(f => f.Apartment)
+                .Include(f => f.Floor)
+                .Include(f => f.OwnerUser)
+                .FirstOrDefaultAsync(f => f.Id == id);
+
+        public async Task<List<Flat>> GetByFloorIdAsync(Guid floorId)
+            => await DBContext.Flats
+                .Where(f => f.FloorId == floorId)
+                .OrderBy(f => f.FlatNumber)
+                .ToListAsync();
+
+        public async Task<List<Flat>> GetVacantFlatsByFloorAsync(Guid floorId)
+            => await DBContext.Flats
+                .Where(f => f.FloorId == floorId && !f.IsOccupied && f.IsActive)
+                .OrderBy(f => f.FlatNumber)
+                .ToListAsync();
+
+        public async Task<List<Flat>> GetFlatsWithMappingsByOwnerIdAsync(Guid ownerId)
+            => await DBContext.Flats
+                .Include(f => f.Apartment)
+                .Include(f => f.Floor)
+                .Include(f => f.OwnerUser)
+                .Include(f => f.UserFlatMappings!)
+                    .ThenInclude(ufm => ufm.User)
+                .Where(f => f.OwnerUserId == ownerId)
+                .ToListAsync();
+
+        public async Task<List<Floor>> GetAllFloorsAsync()
+            => await DBContext.Floors
+                .OrderBy(f => f.FloorNumber)
+                .ToListAsync();
+
+        public async Task<int> GetTotalCountAsync()
+            => await DBContext.Flats.CountAsync(f => f.IsActive);
+
+        public async Task<int> GetOccupiedCountAsync()
+            => await DBContext.Flats.CountAsync(f => f.IsActive && f.IsOccupied);
+    }
+}
+
+
+
+
+
+
+/*
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -190,7 +247,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         }
     }
 }
-
+*/
 
 
 

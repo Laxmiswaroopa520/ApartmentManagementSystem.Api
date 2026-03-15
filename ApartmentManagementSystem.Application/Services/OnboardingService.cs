@@ -1,4 +1,200 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Onboarding;
+using ApartmentManagementSystem.Application.Interfaces;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Domain.Enums;
+
+namespace ApartmentManagementSystem.Application.Services
+{
+    public class OnboardingService : IOnboardingService
+    {
+        private readonly IUnitOfWork UoW;
+        private readonly IOtpService OtpService;
+        private readonly IEmailService EmailService;
+
+        public OnboardingService(
+            IUnitOfWork unitOfWork,
+            IOtpService otpService,
+            IEmailService emailService)
+        {
+            UoW = unitOfWork;
+            OtpService = otpService;
+            EmailService = emailService;
+        }
+
+        public async Task<CreateInviteResponseDto> CreateInviteAsync(
+            CreateUserInviteDto request, Guid createdByUserId)
+        {
+            if (await UoW.Users.PhoneExistsAsync(request.PrimaryPhone))
+                throw new Exception(ErrorMessages.PhoneAlreadyExists);
+
+            var role = await GetRoleForResidentType((ResidentType)request.ResidentType);
+            if (role == null)
+                throw new Exception(ResidentMessages.InvalidResident);
+
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                FullName = request.FullName,
+                PrimaryPhone = request.PrimaryPhone,
+                ResidentType = (ResidentType)request.ResidentType,
+                Status = ResidentStatus.PendingOtpVerification,
+                IsActive = true,
+                IsOtpVerified = false,
+                IsRegistrationCompleted = false,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            user.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = role.Id });
+
+            // Stage user
+            await UoW.Users.AddAsync(user);
+
+            // Stage OTP
+            var otpCode = OtpService.GenerateOtp();
+            await UoW.UserOtps.AddAsync(new UserOtp
+            {
+                Id = Guid.NewGuid(),
+                PhoneNumber = user.PrimaryPhone,
+                OtpCode = otpCode,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(10),
+                IsUsed = false,
+                CreatedAt = DateTime.UtcNow
+            });
+
+            // Stage invite
+            await UoW.UserInvites.AddAsync(new UserInvite
+            {
+                Id = Guid.NewGuid(),
+                FullName = request.FullName,
+                PrimaryPhone = request.PrimaryPhone,
+                RoleId = role.Id,
+                ResidentType = (ResidentType)request.ResidentType,
+                InviteStatus = InviteStatus.Pending,
+                CreatedAt = DateTime.UtcNow,
+                CreatedByUserId = createdByUserId
+            });
+
+            // ONE SaveChanges for user + otp + invite
+            await UoW.SaveChangesAsync();
+
+            return new CreateInviteResponseDto
+            {
+                UserId = user.Id,
+                FullName = user.FullName,
+                PrimaryPhone = user.PrimaryPhone,
+                ResidentType = ((ResidentType)request.ResidentType).ToString(),
+                OtpCode = otpCode,
+                Message = SuccessMessages.InviteCreated
+            };
+        }
+
+        public async Task<VerifyOtpResponseDto> VerifyOtpAsync(VerifyOtpDto request)
+        {
+            var user = await UoW.Users.GetByPhoneAsync(request.PrimaryPhone)
+                ?? throw new Exception(ErrorMessages.UserNotFound);
+
+            var isValid = await OtpService.ValidateOtpAsync(user.PrimaryPhone, request.OtpCode);
+            if (!isValid)
+                throw new Exception(ErrorMessages.InvalidOtp);
+
+            // Mutate in memory
+            user.IsOtpVerified = true;
+            user.Status = ResidentStatus.PendingRegistrationCompletion;
+            UoW.Users.Update(user);
+
+            var invite = await UoW.UserInvites.GetByPhoneAsync(request.PrimaryPhone);
+            if (invite != null)
+            {
+                invite.InviteStatus = InviteStatus.OtpVerified;
+                // Update is tracked by EF — no explicit call needed
+            }
+
+            // ONE SaveChanges for user + invite
+            await UoW.SaveChangesAsync();
+
+            return new VerifyOtpResponseDto
+            {
+                UserId = user.Id,
+                FullName = user.FullName,
+                Message = SuccessMessages.OtpVerified,
+                Success = true
+            };
+        }
+
+        public async Task<CompleteRegistrationResponseDto> CompleteRegistrationAsync(
+            CompleteRegistrationDto request)
+        {
+            var user = await UoW.Users.GetByPhoneAsync(request.PrimaryPhone)
+                ?? throw new Exception(ErrorMessages.UserNotFound);
+
+            if (!user.IsOtpVerified)
+                throw new Exception(OtpMessages.OtpNotVerified);
+
+            if (await UoW.Users.UsernameExistsAsync(request.Username))
+                throw new Exception(ErrorMessages.UsernameAlreadyExists);
+
+            // Mutate in memory
+            user.FullName = request.FullName;
+            user.SecondaryPhone = request.SecondaryPhone;
+            user.Email = request.Email;
+            user.Username = request.Username;
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            user.IsRegistrationCompleted = true;
+            user.Status = ResidentStatus.PendingFlatAllocation;
+            user.FlatId = null;
+            UoW.Users.Update(user);
+
+            var invite = await UoW.UserInvites.GetByPhoneAsync(request.PrimaryPhone);
+            if (invite != null)
+                invite.InviteStatus = InviteStatus.Completed;
+
+            // ONE SaveChanges for user + invite
+            await UoW.SaveChangesAsync();
+
+            await EmailService.SendRegistrationCompletedToAdminAsync(
+                user.FullName,
+                user.PrimaryPhone,
+                user.ResidentType?.ToString() ?? "Unknown");
+
+            return new CompleteRegistrationResponseDto
+            {
+                UserId = user.Id,
+                Username = user.Username,
+                Status = "PendingFlatAllocation",
+                Message = SuccessMessages.RegistrationCompleted
+            };
+        }
+
+        private async Task<Role?> GetRoleForResidentType(ResidentType residentType)
+        {
+            var roleName = residentType switch
+            {
+                ResidentType.Owner => RoleNames.ResidentOwner,
+                ResidentType.Tenant => RoleNames.Tenant,
+                ResidentType.Staff => RoleNames.Staff,
+                _ => null
+            };
+
+            if (roleName == null) return null;
+            return await UoW.Roles.GetByNameAsync(roleName);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.DTOs.Onboarding;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 using ApartmentManagementSystem.Domain.Constants;
@@ -204,7 +400,7 @@ public class OnboardingService : IOnboardingService
     }
 }
 
-
+*/
 
 
 

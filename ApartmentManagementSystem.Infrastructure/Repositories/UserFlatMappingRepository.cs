@@ -1,4 +1,56 @@
-﻿using ApartmentManagementSystem.Infrastructure.Persistence;
+﻿using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class UserFlatMappingRepository : GenericRepository<UserFlatMapping>, IUserFlatMappingRepository
+    {
+        public UserFlatMappingRepository(AppDbContext context) : base(context) { }
+
+        public async Task<List<UserFlatMapping>> GetByUserIdAsync(Guid userId)
+            => await DBContext.UserFlatMappings
+                .Include(ufm => ufm.User)
+                .Include(ufm => ufm.Flat)
+                    .ThenInclude(f => f.Apartment)
+                .Include(ufm => ufm.Flat)
+                    .ThenInclude(f => f.OwnerUser)
+                .Where(ufm => ufm.UserId == userId)
+                .OrderByDescending(ufm => ufm.FromDate)
+                .ToListAsync();
+
+        public async Task<List<UserFlatMapping>> GetByFlatIdAsync(Guid flatId)
+            => await DBContext.UserFlatMappings
+                .Include(ufm => ufm.User)
+                .Include(ufm => ufm.Flat)
+                .Where(ufm => ufm.FlatId == flatId)
+                .OrderByDescending(ufm => ufm.FromDate)
+                .ToListAsync();
+
+        public async Task<UserFlatMapping?> GetActiveMappingByUserIdAsync(Guid userId)
+            => await DBContext.UserFlatMappings
+                .Include(ufm => ufm.User)
+                .Include(ufm => ufm.Flat)
+                    .ThenInclude(f => f.Apartment)
+                .Include(ufm => ufm.Flat)
+                    .ThenInclude(f => f.OwnerUser)
+                .FirstOrDefaultAsync(ufm => ufm.UserId == userId && ufm.IsActive);
+
+        public async Task<UserFlatMapping?> GetActiveMappingByFlatIdAsync(Guid flatId)
+            => await DBContext.UserFlatMappings
+                .Include(ufm => ufm.User)
+                .Include(ufm => ufm.Flat)
+                .FirstOrDefaultAsync(ufm => ufm.FlatId == flatId && ufm.IsActive);
+    }
+}
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Infrastructure.Persistence;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -170,7 +222,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         }
     }
 }
-
+*/
 
 
 

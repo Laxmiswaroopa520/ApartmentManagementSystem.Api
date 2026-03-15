@@ -1,4 +1,24 @@
 ﻿using ApartmentManagementSystem.Domain.Entities;
+
+namespace ApartmentManagementSystem.Application.Interfaces.Repositories
+{
+    public interface IFlatRepository : IGenericRepository<Flat>
+    {
+        Task<Flat?> GetByIdWithDetailsAsync(Guid id);
+        Task<List<Flat>> GetByFloorIdAsync(Guid floorId);
+        Task<List<Flat>> GetVacantFlatsByFloorAsync(Guid floorId);
+        Task<List<Flat>> GetFlatsWithMappingsByOwnerIdAsync(Guid ownerId);
+        Task<List<Floor>> GetAllFloorsAsync();
+        Task<int> GetTotalCountAsync();
+        Task<int> GetOccupiedCountAsync();
+    }
+}
+
+
+
+
+
+/*using ApartmentManagementSystem.Domain.Entities;
 namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 {
     public interface IFlatRepository
@@ -15,5 +35,5 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
         Task SaveChangesAsync();
     }
 }
-
+*/
 

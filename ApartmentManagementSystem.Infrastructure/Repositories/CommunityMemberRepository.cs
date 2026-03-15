@@ -1,4 +1,180 @@
-﻿using ApartmentManagementSystem.Application.DTOs.Community;
+﻿
+using ApartmentManagementSystem.Application.DTOs.Community;
+using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Domain.Enums;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class CommunityMemberRepository : GenericRepository<CommunityMember>, ICommunityMemberRepository
+    {
+        public CommunityMemberRepository(AppDbContext context) : base(context) { }
+
+        public async Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync()
+            => await DBContext.Set<CommunityMember>()
+                .Include(cm => cm.User)
+                    .ThenInclude(u => u.UserFlatMappings)
+                        .ThenInclude(ufm => ufm.Flat)
+                .Where(cm => cm.IsActive)
+                .Select(cm => new CommunityMemberDto
+                {
+                    UserId = cm.UserId,
+                    FullName = cm.User.FullName,
+                    Email = cm.User.Email ?? "",
+                    Phone = cm.User.PrimaryPhone,
+                    ApartmentId = cm.ApartmentId,
+                    FlatNumber = cm.User.UserFlatMappings
+                        .Where(ufm => ufm.IsActive)
+                        .Select(ufm => ufm.Flat.FlatNumber)
+                        .FirstOrDefault() ?? "N/A",
+                    Role = cm.CommunityRole,
+                    AssignedOn = cm.AssignedAt,
+                    IsActive = cm.IsActive
+                })
+                .AsNoTracking()
+                .ToListAsync();
+
+        public async Task<List<ResidentListDto>> GetEligibleResidentsAsync()
+        {
+            var usersWithRoles = await DBContext.Set<CommunityMember>()
+                .Where(cm => cm.IsActive)
+                .Select(cm => cm.UserId)
+                .ToListAsync();
+
+            return await DBContext.Users
+                .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                .Include(u => u.UserFlatMappings).ThenInclude(ufm => ufm.Flat)
+                .Where(u =>
+                    u.UserRoles.Any(ur => ur.Role.Name == "ResidentOwner") &&
+                    u.UserFlatMappings.Any(ufm => ufm.IsActive) &&
+                    !usersWithRoles.Contains(u.Id))
+                .Select(u => new ResidentListDto
+                {
+                    UserId = u.Id,
+                    FullName = u.FullName,
+                    Email = u.Email ?? "",
+                    Phone = u.PrimaryPhone,
+                    ResidentType = "Owner",
+                    FlatNumber = u.UserFlatMappings
+                        .Where(ufm => ufm.IsActive)
+                        .Select(ufm => ufm.Flat.FlatNumber)
+                        .First(),
+                    Status = "Eligible",
+                    RegisteredOn = u.CreatedAt
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId)
+        {
+            var usersWithRolesInApartment = await DBContext.Set<CommunityMember>()
+                .Where(cm => cm.IsActive && cm.ApartmentId == apartmentId)
+                .Select(cm => cm.UserId)
+                .ToListAsync();
+
+            return await DBContext.Users
+                .Include(u => u.UserRoles).ThenInclude(ur => ur.Role)
+                .Include(u => u.UserFlatMappings).ThenInclude(ufm => ufm.Flat)
+                .Where(u =>
+                    u.UserRoles.Any(ur => ur.Role.Name == "ResidentOwner") &&
+                    u.UserFlatMappings.Any(ufm => ufm.IsActive && ufm.Flat.ApartmentId == apartmentId) &&
+                    !usersWithRolesInApartment.Contains(u.Id))
+                .Select(u => new ResidentListDto
+                {
+                    UserId = u.Id,
+                    FullName = u.FullName,
+                    Email = u.Email ?? "",
+                    Phone = u.PrimaryPhone,
+                    ResidentType = "Owner",
+                    FlatNumber = u.UserFlatMappings
+                        .Where(ufm => ufm.IsActive && ufm.Flat.ApartmentId == apartmentId)
+                        .Select(ufm => ufm.Flat.FlatNumber)
+                        .First(),
+                    Status = "Eligible",
+                    RegisteredOn = u.CreatedAt
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId)
+            => await DBContext.Set<CommunityMember>()
+                .Include(cm => cm.User)
+                    .ThenInclude(u => u.UserFlatMappings)
+                        .ThenInclude(ufm => ufm.Flat)
+                .Where(cm => cm.UserId == userId && cm.IsActive)
+                .Select(cm => new CommunityMemberDto
+                {
+                    UserId = cm.UserId,
+                    FullName = cm.User.FullName,
+                    Email = cm.User.Email ?? "",
+                    Phone = cm.User.PrimaryPhone,
+                    ApartmentId = cm.ApartmentId,
+                    FlatNumber = cm.User.UserFlatMappings
+                        .Where(ufm => ufm.IsActive)
+                        .Select(ufm => ufm.Flat.FlatNumber)
+                        .FirstOrDefault() ?? "N/A",
+                    Role = cm.CommunityRole,
+                    AssignedOn = cm.AssignedAt,
+                    IsActive = cm.IsActive
+                })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+        public async Task<CommunityMember?> GetByUserIdAsync(Guid userId)
+            => await DBContext.CommunityMembers
+                .Include(cm => cm.Apartment)
+                .Include(cm => cm.User)
+                .FirstOrDefaultAsync(cm => cm.UserId == userId && cm.IsActive);
+
+        public async Task<bool> CommunityRoleExistsAsync(string roleName)
+            => await DBContext.Set<CommunityMember>()
+                .AnyAsync(cm => cm.CommunityRole == roleName && cm.IsActive);
+
+        public async Task<bool> CommunityRoleExistsForApartmentAsync(string roleName, Guid apartmentId)
+            => await DBContext.Set<CommunityMember>()
+                .AnyAsync(cm => cm.CommunityRole == roleName
+                             && cm.ApartmentId == apartmentId
+                             && cm.IsActive);
+
+        /// <summary>
+        /// Stages new community member. Caller calls UoW.SaveChangesAsync().
+        /// </summary>
+        public async Task AssignCommunityRoleAsync(
+            Guid userId, string roleName, Guid apartmentId, Guid assignedBy)
+            => await DBContext.Set<CommunityMember>().AddAsync(new CommunityMember
+            {
+                Id = Guid.NewGuid(),
+                UserId = userId,
+                ApartmentId = apartmentId,
+                CommunityRole = roleName,
+                AssignedBy = assignedBy,
+                AssignedAt = DateTime.UtcNow,
+                IsActive = true
+            });
+
+        /// <summary>
+        /// Soft-deletes in memory. Caller calls UoW.SaveChangesAsync().
+        /// </summary>
+        public async Task RemoveCommunityRoleAsync(Guid userId)
+        {
+            var member = await DBContext.Set<CommunityMember>()
+                .FirstOrDefaultAsync(cm => cm.UserId == userId && cm.IsActive)
+                ?? throw new Exception("Community member not found");
+
+            member.IsActive = false;
+        }
+    }
+}
+
+
+
+
+/*using ApartmentManagementSystem.Application.DTOs.Community;
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Domain.Entities;
@@ -194,3 +370,4 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
         }
     }
 }
+*/

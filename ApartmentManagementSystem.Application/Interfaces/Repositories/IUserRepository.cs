@@ -1,4 +1,30 @@
-﻿namespace ApartmentManagementSystem.Application.Interfaces.Repositories
+﻿// ── IUserRepository.cs ──────────────────────────────────────────
+using ApartmentManagementSystem.Domain.Entities;
+
+namespace ApartmentManagementSystem.Application.Interfaces.Repositories
+{
+    public interface IUserRepository : IGenericRepository<User>
+    {
+        Task<User?> GetByUsernameAsync(string username);
+        Task<User?> GetByUsernameWithRolesAsync(string username);
+        Task<User?> GetByIdWithRolesAsync(Guid id);
+        Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByPhoneAsync(string phone);
+        Task<bool> PhoneExistsAsync(string phone);
+        Task<bool> UsernameExistsAsync(string username);
+        Task<List<User>> GetPendingResidentsAsync();
+        Task<List<User>> GetUsersByRoleAsync(string roleName);
+        Task<List<User>> GetUsersByRoleWithFlatsAsync(string roleName);
+        Task AddWithRoleAsync(User user, Guid roleId);
+        Task AddRoleToUserAsync(Guid userId, string roleName);
+        // CreateExternalManagerUserAsync is replaced by AddWithRoleAsync — more generic
+    }
+}
+
+
+
+
+/*namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 {
     using ApartmentManagementSystem.Domain.Entities;
     public interface IUserRepository
@@ -22,3 +48,4 @@
     }
 
 }
+*/

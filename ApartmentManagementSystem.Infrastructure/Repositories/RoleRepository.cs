@@ -86,7 +86,31 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
 
 
 
-
+/*using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+ 
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class RoleRepository : GenericRepository<Role>, IRoleRepository
+    {
+        public RoleRepository(AppDbContext context) : base(context) { }
+ 
+        public async Task<Role?> GetByNameAsync(string name)
+            => await DBContext.Roles
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Name == name);
+ 
+        // Override base GetAllAsync to add ordering
+        public new async Task<List<Role>> GetAllAsync()
+            => await DBContext.Roles
+                .AsNoTracking()
+                .OrderBy(r => r.Name)
+                .ToListAsync();
+    }
+}
+ */
 
 
 

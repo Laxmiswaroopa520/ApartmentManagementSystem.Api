@@ -1,4 +1,24 @@
 ﻿using ApartmentManagementSystem.Domain.Entities;
+
+namespace ApartmentManagementSystem.Application.Interfaces.Repositories
+{
+    public interface IUserFlatMappingRepository : IGenericRepository<UserFlatMapping>
+    {
+        Task<List<UserFlatMapping>> GetByUserIdAsync(Guid userId);
+        Task<List<UserFlatMapping>> GetByFlatIdAsync(Guid flatId);
+        Task<UserFlatMapping?> GetActiveMappingByUserIdAsync(Guid userId);
+        Task<UserFlatMapping?> GetActiveMappingByFlatIdAsync(Guid flatId);
+    }
+}
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Domain.Entities;
 namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 {
     public interface IUserFlatMappingRepository
@@ -13,4 +33,4 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
         Task SaveChangesAsync();
     }
 }
-
+*/

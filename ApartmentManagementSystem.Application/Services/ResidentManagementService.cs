@@ -1,4 +1,68 @@
-﻿using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
+﻿
+using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
+using ApartmentManagementSystem.Application.Interfaces;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+
+namespace ApartmentManagementSystem.Application.Services
+{
+    public class ResidentManagementService : IResidentManagementService
+    {
+        private readonly IUnitOfWork UoW;
+
+        public ResidentManagementService(IUnitOfWork unitOfWork)
+        {
+            UoW = unitOfWork;
+        }
+
+        public async Task<List<ResidentListDto>> GetAllResidentsAsync()
+            => await UoW.Residents.GetAllResidentsAsync();
+
+        public async Task<List<ResidentListDto>> GetResidentsByTypeAsync(string residentType)
+            => await UoW.Residents.GetResidentsByTypeAsync(residentType);
+
+        public async Task<ResidentDetailDto?> GetResidentDetailAsync(Guid userId)
+            => await UoW.Residents.GetResidentDetailAsync(userId);
+
+        public async Task<bool> DeactivateResidentAsync(Guid userId, Guid deactivatedBy)
+        {
+            // Mutates in memory
+            await UoW.Residents.SetResidentActiveStatusAsync(userId, false, deactivatedBy);
+
+            // ONE SaveChanges
+            await UoW.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> ActivateResidentAsync(Guid userId, Guid activatedBy)
+        {
+            // Mutates in memory
+            await UoW.Residents.SetResidentActiveStatusAsync(userId, true, activatedBy);
+
+            // ONE SaveChanges
+            await UoW.SaveChangesAsync();
+            return true;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
 
@@ -111,9 +175,7 @@ namespace ApartmentManagementSystem.Application.Services
         }
     }
 }
-
-
-
+*/
 
 
 

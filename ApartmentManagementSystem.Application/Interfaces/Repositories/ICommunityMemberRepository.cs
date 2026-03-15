@@ -1,4 +1,4 @@
-﻿using ApartmentManagementSystem.Application.DTOs.Community;
+﻿/*using ApartmentManagementSystem.Application.DTOs.Community;
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Domain.Entities;
 
@@ -23,42 +23,37 @@ namespace ApartmentManagementSystem.Application.Interfaces.Repositories
     }
 }
 
+*/
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
 using ApartmentManagementSystem.Application.DTOs.Community;
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ApartmentManagementSystem.Domain.Entities;
 
 namespace ApartmentManagementSystem.Application.Interfaces.Repositories
 {
-    public interface ICommunityMemberRepository
+    public interface ICommunityMemberRepository : IGenericRepository<CommunityMember>
     {
         Task<List<CommunityMemberDto>> GetAllCommunityMembersAsync();
         Task<List<ResidentListDto>> GetEligibleResidentsAsync();
+        Task<List<ResidentListDto>> GetEligibleResidentsForApartmentAsync(Guid apartmentId);
         Task<CommunityMemberDto?> GetCommunityMemberByUserIdAsync(Guid userId);
+        Task<CommunityMember?> GetByUserIdAsync(Guid userId);
         Task<bool> CommunityRoleExistsAsync(string roleName);
-        Task AssignCommunityRoleAsync(Guid userId, string roleName);
+        Task<bool> CommunityRoleExistsForApartmentAsync(string roleName, Guid apartmentId);
+        Task AssignCommunityRoleAsync(Guid userId, string roleName, Guid apartmentId, Guid assignedBy);
         Task RemoveCommunityRoleAsync(Guid userId);
     }
 }
-*/
+
+
+
+
+
+
+
+
+
+
+
+

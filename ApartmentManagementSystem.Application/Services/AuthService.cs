@@ -1,4 +1,84 @@
-﻿using ApartmentManagementSystem.Domain.Constants;
+﻿using ApartmentManagementSystem.Application.DTOs.Auth;
+using ApartmentManagementSystem.Application.Interfaces;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+using ApartmentManagementSystem.Domain.Constants;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+namespace ApartmentManagementSystem.Application.Services
+{
+    public class AuthService : IAuthService
+    {
+        private readonly IUnitOfWork UoW;
+        private readonly IConfiguration Config;
+
+        public AuthService(IUnitOfWork unitOfWork, IConfiguration config)
+        {
+            UoW = unitOfWork;
+            Config = config;
+        }
+
+        public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request)
+        {
+            var user = await UoW.Users.GetByUsernameWithRolesAsync(request.Username)
+                ?? throw new UnauthorizedAccessException(ErrorMessages.InvalidCredentials);
+
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
+                throw new UnauthorizedAccessException(ErrorMessages.InvalidCredentials);
+
+            if (!user.IsActive)
+                throw new UnauthorizedAccessException(ErrorMessages.AccountInactive);
+
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Name, user.FullName)
+            };
+
+            foreach (var role in user.UserRoles.Select(ur => ur.Role.Name))
+                claims.Add(new Claim(ClaimTypes.Role, role));
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["JwtSettings:SecretKey"]!));
+            var token = new JwtSecurityToken(
+                issuer: Config["JwtSettings:Issuer"],
+                audience: Config["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(24),
+                signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+            );
+
+            return new LoginResponseDto
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                UserId = user.Id,
+                FullName = user.FullName,
+                Role = user.UserRoles.Select(ur => ur.Role.Name).FirstOrDefault()
+            };
+        }
+
+        public async Task<bool> IsUserActiveAsync(Guid userId)
+        {
+            var user = await UoW.Users.GetByIdAsync(userId);
+            return user != null && user.IsActive;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Application.DTOs.Auth;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Application.Interfaces.Services;
@@ -132,7 +212,7 @@ namespace ApartmentManagementSystem.Application.Services
         }
     }
 }
-
+*/
 
 
 

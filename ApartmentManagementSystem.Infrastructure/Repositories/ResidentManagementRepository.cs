@@ -1,5 +1,114 @@
 ﻿using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
+using ApartmentManagementSystem.Domain.Entities;
+using ApartmentManagementSystem.Domain.Enums;
+using ApartmentManagementSystem.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApartmentManagementSystem.Infrastructure.Repositories
+{
+    public class ResidentManagementRepository : GenericRepository<User>, IResidentManagementRepository
+    {
+        public ResidentManagementRepository(AppDbContext context) : base(context) { }
+
+        public async Task<List<ResidentListDto>> GetAllResidentsAsync()
+            => await DBContext.Users
+                .Where(u => u.UserRoles.Any(ur =>
+                    ur.Role.Name == RoleNames.ResidentOwner ||
+                    ur.Role.Name == RoleNames.Tenant))
+                .Select(u => new ResidentListDto
+                {
+                    UserId = u.Id,
+                    FullName = u.FullName,
+                    Email = u.Email,
+                    Phone = u.PrimaryPhone,
+                    ResidentType = u.UserRoles.Any(ur => ur.Role.Name == RoleNames.ResidentOwner)
+                        ? "Owner" : "Tenant",
+                    FlatNumber = u.UserFlatMappings.Select(f => f.Flat.FlatNumber).FirstOrDefault(),
+                    ApartmentName = u.UserFlatMappings.Select(f => f.Flat.Apartment.Name).FirstOrDefault(),
+                    Status = !u.IsActive
+                        ? "Inactive"
+                        : !u.UserFlatMappings.Any()
+                            ? "Pending Assignment"
+                            : "Active",
+                    RegisteredOn = u.CreatedAt
+                })
+                .OrderByDescending(r => r.RegisteredOn)
+                .AsNoTracking()
+                .ToListAsync();
+
+        public async Task<List<ResidentListDto>> GetResidentsByTypeAsync(string residentType)
+        {
+            var roleName = residentType.ToLower() == "owner"
+                ? RoleNames.ResidentOwner : RoleNames.Tenant;
+
+            return await DBContext.Users
+                .Where(u => u.UserRoles.Any(ur => ur.Role.Name == roleName))
+                .Select(u => new ResidentListDto
+                {
+                    UserId = u.Id,
+                    FullName = u.FullName,
+                    Email = u.Email,
+                    Phone = u.PrimaryPhone,
+                    ResidentType = residentType,
+                    FlatNumber = u.UserFlatMappings.Select(f => f.Flat.FlatNumber).FirstOrDefault(),
+                    ApartmentName = u.UserFlatMappings.Select(f => f.Flat.Apartment.Name).FirstOrDefault(),
+                    Status = u.UserFlatMappings.Any() ? "Active" : "Pending Assignment",
+                    RegisteredOn = u.CreatedAt
+                })
+                .OrderByDescending(r => r.RegisteredOn)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<ResidentDetailDto?> GetResidentDetailAsync(Guid userId)
+            => await DBContext.Users
+                .Where(u => u.Id == userId)
+                .Select(u => new ResidentDetailDto
+                {
+                    UserId = u.Id,
+                    FullName = u.FullName,
+                    Email = u.Email,
+                    PrimaryPhone = u.PrimaryPhone,
+                    SecondaryPhone = u.SecondaryPhone,
+                    ResidentType = u.UserRoles.Any(ur => ur.Role.Name == RoleNames.ResidentOwner)
+                        ? "Owner" : "Tenant",
+                    FlatNumber = u.UserFlatMappings.Select(f => f.Flat.FlatNumber).FirstOrDefault(),
+                    ApartmentName = u.UserFlatMappings.Select(f => f.Flat.Apartment.Name).FirstOrDefault(),
+                    RegisteredOn = u.CreatedAt,
+                    Status = u.UserFlatMappings.Any() ? "Active" : "Pending Assignment",
+                    Roles = u.UserRoles.Select(ur => ur.Role.Name).ToList(),
+                    TotalComplaints = 0,
+                    OutstandingBills = 0
+                })
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+        /// <summary>
+        /// Updates resident active status in memory.
+        /// Caller must call UoW.SaveChangesAsync() after.
+        /// </summary>
+        public async Task SetResidentActiveStatusAsync(Guid userId, bool isActive, Guid updatedBy)
+        {
+            var user = await DBContext.Users.FirstAsync(u => u.Id == userId);
+            user.IsActive = isActive;
+            user.UpdatedBy = updatedBy;
+            user.UpdatedAt = DateTime.UtcNow;
+            // No SaveChanges — caller handles it
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+/*using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
+using ApartmentManagementSystem.Application.Interfaces.Repositories;
 using ApartmentManagementSystem.Domain.Enums;
 using ApartmentManagementSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -133,7 +242,7 @@ namespace ApartmentManagementSystem.Infrastructure.Repositories
     }
 }
 
-
+*/
 
 
 
