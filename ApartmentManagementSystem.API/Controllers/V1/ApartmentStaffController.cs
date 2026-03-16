@@ -16,7 +16,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
+[Authorize(Roles = SystemRoles.AdminManagerCommunity)]
 public class ApartmentStaffController : ControllerBase
 {
     private readonly IStaffMemberService StaffService;

@@ -7,16 +7,39 @@ using ApartmentManagementSystem.Domain.Enums;
 
 namespace ApartmentManagementSystem.Application.Services
 {
+    /// <summary>
+    /// Service responsible for all apartment lifecycle operations.
+    ///
+    /// Handles:
+    /// - Creating apartments with auto-generated floors and flats (bulk insert)
+    /// - Retrieving apartment lists, details, and visual diagrams
+    /// - Updating and deactivating apartments
+    /// - Hard-deleting apartments (cascade) when no flats are occupied
+    /// - Assigning and removing apartment managers
+    /// </summary>
     public class ApartmentManagementService : IApartmentManagementService
     {
+        /// <summary>Unit of Work providing access to all repositories.</summary>
         private readonly IUnitOfWork UoW;
 
+        /// <summary>
+        /// Initialises ApartmentManagementService with required dependencies.
+        /// </summary>
+        /// <param name="unitOfWork">Unit of Work for data access.</param>
         public ApartmentManagementService(IUnitOfWork unitOfWork)
         {
             UoW = unitOfWork;
         }
 
-        // ── CREATE ─────────────────────────────────────────────────
+        /// <summary>
+        /// Creates a new apartment and auto-generates all floors and flats.
+        ///
+        /// All entities (apartment, floors, flats) are built in memory first
+        /// and committed in a single SaveChanges call — avoiding N+1 DB inserts.
+        /// </summary>
+        /// <param name="dto">Apartment creation data including floor and flat counts.</param>
+        /// <param name="createdBy">UserId of the admin performing the creation.</param>
+        /// <returns>Response DTO containing apartment ID, totals, and all created floor/flat numbers.</returns>
         public async Task<CreateApartmentResponseDto> CreateApartmentAsync(
             CreateApartmentDto dto, Guid createdBy)
         {
@@ -39,7 +62,6 @@ namespace ApartmentManagementSystem.Application.Services
 
             await UoW.Apartments.AddAsync(apartment);
 
-            // Build all floors + flats in memory — no DB hit per iteration
             var floors = Enumerable.Range(1, dto.TotalFloors)
                 .Select(floorNum => new Floor
                 {
@@ -87,7 +109,10 @@ namespace ApartmentManagementSystem.Application.Services
             };
         }
 
-        // ── GET ALL ────────────────────────────────────────────────
+        /// <summary>
+        /// Retrieves a summary list of all active apartments including flat counts.
+        /// </summary>
+        /// <returns>List of apartment list DTOs.</returns>
         public async Task<List<ApartmentListDto>> GetAllApartmentsAsync()
         {
             var apartments = await UoW.Apartments.GetAllWithDetailsAsync();
@@ -105,7 +130,12 @@ namespace ApartmentManagementSystem.Application.Services
             }).ToList();
         }
 
-        // ── GET DETAIL ─────────────────────────────────────────────
+        /// <summary>
+        /// Retrieves full details for a single apartment including manager
+        /// and all community leader assignments (President, Secretary, Treasurer).
+        /// </summary>
+        /// <param name="apartmentId">Unique identifier of the apartment.</param>
+        /// <returns>Detailed apartment DTO or null if not found.</returns>
         public async Task<ApartmentDetailDto?> GetApartmentDetailAsync(Guid apartmentId)
         {
             var apartment = await UoW.Apartments.GetByIdWithFullDetailsAsync(apartmentId);
@@ -146,7 +176,15 @@ namespace ApartmentManagementSystem.Application.Services
             };
         }
 
-        // ── GET DIAGRAM ────────────────────────────────────────────
+        /// <summary>
+        /// Builds a visual floor-by-floor diagram of an apartment
+        /// showing each flat's occupancy status and current occupant details.
+        /// </summary>
+        /// <param name="apartmentId">Unique identifier of the apartment.</param>
+        /// <returns>Apartment diagram DTO with floors and flats ordered numerically.</returns>
+        /// <exception cref="Exception">
+        /// Thrown when the apartment, its floors, or its flats are not found.
+        /// </exception>
         public async Task<ApartmentDiagramDto> GetApartmentDiagramAsync(Guid apartmentId)
         {
             var apartment = await UoW.Apartments.GetByIdWithFloorsAndFlatsAsync(apartmentId)
@@ -203,7 +241,16 @@ namespace ApartmentManagementSystem.Application.Services
             return diagram;
         }
 
-        // ── ASSIGN MANAGER ─────────────────────────────────────────
+        /// <summary>
+        /// Assigns a user as the active manager of an apartment.
+        ///
+        /// If another manager is currently active for the same apartment,
+        /// they are deactivated first. All changes are committed in one SaveChanges.
+        /// </summary>
+        /// <param name="dto">DTO containing UserId and ApartmentId.</param>
+        /// <param name="assignedBy">UserId of the admin performing the assignment.</param>
+        /// <returns>True on success.</returns>
+        /// <exception cref="Exception">Thrown when user not found or user lacks Manager role.</exception>
         public async Task<bool> AssignManagerAsync(AssignManagerDto dto, Guid assignedBy)
         {
             var user = await UoW.Users.GetByIdAsync(dto.UserId)
@@ -234,7 +281,14 @@ namespace ApartmentManagementSystem.Application.Services
             return true;
         }
 
-        // ── REMOVE MANAGER ─────────────────────────────────────────
+        /// <summary>
+        /// Removes the active manager from an apartment by setting their record inactive.
+        /// </summary>
+        /// <param name="apartmentId">Unique identifier of the apartment.</param>
+        /// <param name="userId">UserId of the manager to remove.</param>
+        /// <param name="removedBy">UserId of the admin performing the removal.</param>
+        /// <returns>True on success.</returns>
+        /// <exception cref="Exception">Thrown when no matching active manager is found.</exception>
         public async Task<bool> RemoveManagerAsync(Guid apartmentId, Guid userId, Guid removedBy)
         {
             var manager = await UoW.Apartments.GetActiveManagerAsync(apartmentId);
@@ -247,7 +301,14 @@ namespace ApartmentManagementSystem.Application.Services
             return true;
         }
 
-        // ── UPDATE ─────────────────────────────────────────────────
+        /// <summary>
+        /// Updates editable fields of an existing apartment record.
+        /// </summary>
+        /// <param name="apartmentId">Unique identifier of the apartment to update.</param>
+        /// <param name="dto">Updated apartment values.</param>
+        /// <param name="updatedBy">UserId of the admin performing the update.</param>
+        /// <returns>True on success.</returns>
+        /// <exception cref="Exception">Thrown when the apartment is not found.</exception>
         public async Task<bool> UpdateApartmentAsync(
             Guid apartmentId, UpdateApartmentDto dto, Guid updatedBy)
         {
@@ -268,7 +329,14 @@ namespace ApartmentManagementSystem.Application.Services
             return true;
         }
 
-        // ── DEACTIVATE ─────────────────────────────────────────────
+        /// <summary>
+        /// Soft-deactivates an apartment by setting IsActive to false.
+        /// The apartment record and all its children are retained in the database.
+        /// </summary>
+        /// <param name="apartmentId">Unique identifier of the apartment to deactivate.</param>
+        /// <param name="deactivatedBy">UserId of the admin performing the deactivation.</param>
+        /// <returns>True on success.</returns>
+        /// <exception cref="Exception">Thrown when the apartment is not found.</exception>
         public async Task<bool> DeactivateApartmentAsync(Guid apartmentId, Guid deactivatedBy)
         {
             var apartment = await UoW.Apartments.GetByIdAsync(apartmentId)
@@ -283,7 +351,19 @@ namespace ApartmentManagementSystem.Application.Services
             return true;
         }
 
-        // ── DELETE ─────────────────────────────────────────────────
+        /// <summary>
+        /// Hard-deletes an apartment and all its child records
+        /// (floors, flats, mappings, managers, community members).
+        ///
+        /// Deletion is blocked if any flat within the apartment is currently occupied.
+        /// All cascade deletes are staged in memory and committed in one SaveChanges.
+        /// </summary>
+        /// <param name="apartmentId">Unique identifier of the apartment to delete.</param>
+        /// <param name="deletedBy">UserId of the admin performing the deletion.</param>
+        /// <returns>True on success.</returns>
+        /// <exception cref="Exception">
+        /// Thrown when the apartment is not found or has occupied flats.
+        /// </exception>
         public async Task<bool> DeleteApartmentAsync(Guid apartmentId, Guid deletedBy)
         {
             var apartment = await UoW.Apartments.GetByIdAsync(apartmentId)
@@ -305,7 +385,13 @@ namespace ApartmentManagementSystem.Application.Services
             return true;
         }
 
-        // ── PRIVATE HELPERS ────────────────────────────────────────
+
+        /// <summary>
+        /// Maps a CommunityMember entity to a CommunityLeaderDto,
+        /// resolving the leader's active flat number from their flat mappings.
+        /// </summary>
+        /// <param name="cm">The community member entity to map.</param>
+        /// <returns>Populated CommunityLeaderDto.</returns>
         private static CommunityLeaderDto MapToCommunityLeader(CommunityMember cm)
         {
             var flatMapping = cm.User.UserFlatMappings?.FirstOrDefault(ufm => ufm.IsActive);
@@ -320,6 +406,42 @@ namespace ApartmentManagementSystem.Application.Services
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

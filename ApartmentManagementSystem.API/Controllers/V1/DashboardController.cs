@@ -41,7 +41,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// Admin dashboard data wrapped in ApiResponse.
         /// </returns>
         [HttpGet("admin")]
-        [Authorize(Roles = SystemRoles.SuperAdmin + "," + SystemRoles.Manager + "," + SystemRoles.President + "," + SystemRoles.Secretary + "," + SystemRoles.Treasurer)]
+        [Authorize(Roles = SystemRoles.AdminManagerCommunity)]
 
         public async Task<IActionResult> GetAdminDashboard()
         {

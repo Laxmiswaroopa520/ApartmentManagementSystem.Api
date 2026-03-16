@@ -1,4 +1,110 @@
-﻿
+﻿using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
+using ApartmentManagementSystem.Application.Interfaces;
+using ApartmentManagementSystem.Application.Interfaces.Services;
+
+namespace ApartmentManagementSystem.Application.Services
+{
+    /// <summary>
+    /// Service responsible for resident management operations.
+    ///
+    /// Handles:
+    /// - Listing all residents or filtering by type (Owner/Tenant)
+    /// - Retrieving detailed resident information
+    /// - Activating and deactivating resident accounts
+    /// </summary>
+    public class ResidentManagementService : IResidentManagementService
+    {
+        /// <summary>Unit of Work providing access to all repositories.</summary>
+        private readonly IUnitOfWork UoW;
+
+        /// <summary>
+        /// Initialises ResidentManagementService with required dependencies.
+        /// </summary>
+        /// <param name="unitOfWork">Unit of Work for data access.</param>
+        public ResidentManagementService(IUnitOfWork unitOfWork)
+        {
+            UoW = unitOfWork;
+        }
+
+        /// <summary>
+        /// Retrieves all residents (Owners and Tenants) in the system.
+        /// Results are ordered by registration date descending.
+        /// </summary>
+        /// <returns>List of resident list DTOs.</returns>
+        public async Task<List<ResidentListDto>> GetAllResidentsAsync()
+            => await UoW.Residents.GetAllResidentsAsync();
+
+        /// <summary>
+        /// Retrieves residents filtered by type.
+        /// </summary>
+        /// <param name="residentType">Type of resident — "Owner" or "Tenant".</param>
+        /// <returns>List of resident list DTOs matching the specified type.</returns>
+        public async Task<List<ResidentListDto>> GetResidentsByTypeAsync(string residentType)
+            => await UoW.Residents.GetResidentsByTypeAsync(residentType);
+
+        /// <summary>
+        /// Retrieves full details for a specific resident including roles,
+        /// flat assignment, and outstanding bill placeholder.
+        /// </summary>
+        /// <param name="userId">Unique identifier of the resident.</param>
+        /// <returns>Resident detail DTO or null if not found.</returns>
+        public async Task<ResidentDetailDto?> GetResidentDetailAsync(Guid userId)
+            => await UoW.Residents.GetResidentDetailAsync(userId);
+
+        /// <summary>
+        /// Deactivates a resident account.
+        ///
+        /// Sets IsActive to false in memory and commits in one SaveChanges.
+        /// The resident can no longer log in after deactivation.
+        /// </summary>
+        /// <param name="userId">Unique identifier of the resident to deactivate.</param>
+        /// <param name="deactivatedBy">UserId of the admin performing the deactivation.</param>
+        /// <returns>True on success.</returns>
+        public async Task<bool> DeactivateResidentAsync(Guid userId, Guid deactivatedBy)
+        {
+            await UoW.Residents.SetResidentActiveStatusAsync(userId, false, deactivatedBy);
+            await UoW.SaveChangesAsync();
+            return true;
+        }
+
+        /// <summary>
+        /// Re-activates a previously deactivated resident account.
+        ///
+        /// Sets IsActive to true in memory and commits in one SaveChanges.
+        /// </summary>
+        /// <param name="userId">Unique identifier of the resident to activate.</param>
+        /// <param name="activatedBy">UserId of the admin performing the activation.</param>
+        /// <returns>True on success.</returns>
+        public async Task<bool> ActivateResidentAsync(Guid userId, Guid activatedBy)
+        {
+            await UoW.Residents.SetResidentActiveStatusAsync(userId, true, activatedBy);
+            await UoW.SaveChangesAsync();
+            return true;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 using ApartmentManagementSystem.Application.DTOs.Community.ResidentManagement;
 using ApartmentManagementSystem.Application.Interfaces;
 using ApartmentManagementSystem.Application.Interfaces.Services;
@@ -44,6 +150,24 @@ namespace ApartmentManagementSystem.Application.Services
         }
     }
 }
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

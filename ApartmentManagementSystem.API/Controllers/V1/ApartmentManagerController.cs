@@ -10,7 +10,6 @@ namespace ApartmentManagementSystem.API.Controllers.V1
 {
         [ApiController]
         [Route("api/ApartmentManager")]
-    // [Authorize(Roles = "SuperAdmin")]
      [Authorize(Roles = SystemRoles.SuperAdmin)]
     public class ApartmentManagerController : Controller
         {

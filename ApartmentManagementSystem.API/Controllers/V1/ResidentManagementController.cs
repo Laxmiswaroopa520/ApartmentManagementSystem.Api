@@ -53,7 +53,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// List of residents.
         /// </returns>
         [HttpGet]
-        [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
+        [Authorize(Roles =SystemRoles.AdminManagerCommunity)]
         public async Task<IActionResult> GetAllResidents()
         {
             try
@@ -82,7 +82,8 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// List of residents matching the specified type.
         /// </returns>
         [HttpGet("by-type/{residentType}")]
-        [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
+        [Authorize(Roles = SystemRoles.AdminManagerCommunity)]
+
         public async Task<IActionResult> GetResidentsByType(string residentType)
         {
             try
@@ -112,7 +113,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// Detailed resident information.
         /// </returns>
         [HttpGet("{userId}")]
-        [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
+        [Authorize(Roles = SystemRoles.AdminManagerCommunity)]
         public async Task<IActionResult> GetResidentDetail(Guid userId)
         {
             try
@@ -152,7 +153,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// Boolean indicating whether deactivation was successful.
         /// </returns>
         [HttpPost("{userId}/deactivate")]
-        [Authorize(Roles = "SuperAdmin,Manager")]
+        [Authorize(Roles = SystemRoles.SuperAdmin+","+SystemRoles.Manager)]
         public async Task<IActionResult> DeactivateResident(Guid userId)
         {
             try
@@ -193,7 +194,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// Boolean indicating whether activation was successful.
         /// </returns>
         [HttpPost("{userId}/activate")]
-        [Authorize(Roles = "SuperAdmin,Manager")]
+        [Authorize(Roles = SystemRoles.SuperAdmin + "," + SystemRoles.Manager)]
         public async Task<IActionResult> ActivateResident(Guid userId)
         {
             try

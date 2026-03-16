@@ -20,7 +20,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
     /// </summary>
     [ApiController]
     [Route("api/CommunityMembers")]
-    [Authorize(Roles = "SuperAdmin,Manager")]
+    [Authorize(Roles = SystemRoles.SuperAdmin+","+SystemRoles.Manager)]
     public class CommunityMembersApiController : ControllerBase
     {
         /// <summary>

@@ -5,24 +5,69 @@ using ApartmentManagementSystem.Domain.Enums;
 
 namespace ApartmentManagementSystem.Application.Services
 {
+    /// <summary>
+    /// Service responsible for staff member management operations.
+    ///
+    /// Handles:
+    /// - Listing all staff or filtering by staff type
+    /// - Creating staff members with optional system user account creation
+    /// - Updating staff member details
+    /// - Activating and deactivating staff member accounts
+    ///
+    /// All write operations use the Prepare pattern — changes are staged in memory
+    /// via the repository and committed with a single UoW.SaveChangesAsync() call.
+    /// </summary>
     public class StaffMemberService : IStaffMemberService
     {
+        /// <summary>Unit of Work providing access to all repositories.</summary>
         private readonly IUnitOfWork UoW;
 
+        /// <summary>
+        /// Initialises StaffMemberService with required dependencies.
+        /// </summary>
+        /// <param name="unitOfWork">Unit of Work for data access.</param>
         public StaffMemberService(IUnitOfWork unitOfWork)
         {
             UoW = unitOfWork;
         }
 
+        /// <summary>
+        /// Retrieves all staff members ordered by join date descending.
+        /// </summary>
+        /// <returns>List of staff member DTOs.</returns>
         public Task<List<StaffMemberDto>> GetAllStaffMembersAsync() =>
             UoW.StaffMembers.GetAllAsync();
 
+        /// <summary>
+        /// Retrieves staff members filtered by staff type (e.g. Security, Plumber).
+        /// </summary>
+        /// <param name="staffType">Staff type string to filter by.</param>
+        /// <returns>List of staff member DTOs matching the type.</returns>
         public Task<List<StaffMemberDto>> GetStaffMembersByTypeAsync(string staffType) =>
             UoW.StaffMembers.GetByTypeAsync(staffType);
 
+        /// <summary>
+        /// Retrieves a single staff member by their staff record ID.
+        /// </summary>
+        /// <param name="staffId">Unique identifier of the staff record.</param>
+        /// <returns>Staff member DTO or null if not found.</returns>
         public Task<StaffMemberDto?> GetStaffMemberByIdAsync(Guid staffId) =>
             UoW.StaffMembers.GetByIdAsync(staffId);
 
+        /// <summary>
+        /// Creates a new staff member record.
+        ///
+        /// Validations:
+        /// - Staff type must be a recognised role from the configured staff roles list.
+        /// - Phone number must not already exist.
+        ///
+        /// If a password is provided, a system user account is also created and linked.
+        /// All records are staged and committed in one SaveChanges.
+        /// </summary>
+        /// <param name="dto">Staff member creation data.</param>
+        /// <param name="createdBy">UserId of the admin performing the creation.</param>
+        /// <returns>The newly created staff member DTO.</returns>
+        /// <exception cref="Exception">Thrown on invalid staff type or duplicate phone number.</exception>
         public async Task<StaffMemberDto> CreateStaffMemberAsync(
             CreateStaffMemberDto dto, Guid createdBy)
         {
@@ -32,28 +77,38 @@ namespace ApartmentManagementSystem.Application.Services
             if (await UoW.StaffMembers.PhoneExistsAsync(dto.Phone))
                 throw new Exception("Staff member with this phone number already exists.");
 
-            // Stage everything in memory
             await UoW.StaffMembers.PrepareCreateAsync(dto, createdBy);
-
-            // ONE SaveChanges
             await UoW.SaveChangesAsync();
 
             var all = await UoW.StaffMembers.GetByTypeAsync(dto.StaffType);
             return all.First(s => s.Phone == dto.Phone);
         }
 
+        /// <summary>
+        /// Updates an existing staff member's details.
+        ///
+        /// If the staff member has a linked system user account,
+        /// that account's name, phone, and email are also updated.
+        /// Changes are staged and committed in one SaveChanges.
+        /// </summary>
+        /// <param name="dto">Updated staff member values.</param>
+        /// <param name="updatedBy">UserId of the admin performing the update.</param>
+        /// <returns>The updated staff member DTO.</returns>
         public async Task<StaffMemberDto> UpdateStaffMemberAsync(
             UpdateStaffMemberDto dto, Guid updatedBy)
         {
-            // Stage update in memory
             await UoW.StaffMembers.PrepareUpdateAsync(dto, updatedBy);
-
-            // ONE SaveChanges
             await UoW.SaveChangesAsync();
-
             return (await UoW.StaffMembers.GetByIdAsync(dto.StaffId))!;
         }
 
+        /// <summary>
+        /// Deactivates a staff member account.
+        /// The record is retained; IsActive is set to false.
+        /// </summary>
+        /// <param name="staffId">Unique identifier of the staff record to deactivate.</param>
+        /// <param name="deactivatedBy">UserId of the admin performing the deactivation.</param>
+        /// <returns>True on success.</returns>
         public async Task<bool> DeactivateStaffMemberAsync(Guid staffId, Guid deactivatedBy)
         {
             await UoW.StaffMembers.PrepareSetActiveStatusAsync(staffId, false, deactivatedBy);
@@ -61,6 +116,12 @@ namespace ApartmentManagementSystem.Application.Services
             return true;
         }
 
+        /// <summary>
+        /// Re-activates a previously deactivated staff member account.
+        /// </summary>
+        /// <param name="staffId">Unique identifier of the staff record to activate.</param>
+        /// <param name="activatedBy">UserId of the admin performing the activation.</param>
+        /// <returns>True on success.</returns>
         public async Task<bool> ActivateStaffMemberAsync(Guid staffId, Guid activatedBy)
         {
             await UoW.StaffMembers.PrepareSetActiveStatusAsync(staffId, true, activatedBy);
@@ -69,6 +130,33 @@ namespace ApartmentManagementSystem.Application.Services
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

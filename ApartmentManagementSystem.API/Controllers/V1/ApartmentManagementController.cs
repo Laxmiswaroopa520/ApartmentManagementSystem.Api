@@ -11,9 +11,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
    
         [ApiController]
         [Route("api/ApartmentManagement")]
-       // [Authorize(Roles = "SuperAdmin")]
         [Authorize(Roles = SystemRoles.SuperAdmin)]
-
     public class ApartmentManagementController : ControllerBase
         {
             private readonly IApartmentManagementService ApartmentService;
@@ -191,7 +189,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
 
                     return Ok(ApiResponse<bool>.SuccessResponse(
                         result,
-                        "Apartment deleted successfully"
+                        ResponseMessages.ApartmentDeleted
                     ));
                 }
                 catch (Exception ex)

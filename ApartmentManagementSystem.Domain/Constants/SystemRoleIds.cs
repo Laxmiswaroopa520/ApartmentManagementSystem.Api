@@ -3,7 +3,7 @@
     public static class SystemRoleIds
     {
         public static readonly Guid SuperAdmin = Guid.Parse("10000000-0000-0000-0000-000000000001");
-        public static readonly Guid Manager = Guid.Parse("10000000-0000-0000-0000-000000000002"); // ⭐ NEW
+        public static readonly Guid Manager = Guid.Parse("10000000-0000-0000-0000-000000000002"); 
         public static readonly Guid President = Guid.Parse("10000000-0000-0000-0000-000000000003");
         public static readonly Guid Secretary = Guid.Parse("10000000-0000-0000-0000-000000000004");
         public static readonly Guid Treasurer = Guid.Parse("10000000-0000-0000-0000-000000000005");

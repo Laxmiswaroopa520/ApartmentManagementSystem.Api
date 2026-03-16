@@ -1,4 +1,64 @@
-﻿
+﻿using ApartmentManagementSystem.Application.DTOs;
+using ApartmentManagementSystem.Application.Interfaces;
+using ApartmentManagementSystem.Domain.Constants;
+using FastEndpoints;
+
+namespace ApartmentManagementSystem.API.Endpoints.V1.Onboarding;
+
+/// <summary>
+/// Endpoint responsible for retrieving all system roles.
+/// Anonymous access allowed.
+/// </summary>
+public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
+{
+    private readonly IUnitOfWork UoW;
+
+    public GetRolesEndpoint(IUnitOfWork unitOfWork)
+    {
+        UoW = unitOfWork;
+    }
+
+    public override void Configure()
+    {
+        Get("OnboardingApi/roles");
+        AllowAnonymous();
+        Description(b => b
+            .WithTags("OnboardingApi")
+            .WithName("GetRoles")
+            .WithSummary("Get all available system roles")
+            .WithDescription(RoleMessages.GetRolesDescription)
+            .Produces<List<RoleDto>>(200, "application/json")
+        );
+    }
+
+    public override async Task HandleAsync(CancellationToken ct)
+    {
+        var roles = await UoW.Roles.GetAllAsync();
+
+        var roleDtos = roles.Select(r => new RoleDto
+        {
+            Id = r.Id,
+            Name = r.Name
+        }).ToList();
+
+        await SendOkAsync(roleDtos, ct);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 using FastEndpoints;
 using ApartmentManagementSystem.Application.DTOs;
 using ApartmentManagementSystem.Application.Interfaces.Repositories;
@@ -60,7 +120,7 @@ public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
 }
 
 
-
+*/
 
 
 

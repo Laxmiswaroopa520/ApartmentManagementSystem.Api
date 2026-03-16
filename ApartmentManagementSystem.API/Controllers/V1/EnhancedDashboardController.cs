@@ -31,7 +31,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// </summary>
         /// <returns>Fully assembled enhanced admin dashboard DTO.</returns>
         [HttpGet("admin")]
-        [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
+        [Authorize(Roles =SystemRoles.AdminManagerCommunity)]
         public async Task<IActionResult> GetEnhancedAdminDashboard()
         {
             try
@@ -58,7 +58,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// </summary>
         /// <returns>Manager dashboard DTO scoped to the calling user's apartments.</returns>
         [HttpGet("manager")]
-        [Authorize(Roles = "Manager")]
+        [Authorize(Roles = SystemRoles.Manager)]
         public async Task<IActionResult> GetManagerDashboard()
         {
             try
@@ -85,7 +85,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// </summary>
         /// <returns>Community leader dashboard DTO tailored to the user's community role.</returns>
         [HttpGet("community-leader")]
-        [Authorize(Roles = "President,Secretary,Treasurer")]
+        [Authorize(Roles =SystemRoles.President+","+SystemRoles.Secretary+","+SystemRoles.Treasurer)]
         public async Task<IActionResult> GetCommunityLeaderDashboard()
         {
             try
@@ -94,7 +94,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
 
                 var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
                 var role = roles.FirstOrDefault(r =>
-                    r == "President" || r == "Secretary" || r == "Treasurer") ?? string.Empty;
+                    r == SystemRoles.President || r == SystemRoles.Secretary || r == SystemRoles.Treasurer) ?? string.Empty;
 
                 if (string.IsNullOrEmpty(role))
                 {
@@ -123,7 +123,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// </summary>
         /// <returns>Staff dashboard DTO for the calling staff user.</returns>
         [HttpGet("staff")]
-        [Authorize(Roles = "Security,Plumber,Electrician,Carpenter,Sweeper,Gardener,MaintenanceStaff")]
+        [Authorize(Roles =SystemRoles.StaffRolesString)]
         public async Task<IActionResult> GetStaffDashboard()
         {
             try
@@ -150,7 +150,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// </summary>
         /// <returns>Advanced dashboard stats DTO with system-wide aggregates.</returns>
         [HttpGet("advanced-stats")]
-        [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
+        [Authorize(Roles =SystemRoles.AdminManagerCommunity)]
         public async Task<IActionResult> GetAdvancedDashboardStats()
         {
             try
@@ -176,7 +176,8 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// <param name="apartmentId">The GUID of the apartment to retrieve stats for.</param>
         /// <returns>Apartment-scoped dashboard stats DTO.</returns>
         [HttpGet("apartment-stats/{apartmentId}")]
-        [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
+        [Authorize(Roles = SystemRoles.AdminManagerCommunity)]
+
         public async Task<IActionResult> GetApartmentStats(Guid apartmentId)
         {
             try
@@ -202,7 +203,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// </summary>
         /// <returns>System-wide financial summary DTO.</returns>
         [HttpGet("financial-summary")]
-        [Authorize(Roles = "SuperAdmin,Treasurer")]
+        [Authorize(Roles =SystemRoles.SuperAdmin+","+SystemRoles.Treasurer)]
         public async Task<IActionResult> GetFinancialSummary()
         {
             try
@@ -227,7 +228,8 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// <param name="apartmentId">The GUID of the apartment to retrieve financial data for.</param>
         /// <returns>Apartment-scoped financial summary DTO.</returns>
         [HttpGet("apartment-financial-summary/{apartmentId}")]
-        [Authorize(Roles = "SuperAdmin,Manager,Treasurer")]
+        [Authorize(Roles = SystemRoles.SuperAdmin + "," + SystemRoles.Treasurer+","+SystemRoles.Manager)]
+
         public async Task<IActionResult> GetApartmentFinancialSummary(Guid apartmentId)
         {
             try
@@ -253,7 +255,7 @@ namespace ApartmentManagementSystem.API.Controllers.V1
         /// <param name="apartmentId">The GUID of the apartment whose notice board to fetch.</param>
         /// <returns>List of notice board message DTOs for the given apartment.</returns>
         [HttpGet("notice-board/{apartmentId}")]
-        [Authorize(Roles = "SuperAdmin,Manager,President,Secretary,Treasurer")]
+        [Authorize(Roles = SystemRoles.AdminManagerCommunity)]
         public async Task<IActionResult> GetNoticeBoardMessages(Guid apartmentId)
         {
             try
@@ -285,9 +287,9 @@ namespace ApartmentManagementSystem.API.Controllers.V1
             {
                 var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value).ToList();
 
-                var role = roles.Contains("SuperAdmin") ? "SuperAdmin" :
-                           roles.Contains("Manager") ? "Manager" :
-                           roles.FirstOrDefault(r => r == "President" || r == "Secretary" || r == "Treasurer") ??
+                var role = roles.Contains(SystemRoles.SuperAdmin) ? SystemRoles.SuperAdmin :
+                           roles.Contains(SystemRoles.Manager) ? SystemRoles.Manager :
+                           roles.FirstOrDefault(r => r == SystemRoles.President || r == SystemRoles.Secretary || r == SystemRoles.Treasurer) ??
                            roles.FirstOrDefault() ?? string.Empty;
 
                 var actions = await DashboardService.GetQuickActionsForRoleAsync(role);
