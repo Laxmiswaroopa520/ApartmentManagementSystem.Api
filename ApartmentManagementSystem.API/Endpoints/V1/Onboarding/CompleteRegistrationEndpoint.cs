@@ -44,13 +44,6 @@ public class CompleteRegistrationEndpoint
         Description(b => b
             .WithTags("OnboardingApi")
             .WithName("CompleteRegistration")
-            .WithSummary("Complete resident registration")
-            .WithDescription(@"
-                Completes the registration process after OTP verification.
-                Creates user credentials (username/password) and profile information.
-                User status will be set to 'PendingFlatAllocation' after successful registration.
-                Admin must assign a flat before the user can fully access the system.
-            ")
             .Produces<ApiResponse<CompleteRegistrationResponseDto>>(200, "application/json")
             .Produces<ApiResponse<CompleteRegistrationResponseDto>>(400, "application/json")
         );

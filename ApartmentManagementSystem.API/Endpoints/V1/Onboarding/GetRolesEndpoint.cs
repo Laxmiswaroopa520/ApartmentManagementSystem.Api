@@ -25,7 +25,6 @@ public class GetRolesEndpoint : EndpointWithoutRequest<List<RoleDto>>
         Description(b => b
             .WithTags("OnboardingApi")
             .WithName("GetRoles")
-            .WithSummary("Get all available system roles")
             .WithDescription(RoleMessages.GetRolesDescription)
             .Produces<List<RoleDto>>(200, "application/json")
         );

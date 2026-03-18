@@ -4,6 +4,7 @@ using ApartmentManagementSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApartmentManagementSystem.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260318093408_SystemGuidRemoved")]
+    partial class SystemGuidRemoved
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -257,62 +260,6 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("10000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 3, 18, 13, 33, 21, 443, DateTimeKind.Utc).AddTicks(406),
-                            Name = "SuperAdmin"
-                        },
-                        new
-                        {
-                            Id = new Guid("10000000-0000-0000-0000-000000000002"),
-                            CreatedAt = new DateTime(2026, 3, 18, 13, 33, 21, 443, DateTimeKind.Utc).AddTicks(409),
-                            Name = "Manager"
-                        },
-                        new
-                        {
-                            Id = new Guid("10000000-0000-0000-0000-000000000003"),
-                            CreatedAt = new DateTime(2026, 3, 18, 13, 33, 21, 443, DateTimeKind.Utc).AddTicks(411),
-                            Name = "President"
-                        },
-                        new
-                        {
-                            Id = new Guid("10000000-0000-0000-0000-000000000004"),
-                            CreatedAt = new DateTime(2026, 3, 18, 13, 33, 21, 443, DateTimeKind.Utc).AddTicks(411),
-                            Name = "Secretary"
-                        },
-                        new
-                        {
-                            Id = new Guid("10000000-0000-0000-0000-000000000005"),
-                            CreatedAt = new DateTime(2026, 3, 18, 13, 33, 21, 443, DateTimeKind.Utc).AddTicks(412),
-                            Name = "Treasurer"
-                        },
-                        new
-                        {
-                            Id = new Guid("10000000-0000-0000-0000-000000000006"),
-                            CreatedAt = new DateTime(2026, 3, 18, 13, 33, 21, 443, DateTimeKind.Utc).AddTicks(413),
-                            Name = "ResidentOwner"
-                        },
-                        new
-                        {
-                            Id = new Guid("10000000-0000-0000-0000-000000000007"),
-                            CreatedAt = new DateTime(2026, 3, 18, 13, 33, 21, 443, DateTimeKind.Utc).AddTicks(414),
-                            Name = "Tenant"
-                        },
-                        new
-                        {
-                            Id = new Guid("10000000-0000-0000-0000-000000000008"),
-                            CreatedAt = new DateTime(2026, 3, 18, 13, 33, 21, 443, DateTimeKind.Utc).AddTicks(415),
-                            Name = "Security"
-                        },
-                        new
-                        {
-                            Id = new Guid("10000000-0000-0000-0000-000000000009"),
-                            CreatedAt = new DateTime(2026, 3, 18, 13, 33, 21, 443, DateTimeKind.Utc).AddTicks(416),
-                            Name = "Maintenance"
-                        });
                 });
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.StaffMember", b =>
@@ -465,22 +412,6 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.HasIndex("Username");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("20000000-0000-0000-0000-000000000001"),
-                            CreatedAt = new DateTime(2026, 3, 18, 13, 33, 21, 578, DateTimeKind.Utc).AddTicks(5879),
-                            Email = "admin@apartment.com",
-                            FullName = "System Administrator",
-                            IsActive = true,
-                            IsOtpVerified = true,
-                            IsRegistrationCompleted = true,
-                            PasswordHash = "$2a$11$WErrZV0iZKgoAItrFugG5ONsP.8ITGHAfeDMM9h0gZw/Mu15CaVQi",
-                            PrimaryPhone = "9999999999",
-                            Status = 1,
-                            Username = "admin"
-                        });
                 });
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.UserFlatMapping", b =>
@@ -625,15 +556,6 @@ namespace ApartmentManagementSystem.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = new Guid("20000000-0000-0000-0000-000000000001"),
-                            RoleId = new Guid("10000000-0000-0000-0000-000000000001"),
-                            AssignedAt = new DateTime(2026, 3, 18, 13, 33, 21, 578, DateTimeKind.Utc).AddTicks(6495),
-                            Id = new Guid("a43dd5b3-e31e-496f-8c99-0b4a162dc0c8")
-                        });
                 });
 
             modelBuilder.Entity("ApartmentManagementSystem.Domain.Entities.ApartmentManager", b =>

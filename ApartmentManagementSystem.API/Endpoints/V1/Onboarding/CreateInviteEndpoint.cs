@@ -46,16 +46,6 @@ public class CreateInviteEndpoint
         Description(b => b
             .WithTags("OnboardingApi")
             .WithName("CreateInvite")
-            .WithSummary("Create invitation for new resident")
-            .WithDescription(@"
-                Creates an invitation for a new resident (Owner/Tenant/Staff).
-                Generates OTP and sends to the provided phone number.
-                
-                ResidentType values:
-                - 1: Owner
-                - 2: Tenant
-                - 3: Staff
-            ")
             .Produces<ApiResponse<CreateInviteResponseDto>>(200, "application/json")
             .Produces<ApiResponse<CreateInviteResponseDto>>(400, "application/json")
             .ProducesProblem(401)

@@ -122,7 +122,20 @@ app.UseFastEndpoints(c =>
 });
 
 app.MapControllers();
+/*
+if (!app.Environment.IsEnvironment("Testing"))
+{
+    using var scope = app.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+    // Apply any pending EF migrations first
+    dbContext.Database.Migrate();
+
+    // Then seed master data — safe on every startup
+    var seeder = new DatabaseSeeder(dbContext);
+    await seeder.SeedAsync();
+}
+*/
 if (!app.Environment.IsEnvironment("Testing"))
 {
     using var scope = app.Services.CreateScope();

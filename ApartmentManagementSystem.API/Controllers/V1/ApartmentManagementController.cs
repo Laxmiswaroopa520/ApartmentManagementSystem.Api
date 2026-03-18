@@ -9,9 +9,9 @@ using System.Security.Claims;
 namespace ApartmentManagementSystem.API.Controllers.V1
 {
    
-        [ApiController]
-        [Route("api/ApartmentManagement")]
-        [Authorize(Roles = SystemRoles.SuperAdmin)]
+     [ApiController]
+     [Route("api/ApartmentManagement")]
+     [Authorize(Roles = SystemRoles.SuperAdmin)]
     public class ApartmentManagementController : ControllerBase
         {
             private readonly IApartmentManagementService ApartmentService;

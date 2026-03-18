@@ -37,7 +37,6 @@ public class VerifyOtpEndpoint
         Description(b => b
             .WithTags("OnboardingApi")
             .WithName("VerifyOtp")
-            .WithSummary("Verify OTP sent to resident's phone")
             .WithDescription(OtpMessages.VerifyOtpDescription)
             .Produces<ApiResponse<VerifyOtpResponseDto>>(200, "application/json")
             .Produces<ApiResponse<VerifyOtpResponseDto>>(400, "application/json")

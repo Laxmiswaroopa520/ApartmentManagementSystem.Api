@@ -27,7 +27,6 @@ public class GetResidentTypesEndpoint
         Description(b => b
             .WithTags("OnboardingApi")
             .WithName("GetResidentTypes")
-            .WithSummary("Get all resident types")
             .WithDescription(ResidentTypeMessages.ResidentTypesDescription)             //considered description in constants file
             .Produces<ApiResponse<List<ResidentTypeDto>>>(200, "application/json")
             .ProducesProblem(401)

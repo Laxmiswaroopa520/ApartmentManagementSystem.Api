@@ -1,4 +1,87 @@
-﻿using ApartmentManagementSystem.Domain.Constants;
+﻿/*using ApartmentManagementSystem.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+
+namespace ApartmentManagementSystem.Infrastructure.Persistence
+{
+    /// <summary>
+    /// Application database context.
+    ///
+    /// Responsibilities:
+    /// - Exposes DbSet properties for all entities.
+    /// - Applies entity type configurations from separate files.
+    ///
+    /// Seeding has been intentionally removed from here.
+    /// All data seeding (roles + SuperAdmin) is handled by
+    /// DatabaseSeeder which runs at startup via Program.cs.
+    ///
+    /// Why not HasData()?
+    /// - HasData() requires hardcoded GUIDs — brittle and not portable.
+    /// - Every new migration regenerates those INSERT statements.
+    /// - Runtime seeding with AnyAsync() checks is safe to run repeatedly.
+    /// </summary>
+    public class AppDbContext : DbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options) { }
+        /*
+        public DbSet<Floor> Floors { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles{get;set;}
+        public DbSet<UserOtp> UserOtps { get; set; }
+        public DbSet<UserInvite> UserInvites { get; set; }
+        public DbSet<StaffMember> StaffMembers { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Apartment> Apartments { get; set; }
+        public DbSet<Flat> Flats { get; set; }
+        public DbSet<UserFlatMapping> UserFlatMappings { get; set; }
+        public DbSet<ApartmentManager> ApartmentManagers { get; set; }
+        public DbSet<CommunityMember> CommunityMembers { get; set; }
+        -------------------
+        // DB SETS
+        public DbSet<Floor> Floors { get; set; }
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Role> Roles => Set<Role>();
+        public DbSet<UserOtp> UserOtps => Set<UserOtp>();
+        public DbSet<UserInvite> UserInvites => Set<UserInvite>();
+        public DbSet<StaffMember> StaffMembers { get; set; }
+        public DbSet<UserRole> UserRoles => Set<UserRole>();
+        public DbSet<Apartment> Apartments => Set<Apartment>();
+        public DbSet<Flat> Flats => Set<Flat>();
+        public DbSet<UserFlatMapping> UserFlatMappings => Set<UserFlatMapping>();
+        public DbSet<ApartmentManager> ApartmentManagers => Set<ApartmentManager>();
+        public DbSet<CommunityMember> CommunityMembers => Set<CommunityMember>();
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            //This automatically loads: Entity configurations;;Fluent API rules
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        }
+    }
+}
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
