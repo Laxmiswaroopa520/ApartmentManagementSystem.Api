@@ -1,4 +1,5 @@
-﻿using FastEndpoints;
+﻿
+using FastEndpoints;
 using FastEndpoints.Swagger;
 using ApartmentManagementSystem.API.Extensions;
 using ApartmentManagementSystem.API.Filters;
@@ -122,7 +123,7 @@ app.UseFastEndpoints(c =>
 });
 
 app.MapControllers();
-/*
+
 if (!app.Environment.IsEnvironment("Testing"))
 {
     using var scope = app.Services.CreateScope();
@@ -135,14 +136,14 @@ if (!app.Environment.IsEnvironment("Testing"))
     var seeder = new DatabaseSeeder(dbContext);
     await seeder.SeedAsync();
 }
-*/
+/*
 if (!app.Environment.IsEnvironment("Testing"))
 {
     using var scope = app.Services.CreateScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     dbContext.Database.Migrate();
 }
-
+*/
 app.Run();
 
 // Makes Program accessible for integration tests
@@ -164,10 +165,8 @@ public partial class Program { }
 
 
 
-
-
-
-/*using FastEndpoints;
+/*
+using FastEndpoints;
 using FastEndpoints.Swagger;
 using ApartmentManagementSystem.API.Extensions;
 using ApartmentManagementSystem.API.Filters;

@@ -1,4 +1,4 @@
-﻿/*using ApartmentManagementSystem.Domain.Constants;
+﻿using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -142,7 +142,6 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
         }
     }
 }
-*/
 
 
 
@@ -165,6 +164,7 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
 
 
 
+/*
 
 using ApartmentManagementSystem.Domain.Entities;
 using ApartmentManagementSystem.Domain.Enums;
@@ -233,3 +233,4 @@ public class DatabaseSeeder
         await DBContext.SaveChangesAsync();
     }
 }
+*/

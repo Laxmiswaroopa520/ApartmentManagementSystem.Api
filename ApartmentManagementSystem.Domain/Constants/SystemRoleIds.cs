@@ -1,4 +1,4 @@
-﻿namespace ApartmentManagementSystem.Domain.Constants
+﻿/*namespace ApartmentManagementSystem.Domain.Constants
 {
     public static class SystemRoleIds
     {
@@ -13,3 +13,4 @@
         public static readonly Guid Maintenance = Guid.Parse("10000000-0000-0000-0000-000000000009");
     }
 }
+*/

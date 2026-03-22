@@ -1,4 +1,4 @@
-﻿/*using ApartmentManagementSystem.Domain.Entities;
+﻿using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApartmentManagementSystem.Infrastructure.Persistence
@@ -36,7 +36,7 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
         public DbSet<UserFlatMapping> UserFlatMappings { get; set; }
         public DbSet<ApartmentManager> ApartmentManagers { get; set; }
         public DbSet<CommunityMember> CommunityMembers { get; set; }
-        -------------------
+        */
         // DB SETS
         public DbSet<Floor> Floors { get; set; }
         public DbSet<User> Users => Set<User>();
@@ -61,7 +61,6 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
     }
 }
 
-*/
 
 
 
@@ -81,6 +80,7 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
 
 
 
+/*
 using ApartmentManagementSystem.Domain.Constants;
 using ApartmentManagementSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -164,3 +164,4 @@ namespace ApartmentManagementSystem.Infrastructure.Persistence
         }
     }
 }
+*/
